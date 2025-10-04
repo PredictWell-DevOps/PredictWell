@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PredictWell (Local)</title>
+  <link rel="stylesheet" href="./assets/styles.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>PredictWell – Eldercare Sentinel</h1>
+
+    <!-- Health Check -->
+    <section class="card">
+      <h2>API Health</h2>
+      <button id="btnHealth">Check Health</button>
+      <pre id="healthOut"></pre>
+    </section>
+
+    <!-- Gait Risk Form -->
+    <section class="card">
+      <h2>Gait Risk Score</h2>
+      <form id="riskForm">
+        <label>Age <input type="number" name="age" value="75" required></label>
+        <label>Sex 
+          <select name="sex" required>
+            <option value="male" selected>Male</option>
+            <option value="female">Female</option>
+          </select>
+        </label>
+        <label>Heart Rate <input type="number" name="heart_rate" value="70" required></label>
+        <label>Systolic Blood Pressure <input type="number" name="blood_pressure_sys" value="120" required></label>
+        <label>Respiration Rate <input type="number" name="respiration_rate" value="16" required></label>
+        <label>Oxygen Saturation (%) <input type="number" step="0.1" name="oxygen_saturation" value="98" required></label>
+        <label>Gait Speed (m/s) <input type="number" step="0.01" name="gait_speed" value="0.8" required></label>
+        <label>Step Variability <input type="number" step="0.01" name="step_variability" value="0.10" required></label>
+        <label>HRV (ms) <input type="number" name="hrv" value="30" required></label>
+        <label>Sleep (hours) <input type="number" step="0.1" name="sleep_hours" value="7.0" required></label>
+
+        <!-- NEW CATEGORIES -->
+        <label>Recent Fall
+          <select name="recent_fall" required>
+            <option value="false" selected>No</option>
+            <option value="true">Yes</option>
+          </select>
+        </label>
+        <label>Mobility Aid
+          <select name="mobility_aid" required>
+            <option value="none" selected>None</option>
+            <option value="cane">Cane</option>
+            <option value="walker">Walker</option>
+            <option value="wheelchair">Wheelchair</option>
+          </select>
+        </label>
+        <label>Cognitive Score (1-10) <input type="number" min="1" max="10" name="cognitive_score" value="8" required></label>
+        <label>Balance Test (seconds) <input type="number" step="0.1" name="balance_test" value="20.0" required></label>
+        <label>Medication Count <input type="number" name="medication_count" value="3" required></label>
+
+        <button type="submit">Compute</button>
+      </form>
+      <pre id="riskOut"></pre>
+    </section>
+
+    <!-- CSV Upload -->
+    <section class="card">
+      <h2>Upload CSV (Test)</h2>
+      <input type="file" id="csvFile" accept=".csv">
+      <button id="btnUpload">Upload</button>
+      <pre id="uploadOut"></pre>
+    </section>
+  </div>
+
+  <script src="./assets/app.js"></script>
+</body>
+</html>
