@@ -3,9 +3,6 @@ from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
-import io
-import csv
-
 
 app = FastAPI(
     title="PredictWell API",
@@ -34,5 +31,5 @@ def api_echo(payload: Echo):
     return payload.model_dump()
 
 
-# If you had a static/ directory in this app previously:
+# Mount static if you keep a "static/" folder with assets.
 app.mount("/static", StaticFiles(directory="static"), name="static")
