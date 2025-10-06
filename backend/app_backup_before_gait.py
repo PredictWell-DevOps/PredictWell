@@ -1,45 +1,27 @@
-"""
-Backup FastAPI app (pre-gait features).
-
-This mirrors the main app structure so CI/linting passes cleanly.
-"""
-
+# backend/app_backup_before_gait.py
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
-# Keep io/csv imports on separate lines for ruff E401 compliance.
 import io
 import csv
 
-# -----------------------------------------------------------------------------
-# App setup
-# -----------------------------------------------------------------------------
+
 app = FastAPI(
-    title="PredictWell API (Backup)",
+    title="PredictWell API",
     docs_url="/docs",
     redoc_url=None,
     openapi_url="/openapi.json",
 )
 
-# If you have a "static" directory under backend/, this will serve it at /static.
-# Comment out if you don't need/ have it.
-# app.mount("/static", StaticFiles(directory="static"), name="static")
 
-
-# -----------------------------------------------------------------------------
-# Models
-# -----------------------------------------------------------------------------
 class Echo(BaseModel):
     message: str
 
 
-# -----------------------------------------------------------------------------
-# Routes
-# -----------------------------------------------------------------------------
 @app.get("/")
 def root():
-    return {"message": "PredictWell backup API root"}
+    return {"ok": True}
 
 
 @app.get("/healthz")
@@ -48,11 +30,9 @@ def healthz():
 
 
 @app.post("/api/echo")
-def echo(payload: Echo):
-    # Example of using csv/io so imports are meaningful (and keep ruff happy).
-    buf = io.StringIO()
-    writer = csv.writer(buf)
-    writer.writerow(["message"])
-    writer.writerow([payload.message])
-    _ = buf.getvalue()  # not used further; demonstrates module usage
-    return {"echo": payload.message}
+def api_echo(payload: Echo):
+    return payload.model_dump()
+
+
+# If you had a static/ directory in this app previously:
+app.mount("/static", StaticFiles(directory="static"), name="static")
