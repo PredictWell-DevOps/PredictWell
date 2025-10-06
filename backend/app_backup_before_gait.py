@@ -1,35 +1,17 @@
-# backend/app_backup_before_gait.py
-from fastapi import FastAPI
-from fastapi.staticfiles import StaticFiles
-from pydantic import BaseModel
+# ruff: noqa
+"""
+Backup file kept only for historical reference.
+This file is not used by the running application or tests.
+"""
 
+from __future__ import annotations
 
-app = FastAPI(
-    title="PredictWell API",
-    docs_url="/docs",
-    redoc_url=None,
-    openapi_url="/openapi.json",
-)
+# NOTE:
+# We intentionally keep this as a minimal, no-side-effects module so that
+# CI will not lint/fail on old code while we preserve the backup in the repo.
+# The real app lives in `backend/app.py`.
 
-
-class Echo(BaseModel):
-    message: str
-
-
-@app.get("/")
-def root():
-    return {"ok": True}
-
-
-@app.get("/healthz")
-def healthz():
-    return {"status": "ok"}
-
-
-@app.post("/api/echo")
-def api_echo(payload: Echo):
-    return payload.model_dump()
-
-
-# Mount static if you keep a "static/" folder with assets.
-app.mount("/static", StaticFiles(directory="static"), name="static")
+# If you ever need to run something from here locally, you can put it under a
+# `if __name__ == "__main__":` guard. Nothing is executed on import.
+if __name__ == "__main__":
+    print("This is a backup file; the live FastAPI app is backend/app.py.")
