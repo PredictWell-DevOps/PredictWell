@@ -1,11 +1,11 @@
-# backend/tests/test_health.py
 from fastapi.testclient import TestClient
-from app import app  # app is defined in backend/app.py; pytest runs from backend/
-
-client = TestClient(app)
-
+from backend.app import app
 
 def test_healthz():
+    client = TestClient(app)
     r = client.get("/healthz")
     assert r.status_code == 200
-    assert r.json() == {"status": "ok"}
+    data = r.json()
+    assert data["status"] == "ok"
+    # DB path can vary by GitHub runner, so only check filename
+    assert "db" in data and data["db"].endswith("predictwell.db")
