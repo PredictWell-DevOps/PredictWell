@@ -1,3 +1,4 @@
+<!-- ====== eldercare.html (Eldercare Risk + Check-in Page) ====== -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -107,7 +108,8 @@
   </main>
 
 <script>
-  const BASE_API = ''; // '' if same Render service, else your backend URL (e.g. 'https://predictwell-backend.onrender.com')
+  // ===== CONFIG =====
+  const BASE_API = 'https://predictwell-backend-ai.onrender.com';
 
   const form = document.getElementById('elderForm');
   const resultEl = document.getElementById('result');
@@ -133,36 +135,4 @@
     const elder = readInputs();
 
     try {
-      const res = await fetch(`${BASE_API}/risk`, {
-        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ pitch:null, elder })
-      });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const data = await res.json();
-      resultEl.innerHTML = `
-        <div style="font-size:32px; font-weight:800;">${(data.risk_score*100).toFixed(0)}%</div>
-        <div class="badge" style="margin:6px 0 14px;">${data.risk_band}</div>
-        <div><b>Factors:</b> ${data.factors && data.factors.length ? data.factors.join(', ') : 'None highlighted'}</div>
-      `;
-    } catch (err) {
-      resultEl.innerHTML = `<span style="color:#b91c1c;">Error calculating risk — ${err.message}. Check API URL.</span>`;
-    } finally { riskBtn.disabled = false; }
-  });
-
-  checkinBtn.addEventListener('click', async () => {
-    checkinBtn.disabled = true; savedEl.style.color = '#065f46'; savedEl.textContent = 'Saving...';
-    const payload = readInputs();
-    try {
-      const res = await fetch(`${BASE_API}/eldercare/checkin`, {
-        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
-      });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const data = await res.json();
-      savedEl.textContent = `Check-in saved (ID ${data.id}).`;
-    } catch (err) {
-      savedEl.style.color = '#b91c1c';
-      savedEl.textContent = `Error saving check-in — ${err.message}.`;
-    } finally { checkinBtn.disabled = false; }
-  });
-</script>
-</body>
-</html>
+      const res = aw
