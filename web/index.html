@@ -1,61 +1,50 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PredictWell Eldercare Sentinel</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 2rem;
-      background: #f0f0f0;
-    }
-    h1 {
-      color: #333;
-    }
-    button {
-      padding: 10px 15px;
-      margin-top: 10px;
-      cursor: pointer;
-      background: #007bff;
-      border: none;
-      color: white;
-      border-radius: 5px;
-    }
-    #result {
-      margin-top: 20px;
-      padding: 10px;
-      background: #fff;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-    }
-  </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PredictWell Health.ai</title>
+  <meta name="description" content="Preventive health AI for seniors and athletes—multi-signal wearables + weekly voice/gait check-ins and sport-specific workload insights.">
+  <link rel="stylesheet" href="./styles.css">
+  <link rel="icon" href="data:,">
 </head>
 <body>
-  <h1>PredictWell Eldercare Sentinel</h1>
-  <h3>Check if the frontend is connected to the backend API ✅</h3>
-  <button onclick="checkApi()">Check API</button>
-  <div id="result">Waiting for test...</div>
+  <nav class="nav">
+    <div class="wrap">
+      <a class="brand" href="/">PredictWell Health.ai</a>
+      <ul>
+        <li><a href="/eldercare.html">Eldercare</a></li>
+        <li><a href="/athletics.html">Athletics</a></li>
+        <li><a href="/pitching.html">Pitching</a></li>
+        <li><a href="/contact.html">Contact</a></li>
+        <li><a class="btn outline" href="https://predictwell-frontend.onrender.com">Status</a></li>
+      </ul>
+    </div>
+  </nav>
 
-  <script>
-    // This must match your backend Render URL
-    const API_BASE = "https://predictwell-backend-56yl.onrender.com";
+  <header class="hero">
+    <div class="card">
+      <div class="kicker">Prevent • Predict • Act</div>
+      <h1 class="h1">AI that spots risk early and gives clear next steps</h1>
+      <p class="mono">PredictWell combines wearable signals with simple weekly voice & gait check-ins to catch fall and cognition risks for seniors—and workload & mechanics risks for athletes.</p>
+      <div style="margin-top:18px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <a class="btn" href="/eldercare.html">Explore Eldercare</a>
+        <a class="btn outline" href="/athletics.html">Explore Athletics</a>
+      </div>
+    </div>
+  </header>
 
-    async function checkApi() {
-      const resultDiv = document.getElementById("result");
-      resultDiv.textContent = "Checking API...";
+  <main class="container">
+    <div class="grid cols-3">
+      <div class="card"><h3>Multi-Signal Wearables</h3><p class="mono">Heart rate, sleep, activity, variability—blended into simple, actionable scores.</p></div>
+      <div class="card"><h3>Voice & Gait Check-ins</h3><p class="mono">60-second weekly prompts catch subtle changes before they become problems.</p></div>
+      <div class="card"><h3>Clear Micro-Actions</h3><p class="mono">Daily suggestions and progress tracking for families, coaches, and staff.</p></div>
+    </div>
+  </main>
 
-      try {
-        const r = await fetch(`${API_BASE}/openapi.json`);
-        if (r.ok) {
-          resultDiv.textContent = `✅ Backend reachable: ${r.status} ${r.statusText}`;
-        } else {
-          resultDiv.textContent = `⚠️ Backend responded: ${r.status} ${r.statusText}`;
-        }
-      } catch (err) {
-        resultDiv.textContent = `❌ Failed to reach backend: ${err}`;
-      }
-    }
-  </script>
+  <footer class="footer">
+    <div class="container">© <span id="y"></span> PredictWell Health.ai • <a href="/contact.html">Contact</a></div>
+  </footer>
+  <script>document.getElementById('y').textContent=new Date().getFullYear()</script>
 </body>
 </html>
