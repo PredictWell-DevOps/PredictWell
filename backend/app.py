@@ -1,11 +1,11 @@
 from fastapi import FastAPI
 from datetime import datetime
 
-# Use the helpers that exist in your current SQLite db.py
+# Match your current SQLite db.py API (no SQLAlchemy imports!)
 from backend.db import init_db, DB_PATH
 from backend.schemas import PatientCreate, PatientOut
 
-# AI module (already added)
+# AI module
 from backend.ai_module import RiskInput, RiskOutput, compute_risk
 
 app = FastAPI(title="PredictWell Health.ai API", version="1.0")
@@ -23,7 +23,6 @@ def _startup():
 @app.get("/healthz")
 def health_check():
     """Basic health check endpoint."""
-    # DB_PATH is a string path to predictwell.db
     return {"status": "ok", "db": str(DB_PATH)}
 
 # -----------------------------------------------------
@@ -31,9 +30,9 @@ def health_check():
 # -----------------------------------------------------
 @app.post("/patients/", response_model=PatientOut)
 def create_patient(patient: PatientCreate):
-    # Placeholder echo until we wire SQL inserts (we’ll do that next)
+    # Placeholder echo until SQL inserts are wired
     return PatientOut(
-        id=1,  # in a real DB this will auto-increment
+        id=1,
         created_at=datetime.utcnow(),
         **(patient.dict() if patient is not None else {}),
     )
@@ -44,7 +43,6 @@ def create_patient(patient: PatientCreate):
 @app.post("/risk", response_model=RiskOutput)
 def calculate_risk(data: RiskInput):
     """
-    Accepts health/workload data and returns a predictive risk score.
     Example Input:
     {
       "workload": 7.5,
