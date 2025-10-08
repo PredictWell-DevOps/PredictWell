@@ -9,53 +9,49 @@
   <link rel="icon" href="data:,">
 
   <style>
-    /* Background styling */
-    body {
-      background-image: url("static/images/predictwell_background.png");
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      background-attachment: fixed;
-      position: relative;
-      min-height: 100vh;
+    /* Page baseline */
+    html, body {
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
     }
 
-    /* Overlay for dark contrast */
-    .overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      height: 100%;
-      width: 100%;
-      background-color: rgba(0, 0, 0, 0.45);
-    }
-
-    /* Hero section text overlay */
-    .hero-text {
+    /* Hero with background image and dark overlay */
+    .hero {
       position: relative;
-      z-index: 2;
+      background: url("/static/images/predictwell_background.png") center/cover no-repeat fixed;
       color: #fff;
+    }
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.45); /* overlay for contrast */
+    }
+
+    /* Your existing hero text block, above overlay */
+    .hero-text {
+      position: relative;   /* sit above overlay */
+      z-index: 1;
       text-align: center;
       padding: 160px 20px 120px 20px;
-      text-shadow: 0px 3px 8px rgba(0,0,0,0.5);
+      text-shadow: 0 3px 8px rgba(0,0,0,0.5);
+      color: #fff;
     }
-
     .hero-text h1 {
       font-size: 3rem;
       margin-bottom: 15px;
     }
-
     .hero-text p {
       font-size: 1.3rem;
       max-width: 700px;
       margin: 0 auto 20px;
       line-height: 1.5;
     }
-
     .hero-text .btn {
       margin-top: 15px;
       background-color: #00aaff;
-      color: white;
+      color: #fff;
       text-decoration: none;
       padding: 12px 28px;
       border-radius: 8px;
@@ -63,21 +59,16 @@
       transition: background-color 0.3s ease;
       display: inline-block;
     }
-
-    .hero-text .btn:hover {
-      background-color: #0088cc;
-    }
+    .hero-text .btn:hover { background-color: #0088cc; }
 
     @media (max-width: 768px) {
       .hero-text h1 { font-size: 2.2rem; }
-      .hero-text p { font-size: 1.1rem; }
+      .hero-text p  { font-size: 1.1rem; }
     }
   </style>
 </head>
 
 <body>
-  <div class="overlay"></div>
-
   <nav class="nav">
     <div class="wrap">
       <a class="brand" href="/">PredictWell Health.ai</a>
@@ -91,13 +82,16 @@
     </div>
   </nav>
 
-  <header class="hero-text">
-    <div class="kicker">Prevent • Predict • Act</div>
-    <h1>AI that spots risk early and gives clear next steps</h1>
-    <p>PredictWell combines wearable signals with simple weekly voice & gait check-ins to catch fall and cognition risks for seniors—and workload & mechanics risks for athletes.</p>
-    <div>
-      <a class="btn" href="/eldercare.html">Explore Eldercare</a>
-      <a class="btn outline" href="/athletics.html">Explore Athletics</a>
+  <!-- Hero with background + overlay -->
+  <header class="hero">
+    <div class="hero-text">
+      <div class="kicker">Prevent • Predict • Act</div>
+      <h1>AI that spots risk early and gives clear next steps</h1>
+      <p>PredictWell combines wearable signals with simple weekly voice & gait check-ins to catch fall and cognition risks for seniors—and workload & mechanics risks for athletes.</p>
+      <div>
+        <a class="btn" href="/eldercare.html">Explore Eldercare</a>
+        <a class="btn outline" href="/athletics.html">Explore Athletics</a>
+      </div>
     </div>
   </header>
 
@@ -116,3 +110,4 @@
   <script>document.getElementById('y').textContent = new Date().getFullYear();</script>
 </body>
 </html>
+
