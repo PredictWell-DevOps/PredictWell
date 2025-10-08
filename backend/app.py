@@ -1,36 +1,42 @@
-from fastapi import FastAPI, Depends
-from sqlalchemy.orm import Session
-from backend.db import Base, engine, get_db
-from backend import schemas
+from fastapi import FastAPI
 from datetime import datetime
 
-# Import AI module
-from backend.ai_module import RiskInput, RiskOutput, compute_risk
+# Use the helpers that exist in your current SQLite db.py
+from backend.db import init_db, DB_PATH
+from backend.schemas import PatientCreate, PatientOut
 
-# Initialize database tables
-Base.metadata.create_all(bind=engine)
+# AI module (already added)
+from backend.ai_module import RiskInput, RiskOutput, compute_risk
 
 app = FastAPI(title="PredictWell Health.ai API", version="1.0")
 
 # -----------------------------------------------------
-# Health Check Endpoint
+# Init DB at startup (creates tables if missing)
+# -----------------------------------------------------
+@app.on_event("startup")
+def _startup():
+    init_db()
+
+# -----------------------------------------------------
+# Health Check
 # -----------------------------------------------------
 @app.get("/healthz")
 def health_check():
     """Basic health check endpoint."""
-    return {"status": "ok", "db": str(engine.url)}
+    # DB_PATH is a string path to predictwell.db
+    return {"status": "ok", "db": str(DB_PATH)}
 
 # -----------------------------------------------------
-# Example Patient Endpoint (placeholder)
+# Example Patient Endpoint (placeholder, no DB write yet)
 # -----------------------------------------------------
-@app.post("/patients/", response_model=schemas.PatientOut)
-def create_patient(patient: schemas.PatientCreate, db: Session = Depends(get_db)):
-    new_patient = schemas.PatientOut(
-        id=1,  # In a real DB, this auto-increments
+@app.post("/patients/", response_model=PatientOut)
+def create_patient(patient: PatientCreate):
+    # Placeholder echo until we wire SQL inserts (we’ll do that next)
+    return PatientOut(
+        id=1,  # in a real DB this will auto-increment
         created_at=datetime.utcnow(),
-        **patient.dict(),
+        **(patient.dict() if patient is not None else {}),
     )
-    return new_patient
 
 # -----------------------------------------------------
 # AI Risk Prediction Endpoint
