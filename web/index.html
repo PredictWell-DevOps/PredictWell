@@ -1,113 +1,91 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>PredictWell Health.ai</title>
-  <meta name="description" content="Preventive health AI for seniors and athletes—multi-signal wearables + weekly voice/gait check-ins and sport-specific workload insights.">
-  <link rel="stylesheet" href="./styles.css">
-  <link rel="icon" href="data:,">
+  <meta name="description" content="Preventive health AI for seniors and athletes — combining wearable data with weekly voice & gait check-ins and workload insights." />
 
+  <!-- Hero Background -->
   <style>
-    /* Page baseline */
-    html, body {
+    body {
+      background-image: url("/static/images/predictwell_background.png");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      min-height: 100vh;
       margin: 0;
-      padding: 0;
-      min-height: 100%;
+      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      color: white;
+      text-align: center;
+      position: relative;
     }
 
-    /* Hero with background image and dark overlay */
+    /* Dark overlay for better text contrast */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.55);
+      z-index: 0;
+    }
+
+    /* Hero content container */
     .hero {
       position: relative;
-      background: url("/static/images/predictwell_background.png") center/cover no-repeat fixed;
-      color: #fff;
-    }
-    .hero::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: rgba(0,0,0,0.45); /* overlay for contrast */
-    }
-
-    /* Your existing hero text block, above overlay */
-    .hero-text {
-      position: relative;   /* sit above overlay */
       z-index: 1;
-      text-align: center;
-      padding: 160px 20px 120px 20px;
-      text-shadow: 0 3px 8px rgba(0,0,0,0.5);
-      color: #fff;
+      padding-top: 15vh;
+      padding-bottom: 20vh;
+      max-width: 900px;
+      margin: auto;
     }
-    .hero-text h1 {
-      font-size: 3rem;
-      margin-bottom: 15px;
-    }
-    .hero-text p {
-      font-size: 1.3rem;
-      max-width: 700px;
-      margin: 0 auto 20px;
-      line-height: 1.5;
-    }
-    .hero-text .btn {
-      margin-top: 15px;
-      background-color: #00aaff;
-      color: #fff;
-      text-decoration: none;
-      padding: 12px 28px;
-      border-radius: 8px;
-      font-size: 1.1rem;
-      transition: background-color 0.3s ease;
-      display: inline-block;
-    }
-    .hero-text .btn:hover { background-color: #0088cc; }
 
-    @media (max-width: 768px) {
-      .hero-text h1 { font-size: 2.2rem; }
-      .hero-text p  { font-size: 1.1rem; }
+    h1 {
+      font-size: 2.6rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      text-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
+    }
+
+    p {
+      font-size: 1.2rem;
+      font-weight: 400;
+      line-height: 1.6;
+      text-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+      margin-bottom: 2rem;
+    }
+
+    .btn {
+      background-color: #007BFF;
+      border: none;
+      color: white;
+      padding: 0.9rem 1.8rem;
+      margin: 0.5rem;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .btn:hover {
+      background-color: #0056b3;
     }
   </style>
 </head>
 
 <body>
-  <nav class="nav">
-    <div class="wrap">
-      <a class="brand" href="/">PredictWell Health.ai</a>
-      <ul>
-        <li><a href="/eldercare.html">Eldercare</a></li>
-        <li><a href="/athletics.html">Athletics</a></li>
-        <li><a href="/pitching.html">Pitching</a></li>
-        <li><a href="/contact.html">Contact</a></li>
-        <li><a class="btn outline" href="https://predictwell-frontend.onrender.com">Status</a></li>
-      </ul>
-    </div>
-  </nav>
+  <div class="overlay"></div>
 
-  <!-- Hero with background + overlay -->
-  <header class="hero">
-    <div class="hero-text">
-      <div class="kicker">Prevent • Predict • Act</div>
-      <h1>AI that spots risk early and gives clear next steps</h1>
-      <p>PredictWell combines wearable signals with simple weekly voice & gait check-ins to catch fall and cognition risks for seniors—and workload & mechanics risks for athletes.</p>
-      <div>
-        <a class="btn" href="/eldercare.html">Explore Eldercare</a>
-        <a class="btn outline" href="/athletics.html">Explore Athletics</a>
-      </div>
-    </div>
-  </header>
+  <div class="hero">
+    <h1>AI that spots risk early and gives clear next steps</h1>
+    <p>
+      PredictWell combines wearable signals with weekly voice & gait check-ins 
+      to catch fall and cognition risks for seniors — and workload & mechanics 
+      risks for athletes.
+    </p>
 
-  <main class="container">
-    <div class="grid cols-3">
-      <div class="card"><h3>Multi-Signal Wearables</h3><p class="mono">Heart rate, sleep, activity, variability—blended into simple, actionable scores.</p></div>
-      <div class="card"><h3>Voice & Gait Check-ins</h3><p class="mono">60-second weekly prompts catch subtle changes before they become problems.</p></div>
-      <div class="card"><h3>Clear Micro-Actions</h3><p class="mono">Daily suggestions and progress tracking for families, coaches, and staff.</p></div>
-    </div>
-  </main>
-
-  <footer class="footer">
-    <div class="container">© <span id="y"></span> PredictWell Health.ai • <a href="/contact.html">Contact</a></div>
-  </footer>
-
-  <script>document.getElementById('y').textContent = new Date().getFullYear();</script>
+    <button class="btn" onclick="location.href='/eldercare'">Explore Eldercare</button>
+    <button class="btn" onclick="location.href='/athletics'">Explore Athletics</button>
+  </div>
 </body>
 </html>
-
