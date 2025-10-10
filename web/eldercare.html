@@ -7,32 +7,36 @@
   <meta name="description" content="PredictWell Eldercare Sentinel: preventive health signals, check-ins, and gentle daily actions." />
   <link rel="icon" href="data:," />
   <style>
-    body {
-      margin: 0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
-      background-image: url("/static/images/predictwell_background.png");
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      background-attachment: fixed;
-      min-height: 100vh;
-      color: #0f172a;
+    :root{
+      --ink:#0f172a; --muted:#64748b; --navy:#0b2545; --brand:#ff7a18;
+      --ok:#16a34a; --warn:#ea580c; --err:#dc2626; --card:#ffffff;
     }
-    .overlay { background: rgba(255,255,255,0.9); padding: 30px; min-height: 100vh; }
-
-    header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-    .brand h1 { margin: 0; font-size: 28px; color: #0b2545; }
-    .brand span { color: #ff7a18; }
-    nav a { text-decoration: none; color: #0b2545; font-weight: 700; padding: 8px 12px; border-radius: 8px; background: rgba(255,255,255,0.6); border: 1px solid rgba(2,6,23,0.1); }
-
-    .card { background: #fff; border-radius: 14px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 20px; }
-    label { display: block; margin-bottom: 6px; color: #475569; }
-    input, textarea { width: 100%; padding: 10px; margin-bottom: 12px; border-radius: 8px; border: 1px solid #cbd5e1; box-sizing: border-box; }
-    button { padding: 10px 16px; font-size: 15px; font-weight: 700; border-radius: 8px; border: none; cursor: pointer; }
-    .primary { background: #ff7a18; color: #fff; }
-    .ghost { background: #fff; color: #0b2545; border: 1px solid #94a3b8; }
-    pre { background: #0b1220; color: #e2e8f0; padding: 14px; border-radius: 8px; overflow-x: auto; }
-    footer { text-align: center; font-size: 12px; color: #475569; margin-top: 30px; }
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+      background-image:url("/static/images/predictwell_background.png");background-size:cover;background-position:center;background-repeat:no-repeat;background-attachment:fixed;min-height:100vh;color:var(--ink)}
+    .overlay{background:rgba(255,255,255,.92);padding:30px;min-height:100vh}
+    header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+    .brand h1{margin:0;font-size:28px;color:var(--navy)} .brand span{color:var(--brand)}
+    nav a{text-decoration:none;color:var(--navy);font-weight:700;padding:8px 12px;border-radius:8px;background:rgba(255,255,255,.6);border:1px solid rgba(2,6,23,.1)}
+    .card{background:var(--card);border-radius:14px;padding:20px;box-shadow:0 4px 12px rgba(0,0,0,.1);margin-bottom:20px}
+    label{display:block;margin-bottom:6px;color:#475569}
+    input,textarea{width:100%;padding:10px;margin-bottom:12px;border-radius:8px;border:1px solid #cbd5e1;box-sizing:border-box}
+    button{padding:10px 16px;font-size:15px;font-weight:700;border-radius:8px;border:none;cursor:pointer}
+    .primary{background:var(--brand);color:#fff}.ghost{background:#fff;color:var(--navy);border:1px solid #94a3b8}
+    /* Results layout */
+    .results-wrap{display:grid;gap:12px}
+    .section{border:1px solid #e2e8f0;border-radius:12px;padding:14px;background:#fff}
+    .section h4{margin:0 0 10px;color:var(--navy);font-size:14px;letter-spacing:.2px;text-transform:uppercase}
+    .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+    .kv{display:flex;justify-content:space-between;gap:12px;border:1px dashed #e5e7eb;border-radius:10px;padding:8px 10px}
+    .kv b{color:var(--muted);font-weight:600}
+    .pill{display:inline-flex;align-items:center;gap:6px;padding:4px 8px;border-radius:999px;font-weight:700;font-size:12px}
+    .pill.ok{background:#ecfdf5;color:var(--ok);border:1px solid #bbf7d0}
+    .pill.warn{background:#fff7ed;color:var(--warn);border:1px solid #fed7aa}
+    .pill.err{background:#fef2f2;color:var(--err);border:1px solid #fecaca}
+    .muted{color:var(--muted);font-size:12px}
+    details.debug{margin-top:8px}
+    pre{background:#0b1220;color:#e2e8f0;padding:14px;border-radius:8px;overflow:auto}
+    footer{text-align:center;font-size:12px;color:#475569;margin-top:30px}
   </style>
 </head>
 <body>
@@ -83,7 +87,15 @@
 
     <div class="card">
       <h3>Results</h3>
-      <pre id="output">{ Submit to see results... }</pre>
+      <!-- Pretty results -->
+      <div id="resultView" class="results-wrap">
+        <p class="muted">Submit to see a friendly summary.</p>
+      </div>
+      <!-- Expandable raw JSON for debugging -->
+      <details class="debug">
+        <summary>Raw JSON</summary>
+        <pre id="output">{ }</pre>
+      </details>
     </div>
 
     <footer>© <span id="year"></span> PredictWell Health.ai — Eldercare Sentinel</footer>
@@ -92,6 +104,66 @@
   <script>
     const BASE_API = 'https://predictwell-backend-ai.onrender.com';
 
+    // Renders the friendly, categorized view
+    function renderEldercareView(data){
+      const wrap = document.getElementById('resultView');
+      if(!data){ wrap.innerHTML = '<p class="muted">No data.</p>'; return; }
+
+      // helpers
+      const y = (v, s='') => (v===null || v===undefined || v==='') ? '—' : (s?`${v}${s}`:v);
+      const pill = (label, on) => `<span class="pill ${on?'warn':'ok'}">${label}: ${on?'Yes':'No'}</span>`;
+
+      const name = data.name ?? '—';
+      const age = (data.age ?? '') === '' ? '—' : data.age;
+      const ts  = data.timestamp ? new Date(data.timestamp).toLocaleString() : '—';
+
+      const m = data.metrics || {};
+      const f = data.flags   || {};
+
+      wrap.innerHTML = `
+        <div class="section">
+          <h4>Summary</h4>
+          <div class="grid">
+            <div class="kv"><b>Name</b><span>${name}</span></div>
+            <div class="kv"><b>Age</b><span>${age}</span></div>
+            <div class="kv"><b>Record ID</b><span>${y(data.id)}</span></div>
+            <div class="kv"><b>Submitted</b><span>${ts}</span></div>
+          </div>
+        </div>
+
+        <div class="section">
+          <h4>Vitals</h4>
+          <div class="grid">
+            <div class="kv"><b>SpO₂ (avg)</b><span>${y(m.spo2_avg, '%')}</span></div>
+            <div class="kv"><b>HRV (RMSSD)</b><span>${y(m.hrv_rmssd, ' ms')}</span></div>
+            <div class="kv"><b>Resting HR</b><span>${y(m.resting_hr, ' bpm')}</span></div>
+          </div>
+        </div>
+
+        <div class="section">
+          <h4>Sleep & Activity</h4>
+          <div class="grid">
+            <div class="kv"><b>Sleep</b><span>${y(m.sleep_hours, ' hrs')}</span></div>
+            <div class="kv"><b>Steps</b><span>${y(m.steps_daily, '')}</span></div>
+          </div>
+        </div>
+
+        <div class="section">
+          <h4>Flags</h4>
+          <div class="grid">
+            <div>${pill('Balance/Gait', !!f.gait_concern)}</div>
+            <div>${pill('Cognitive', !!f.cognitive_flags)}</div>
+          </div>
+        </div>
+
+        <div class="section">
+          <h4>Notes</h4>
+          <div class="kv" style="grid-column:1/-1"><b>Notes</b><span>${y(data.notes)}</span></div>
+        </div>
+      `;
+    }
+
+    // Raw JSON renderer (for debugging)
     const out = (obj) => {
       const el = document.getElementById('output');
       el.textContent = (typeof obj === 'string') ? obj : JSON.stringify(obj, null, 2);
@@ -99,13 +171,14 @@
 
     async function ping() {
       try {
-        const r = await fetch(`${BASE_API}/healthz`, { cache: 'no-store' });
-        if (!r.ok) throw new Error(`HTTP ${r.status}`);
-        out(await r.json());
-      } catch (e) { out({ error: String(e) }); }
+        const r = await fetch(`${BASE_API}/healthz`, { cache:'no-store' });
+        if(!r.ok) throw new Error(`HTTP ${r.status}`);
+        const d = await r.json();
+        out(d);
+      } catch (e) { out({ error:String(e) }); }
     }
 
-    // Shows a full, useful result immediately (server id + submitted payload)
+    // Show full, friendly summary immediately (server id + submitted payload)
     async function submitCheckin() {
       const payload = {
         name: document.getElementById('name').value,
@@ -126,22 +199,20 @@
       };
 
       try {
-        out('Submitting...');
+        renderEldercareView(payload); // optimistic preview
         const res = await fetch(`${BASE_API}/eldercare/checkin`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          method:'POST', headers:{'Content-Type':'application/json'},
           body: JSON.stringify(payload)
         });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const serverResp = await res.json(); // likely { id: N }
-
-        // Display full record for the user NOW
-        const display = {
-          id: (serverResp && typeof serverResp.id !== 'undefined') ? serverResp.id : null,
-          ...payload
-        };
+        if(!res.ok) throw new Error(`HTTP ${res.status}`);
+        const server = await res.json(); // { id: N } expected
+        const display = { id: server?.id ?? null, ...payload };
+        renderEldercareView(display);
         out(display);
-      } catch (err) { out({ error: String(err) }); }
+      } catch (err) {
+        renderEldercareView(null);
+        out({ error:String(err) });
+      }
     }
 
     document.getElementById('submitBtn').addEventListener('click', submitCheckin);
