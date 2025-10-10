@@ -20,7 +20,9 @@
     }
     .overlay{background:rgba(255,255,255,.94);padding:26px;min-height:100vh;max-width:1100px;margin:0 auto}
     header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
-    .brand h1{margin:0;font-size:26px;color:var(--navy)} .brand span{color:var(--brand)}
+    .brand h1{margin:0;font-size:26px;color:var(--navy)}
+    .brand a { text-decoration:none; color:var(--navy); }
+    .brand a span { color:var(--brand); }
     nav a{text-decoration:none;color:var(--navy);font-weight:700;padding:8px 12px;border-radius:8px;background:rgba(255,255,255,.7);border:1px solid rgba(2,6,23,.1)}
     .toolbar{display:flex;flex-wrap:wrap;gap:8px}
     .card{background:var(--card);border-radius:14px;padding:16px 16px;box-shadow:0 4px 12px rgba(0,0,0,.08);margin-bottom:14px;border:1px solid var(--line)}
@@ -85,10 +87,13 @@
   <div class="overlay">
     <header style="gap:12px;align-items:flex-start">
       <div class="brand">
-        <h1>PredictWell <span>Health.ai</span></h1>
+        <h1>
+          <a href="/" aria-label="Go to PredictWell landing page">PredictWell <span>Health.ai</span></a>
+        </h1>
         <div class="help">Eldercare Sentinel — comprehensive intake + weekly check-in</div>
       </div>
       <nav class="toolbar">
+        <a class="subtle" href="/">Home</a>
         <a class="subtle" href="/eldercare.html">Eldercare</a>
         <a class="subtle" href="/athletics.html">Athletics</a>
       </nav>
@@ -419,7 +424,6 @@
     }
 
     /* ---------- Probability (beta) ---------- */
-    // Maps features to a logistic probability (0..1). Weights are conservative defaults.
     function predictProbability(data) {
       const v = data.vitals || {};
       const m = data.metrics || {};
@@ -656,7 +660,7 @@
     }
 
     /* ---------- Draft ---------- */
-    function saveDraft(){ localStorage.setItem(DRAFT_KEY, JSON.stringify(collectPayload())); }
+    const saveDraft = ()=> localStorage.setItem(DRAFT_KEY, JSON.stringify(collectPayload()));
     function loadDraft(){
       const raw = localStorage.getItem(DRAFT_KEY); if(!raw) return;
       try{
@@ -676,18 +680,17 @@
         updateLiveRisk();
       }catch{}
     }
-    function clearDraft(){ localStorage.removeItem(DRAFT_KEY); }
+    const clearDraft = ()=> localStorage.removeItem(DRAFT_KEY);
 
-    /* ---------- Utilities ---------- */
-    function exportJSON(){ const dataStr="data:application/json;charset=utf-8,"+encodeURIComponent(JSON.stringify(collectPayload(),null,2)); const a=document.createElement('a'); a.href=dataStr; a.download=`eldercare_${Date.now()}.json`; a.click(); }
-    function printPage(){ window.print(); }
+    /* ---------- Utilities & wireup ---------- */
+    const exportJSON=()=>{ const dataStr="data:application/json;charset=utf-8,"+encodeURIComponent(JSON.stringify(collectPayload(),null,2)); const a=document.createElement('a'); a.href=dataStr; a.download=`eldercare_${Date.now()}.json`; a.click(); }
+    const printPage=()=>window.print();
 
-    /* ---------- Wireup ---------- */
-    document.addEventListener('input', (e)=>{ if(e.target.matches('input,select,textarea')) updateLiveRisk(); });
-    document.getElementById('submitBtnTop').addEventListener('click', submitCheckin);
-    document.getElementById('pingBtnTop').addEventListener('click', ping);
-    document.getElementById('submitBtnRisk').addEventListener('click', submitCheckin);
-    document.getElementById('pingBtnRisk').addEventListener('click', ping);
+    document.addEventListener('input', e=>{ if(e.target.matches('input,select,textarea')) updateLiveRisk(); });
+    el('submitBtnTop').addEventListener('click', submitCheckin);
+    el('pingBtnTop').addEventListener('click', ping);
+    el('submitBtnRisk').addEventListener('click', submitCheckin);
+    el('pingBtnRisk').addEventListener('click', ping);
     el('saveDraft').addEventListener('click', saveDraft);
     el('clearDraft').addEventListener('click', ()=>{ clearDraft(); location.reload(); });
     el('exportBtn').addEventListener('click', exportJSON);
@@ -695,7 +698,7 @@
     el('expandAll').addEventListener('click', ()=>document.querySelectorAll('details.section').forEach(d=>d.open=true));
     el('collapseAll').addEventListener('click', ()=>document.querySelectorAll('details.section').forEach(d=>d.open=false));
 
-    document.getElementById('year').textContent = new Date().getFullYear();
+    el('year').textContent = new Date().getFullYear();
     loadDraft();
     updateLiveRisk();
   </script>
