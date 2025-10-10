@@ -6,7 +6,6 @@
   <title>PredictWell Health.ai — Eldercare Sentinel</title>
   <meta name="description" content="PredictWell Eldercare Sentinel: preventive health signals, check-ins, and gentle daily actions." />
   <link rel="icon" href="data:," />
-
   <style>
     body {
       margin: 0;
@@ -106,6 +105,7 @@
       } catch (e) { out({ error: String(e) }); }
     }
 
+    // Shows a full, useful result immediately (server id + submitted payload)
     async function submitCheckin() {
       const payload = {
         name: document.getElementById('name').value,
@@ -133,17 +133,14 @@
           body: JSON.stringify(payload)
         });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const data = await res.json();
+        const serverResp = await res.json(); // likely { id: N }
 
-        // NEW: Fetch full record by id and show it
-        if (data && typeof data.id !== 'undefined') {
-          const full = await fetch(`${BASE_API}/eldercare/checkin/${data.id}`);
-          if (full.ok) {
-            out(await full.json());
-            return;
-          }
-        }
-        out(data);
+        // Display full record for the user NOW
+        const display = {
+          id: (serverResp && typeof serverResp.id !== 'undefined') ? serverResp.id : null,
+          ...payload
+        };
+        out(display);
       } catch (err) { out({ error: String(err) }); }
     }
 
