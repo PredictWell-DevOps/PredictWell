@@ -1,156 +1,221 @@
-<!-- ====== eldercare.html (Eldercare Risk + Check-in Page) ====== -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>PredictWell Eldercare — Daily Risk & Check-in</title>
-  <meta name="description" content="Daily risk screening and wellness check-ins for seniors." />
+  <title>PredictWell Health.ai — Eldercare Sentinel</title>
+  <meta name="description" content="PredictWell Eldercare Sentinel: preventive health signals, check-ins, and gentle daily actions." />
   <link rel="icon" href="data:," />
+
   <style>
-    :root { --fg:#0b1220; --muted:#5b6b88; --bg:#f7f9fc; --card:#ffffff; --accent:#16a34a; --accent2:#22c55e; }
-    * { box-sizing: border-box; }
-    body { margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji"; color:var(--fg); background:linear-gradient(180deg, var(--bg), #eef7ef); }
-    header { position: sticky; top:0; background:rgba(255,255,255,.8); backdrop-filter: blur(6px); border-bottom:1px solid #e6ecf5; }
-    .container { max-width:1100px; margin:0 auto; padding:20px; }
-    .brand { display:flex; align-items:center; gap:12px; font-weight:700; }
-    .brand img { width:40px; height:40px; border-radius:8px; }
-    .grid { display:grid; grid-template-columns: 1.2fr .8fr; gap:24px; margin-top:24px; }
-    .card { background:var(--card); border:1px solid #e6ecf5; border-radius:16px; padding:20px; box-shadow: 0 6px 24px rgba(20,120,40,.06); }
-    h1 { margin:12px 0 8px; font-size:28px; }
-    p.lead { color:var(--muted); margin:0; }
-    label { display:block; font-weight:600; margin-top:14px; }
-    input[type="number"], select { width:100%; padding:12px 14px; border-radius:12px; border:1px solid #d7deea; background:#fbfdff; outline:none; }
-    input:focus, select:focus { border-color: var(--accent2); box-shadow: 0 0 0 3px rgba(34,197,94,.15); }
-    .row { display:grid; grid-template-columns: 1fr 1fr; gap:12px; }
-    .btn { margin-top:18px; display:inline-flex; align-items:center; gap:10px; background:linear-gradient(135deg, var(--accent), var(--accent2)); color:white; border:none; padding:12px 16px; border-radius:12px; font-weight:700; cursor:pointer; }
-    .btn:disabled { opacity:.6; cursor:not-allowed; }
-    .result { font-size:15px; }
-    .badge { display:inline-block; padding:6px 10px; border-radius:999px; background:#ecfdf5; color:#065f46; font-weight:700; }
-    .footer { text-align:center; color:var(--muted); font-size:14px; padding:24px 0 36px; }
-    @media (max-width: 900px){ .grid { grid-template-columns: 1fr; } }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      background-image: url("/static/images/predictwell_background.png");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      min-height: 100vh;
+      color: #0f172a;
+    }
+
+    .overlay {
+      background: rgba(255, 255, 255, 0.9);
+      padding: 30px;
+      min-height: 100vh;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 28px;
+      color: #0b2545;
+    }
+
+    .brand span {
+      color: #ff7a18;
+    }
+
+    nav a {
+      text-decoration: none;
+      color: #0b2545;
+      font-weight: bold;
+      padding: 8px 12px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.6);
+      border: 1px solid rgba(2,6,23,0.1);
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 14px;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      color: #475569;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 12px;
+      border-radius: 8px;
+      border: 1px solid #cbd5e1;
+      box-sizing: border-box;
+    }
+
+    button {
+      padding: 10px 16px;
+      font-size: 15px;
+      font-weight: bold;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+    }
+
+    .primary {
+      background: #ff7a18;
+      color: white;
+    }
+
+    .ghost {
+      background: white;
+      color: #0b2545;
+      border: 1px solid #94a3b8;
+    }
+
+    pre {
+      background: #0b1220;
+      color: #e2e8f0;
+      padding: 14px;
+      border-radius: 8px;
+      overflow-x: auto;
+    }
+
+    footer {
+      text-align: center;
+      font-size: 12px;
+      color: #475569;
+      margin-top: 30px;
+    }
   </style>
 </head>
 <body>
-  <header>
-    <div class="container" style="display:flex; justify-content:space-between; align-items:center;">
+  <div class="overlay">
+    <header>
       <div class="brand">
-        <img src="/static/images/predictwell_background.png" alt="PredictWell" />
-        <div>PredictWell <span style="color:var(--accent)">Eldercare</span></div>
+        <h1>PredictWell <span>Health.ai</span></h1>
       </div>
-      <nav style="display:flex; gap:16px;">
-        <a href="/index.html">Home</a>
-        <span class="badge">Eldercare</span>
+      <nav>
+        <a href="/eldercare.html">Eldercare</a>
         <a href="/athletics.html">Athletics</a>
       </nav>
-    </div>
-  </header>
+    </header>
 
-  <main class="container">
-    <div class="grid">
-      <section class="card">
-        <h1>Daily Risk & Wellness Check-in</h1>
-        <p class="lead">Quick screening to flag fall or wellness risks and save a check-in.</p>
-
-        <form id="elderForm">
-          <div class="row">
-            <div><label>Age</label><input type="number" id="age" min="0" placeholder="e.g., 78" required /></div>
-            <div><label>Falls (last 6 months)</label><input type="number" id="falls" min="0" placeholder="e.g., 0" required /></div>
-          </div>
-
-          <div class="row">
-            <div><label>Dizziness (0–10)</label><input type="number" id="dizziness" min="0" max="10" placeholder="e.g., 2" required /></div>
-            <div><label>Steps (today)</label><input type="number" id="steps" min="0" placeholder="e.g., 4200" required /></div>
-          </div>
-
-          <div class="row">
-            <div><label>Sleep Hours (last night)</label><input type="number" step="0.1" id="sleep" min="0" placeholder="e.g., 6.5" required /></div>
-            <div><label>Hydration (cups)</label><input type="number" id="hydration" min="0" placeholder="e.g., 5" required /></div>
-          </div>
-
-          <label>Medication Changed Recently?</label>
-          <select id="meds_changed">
-            <option value="false">No</option>
-            <option value="true">Yes</option>
-          </select>
-
-          <button class="btn" id="riskBtn" type="submit">Compute Risk</button>
-          <button class="btn" id="checkinBtn" type="button" style="background:linear-gradient(135deg,#1f2937,#4b5563);">Save Check-in</button>
-        </form>
-      </section>
-
-      <aside class="card">
-        <h2 style="margin-top:0;">Today’s Result</h2>
-        <div id="result" class="result">Fill the form and click <b>Compute Risk</b>.</div>
-        <div id="saved" style="margin-top:12px; color:#065f46;"></div>
-      </aside>
+    <div class="card">
+      <h2>Eldercare Sentinel — Weekly Check-In</h2>
+      <label>Name</label>
+      <input id="name" type="text" placeholder="e.g., Pat Quinn" />
+      <label>Age</label>
+      <input id="age" type="number" min="30" max="120" placeholder="79" />
+      <label>Avg nightly SpO₂ (%)</label>
+      <input id="avg_spo2" type="number" step="0.1" min="50" max="100" placeholder="94.5" />
+      <label>HRV (RMSSD, ms)</label>
+      <input id="hrv_rmssd" type="number" step="1" placeholder="18" />
+      <label>Resting HR (bpm)</label>
+      <input id="resting_hr" type="number" step="1" placeholder="68" />
+      <label>Avg sleep (hours)</label>
+      <input id="sleep_hours" type="number" step="0.1" placeholder="6.7" />
+      <label>Avg daily steps</label>
+      <input id="steps_daily" type="number" step="1" placeholder="4200" />
+      <label>
+        <input id="gait_concern" type="checkbox" /> Any balance or dizziness issues?
+      </label>
+      <label>
+        <input id="cognitive_flags" type="checkbox" /> Any memory or attention concerns?
+      </label>
+      <label>Notes (optional)</label>
+      <textarea id="notes" placeholder="Any changes this week?"></textarea>
+      <div>
+        <button class="primary" id="submitBtn">Submit Check-In</button>
+        <button class="ghost" id="pingBtn">Ping Backend</button>
+      </div>
     </div>
 
-    <p class="footer">© PredictWell Health.ai • Eldercare division</p>
-  </main>
+    <div class="card">
+      <h3>Results</h3>
+      <pre id="output">{ Submit to see results... }</pre>
+    </div>
 
-<script>
-  // Point to your live Render backend:
-  const BASE_API = 'https://predictwell-backend-ai.onrender.com';
+    <footer>© <span id="year"></span> PredictWell Health.ai — Eldercare Sentinel</footer>
+  </div>
 
-  const form = document.getElementById('elderForm');
-  const resultEl = document.getElementById('result');
-  const savedEl = document.getElementById('saved');
-  const riskBtn = document.getElementById('riskBtn');
-  const checkinBtn = document.getElementById('checkinBtn');
+  <script>
+    const BASE_API = 'https://predictwell-backend-ai.onrender.com';
 
-  function readInputs() {
-    return {
-      age: Number(document.getElementById('age').value || 0),
-      falls_last_6mo: Number(document.getElementById('falls').value || 0),
-      dizziness: Number(document.getElementById('dizziness').value || 0),
-      steps: Number(document.getElementById('steps').value || 0),
-      sleep_hours: Number(document.getElementById('sleep').value || 0),
-      hydration_cups: Number(document.getElementById('hydration').value || 0),
-      meds_changed: document.getElementById('meds_changed').value === 'true'
+    const out = (obj) => {
+      const el = document.getElementById('output');
+      el.textContent = (typeof obj === 'string') ? obj : JSON.stringify(obj, null, 2);
     };
-  }
 
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    riskBtn.disabled = true; savedEl.textContent = ''; resultEl.textContent = 'Scoring...';
-    const elder = readInputs();
+    async function ping() {
+      try {
+        const r = await fetch(`${BASE_API}/healthz`);
+        const d = await r.json();
+        out(d);
+      } catch (e) {
+        out({ error: String(e) });
+      }
+    }
 
-    try {
-      const res = await fetch(`${BASE_API}/risk`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ pitch: null, elder })
-      });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const data = await res.json();
-      resultEl.innerHTML = `
-        <div style="font-size:32px; font-weight:800;">${(data.risk_score*100).toFixed(0)}%</div>
-        <div class="badge" style="margin:6px 0 14px;">${data.risk_band}</div>
-        <div><b>Factors:</b> ${data.factors && data.factors.length ? data.factors.join(', ') : 'None highlighted'}</div>
-      `;
-    } catch (err) {
-      resultEl.innerHTML = `<span style="color:#b91c1c;">Error calculating risk — ${err.message}. Check API URL.</span>`;
-    } finally { riskBtn.disabled = false; }
-  });
+    async function submitCheckin() {
+      const payload = {
+        name: document.getElementById('name').value,
+        age: Number(document.getElementById('age').value),
+        metrics: {
+          spo2_avg: Number(document.getElementById('avg_spo2').value),
+          hrv_rmssd: Number(document.getElementById('hrv_rmssd').value),
+          resting_hr: Number(document.getElementById('resting_hr').value),
+          sleep_hours: Number(document.getElementById('sleep_hours').value),
+          steps_daily: Number(document.getElementById('steps_daily').value)
+        },
+        flags: {
+          gait_concern: document.getElementById('gait_concern').checked,
+          cognitive_flags: document.getElementById('cognitive_flags').checked
+        },
+        notes: document.getElementById('notes').value,
+        timestamp: new Date().toISOString()
+      };
 
-  checkinBtn.addEventListener('click', async () => {
-    checkinBtn.disabled = true; savedEl.style.color = '#065f46'; savedEl.textContent = 'Saving...';
-    const payload = readInputs();
-    try {
-      const res = await fetch(`${BASE_API}/eldercare/checkin`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const data = await res.json();
-      savedEl.textContent = `Check-in saved (ID ${data.id}).`;
-    } catch (err) {
-      savedEl.style.color = '#b91c1c';
-      savedEl.textContent = `Error saving check-in — ${err.message}.`;
-    } finally { checkinBtn.disabled = false; }
-  });
-</script>
+      try {
+        out('Submitting...');
+        const res = await fetch(`${BASE_API}/eldercare/checkin`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        out(data);
+      } catch (err) {
+        out({ error: String(err) });
+      }
+    }
+
+    document.getElementById('submitBtn').addEventListener('click', submitCheckin);
+    document.getElementById('pingBtn').addEventListener('click', ping);
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
 </body>
 </html>
