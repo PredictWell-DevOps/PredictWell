@@ -13,9 +13,8 @@
       --muted:#9bb0d3;
       --panel:rgba(10,16,30,.72);
       --line:rgba(255,255,255,.08);
-      --chip:#1f2a44;
-      --primary:#1a2440;
       --btn-grad:linear-gradient(90deg,#34d399,#60a5fa);
+      --chip:#1f2a44;
     }
     *{box-sizing:border-box}
     html,body{height:100%}
@@ -23,17 +22,31 @@
       margin:0;
       font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
       color:var(--ink);
-      background: var(--bg) no-repeat center/cover fixed;
-      /* ⬇️ Update this path if your image name differs */
-      background-image:
-        radial-gradient(1200px 600px at 10% -10%, rgba(52,211,153,.10), transparent 60%),
-        radial-gradient(1200px 600px at 110% 110%, rgba(96,165,250,.10), transparent 60%),
-        url('/static/images/home-bg.jpg');
+      background:var(--bg);
+      overflow-x:hidden;
     }
+
+    /* Background image layer */
+    .bg{
+      position:fixed; inset:0; z-index:-2; overflow:hidden;
+    }
+    .bg::before{
+      content:"";
+      position:absolute; inset:0;
+      background:
+        url("/static/images/predictwell_background.png?v=2") center/cover no-repeat fixed;
+      filter:saturate(105%);
+      transform:scale(1.02);
+    }
+
+    /* Dark gradient overlay to keep text readable */
     .overlay{
-      min-height:100%;
-      backdrop-filter:saturate(120%) blur(0px);
-      background: linear-gradient(180deg, rgba(8,12,24,.65), rgba(8,12,24,.75));
+      position:fixed; inset:0; z-index:-1;
+      background:
+        radial-gradient(1200px 600px at 10% -10%, rgba(52,211,153,.12), transparent 60%),
+        radial-gradient(1200px 600px at 110% 110%, rgba(96,165,250,.12), transparent 60%),
+        linear-gradient(180deg, rgba(8,12,24,.60), rgba(8,12,24,.78));
+      backdrop-filter:saturate(120%);
     }
 
     .wrap{max-width:1180px;margin:0 auto;padding:26px}
@@ -41,7 +54,6 @@
     header{display:flex;align-items:center;justify-content:space-between;padding:6px 0 18px}
     .brand{display:flex;gap:10px;align-items:center;font-weight:700}
     .logo{width:28px;height:28px;border-radius:8px;background:var(--btn-grad);box-shadow:0 0 0 2px rgba(11,18,32,.7)}
-
     nav a{color:#a6c8ff;text-decoration:none;margin-left:16px;font-weight:600}
     nav a:hover{text-decoration:underline}
 
@@ -62,7 +74,8 @@
     @media (max-width: 960px){ .grid{grid-template-columns:1fr} }
 
     .panel-title{font-weight:700;margin:0 0 6px}
-    .muted{color:var(--muted)} .pill{display:inline-block;background:var(--chip);color:var(--muted);padding:6px 10px;border-radius:999px;font-size:12px}
+    .muted{color:var(--muted)}
+    .pill{display:inline-block;background:#1f2a44;color:var(--muted);padding:6px 10px;border-radius:999px;font-size:12px}
 
     .btn{display:inline-block;font-weight:700;text-decoration:none;padding:12px 16px;border-radius:12px}
     .btn-primary{background:var(--btn-grad);color:#0b1220;border:0}
@@ -75,7 +88,10 @@
   </style>
 </head>
 <body>
-<div class="overlay">
+  <!-- fixed background + overlay -->
+  <div class="bg"></div>
+  <div class="overlay"></div>
+
   <div class="wrap">
 
     <header>
@@ -90,7 +106,7 @@
     </header>
 
     <section class="hero">
-      <!-- Left: value + quick CTAs -->
+      <!-- Left: headline + quick starts -->
       <div class="card">
         <h1>Early insight. Safer care.</h1>
         <p class="lead">PredictWell turns quick check-ins into clear, actionable risk signals for older adults and athletes.</p>
@@ -101,47 +117,56 @@
         <div style="margin-top:12px"><span class="pill">Fast • Private • Evidence-informed</span></div>
       </div>
 
-      <!-- Right: four options (as requested) -->
+      <!-- Right: four explicit choices -->
       <div class="card">
         <h2>Choose your path</h2>
         <p class="muted" style="margin-top:4px">Two options for Eldercare and two for Athletics.</p>
+
         <div class="grid" style="margin-top:12px">
+          <!-- Eldercare — Doctors -->
           <div class="card">
             <div class="panel-title">Eldercare — Doctors</div>
             <p class="muted">Full assessment with rich results.</p>
             <div class="two">
               <a class="btn btn-primary" href="/eldercare.html">Open</a>
-              <a class="btn btn-dark" href="/eldercare.html">Go</a>
+              <a class="btn btn-dark"    href="/eldercare.html">Go</a>
             </div>
           </div>
+
+          <!-- Eldercare — Patients -->
           <div class="card">
             <div class="panel-title">Eldercare — Patients</div>
             <p class="muted">Simple form and easy-to-read results.</p>
             <div class="two">
               <a class="btn btn-primary" href="/eldercare-patient.html">Open</a>
-              <a class="btn btn-dark" href="/eldercare-patient.html">Go</a>
+              <a class="btn btn-dark"    href="/eldercare-patient.html">Go</a>
             </div>
           </div>
+
+          <!-- Athletics — Doctors -->
           <div class="card">
             <div class="panel-title">Athletics — Doctors</div>
             <p class="muted">Full workload & wellness risk view.</p>
             <div class="two">
               <a class="btn btn-primary" href="/athletics.html">Open</a>
-              <a class="btn btn-dark" href="/athletics.html">Go</a>
+              <a class="btn btn-dark"    href="/athletics.html">Go</a>
             </div>
           </div>
+
+          <!-- Athletics — Patients -->
           <div class="card">
             <div class="panel-title">Athletics — Patients</div>
             <p class="muted">Quick check-in with simple result.</p>
             <div class="two">
               <a class="btn btn-primary" href="/athletics-patient.html">Open</a>
-              <a class="btn btn-dark" href="/athletics-patient.html">Go</a>
+              <a class="btn btn-dark"    href="/athletics-patient.html">Go</a>
             </div>
           </div>
         </div>
       </div>
     </section>
 
+    <!-- Secondary section (kept concise) -->
     <section style="margin-top:18px">
       <div class="grid">
         <div class="card">
@@ -165,8 +190,9 @@
 
     <footer>© <span id="yr"></span> PredictWell Health — All rights reserved</footer>
   </div>
-</div>
 
-<script>document.getElementById('yr').textContent=new Date().getFullYear();</script>
+  <script>
+    document.getElementById('yr').textContent=new Date().getFullYear();
+  </script>
 </body>
 </html>
