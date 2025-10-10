@@ -1,141 +1,231 @@
-<!-- ====== athletics.html (Pitching Risk Page) ====== -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>PredictWell Athletics — Pitching Risk</title>
-  <meta name="description" content="Pitching workload risk scorer for athletes." />
+  <title>PredictWell Health.ai — Athletics (Pitching Risk)</title>
+  <meta name="description" content="PredictWell Athletics: pitcher workload, pain, and biomechanics flags combined into a risk score." />
   <link rel="icon" href="data:," />
+
   <style>
-    :root { --fg:#0b1220; --muted:#5b6b88; --bg:#f7f9fc; --card:#ffffff; --accent:#2563eb; --accent2:#0ea5e9; }
-    * { box-sizing: border-box; }
-    body { margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji"; color:var(--fg); background:linear-gradient(180deg, var(--bg), #eef3fb); }
-    header { position: sticky; top:0; background:rgba(255,255,255,.8); backdrop-filter: blur(6px); border-bottom:1px solid #e6ecf5; }
-    .container { max-width:1100px; margin:0 auto; padding:20px; }
-    .brand { display:flex; align-items:center; gap:12px; font-weight:700; }
-    .brand img { width:40px; height:40px; border-radius:8px; }
-    .grid { display:grid; grid-template-columns: 1.2fr .8fr; gap:24px; margin-top:24px; }
-    .card { background:var(--card); border:1px solid #e6ecf5; border-radius:16px; padding:20px; box-shadow: 0 6px 24px rgba(20,40,120,.06); }
-    h1 { margin:12px 0 8px; font-size:28px; }
-    p.lead { color:var(--muted); margin:0; }
-    label { display:block; font-weight:600; margin-top:14px; }
-    input[type="number"], select { width:100%; padding:12px 14px; border-radius:12px; border:1px solid #d7deea; background:#fbfdff; outline:none; }
-    input:focus, select:focus { border-color: var(--accent2); box-shadow: 0 0 0 3px rgba(14,165,233,.15); }
-    .row { display:grid; grid-template-columns: 1fr 1fr; gap:12px; }
-    .btn { margin-top:18px; display:inline-flex; align-items:center; gap:10px; background:linear-gradient(135deg, var(--accent), var(--accent2)); color:white; border:none; padding:12px 16px; border-radius:12px; font-weight:700; cursor:pointer; }
-    .btn:disabled { opacity:.6; cursor:not-allowed; }
-    .result { font-size:15px; }
-    .badge { display:inline-block; padding:6px 10px; border-radius:999px; background:#eef2ff; color:#1e3a8a; font-weight:700; }
-    .footer { text-align:center; color:var(--muted); font-size:14px; padding:24px 0 36px; }
-    @media (max-width: 900px){ .grid { grid-template-columns: 1fr; } }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      background-image: url("/static/images/predictwell_background.png");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      min-height: 100vh;
+      color: #0f172a;
+    }
+
+    .overlay {
+      background: rgba(255, 255, 255, 0.9);
+      padding: 30px;
+      min-height: 100vh;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 28px;
+      color: #0b2545;
+    }
+
+    .brand span {
+      color: #ff7a18;
+    }
+
+    nav a {
+      text-decoration: none;
+      color: #0b2545;
+      font-weight: bold;
+      padding: 8px 12px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.6);
+      border: 1px solid rgba(2,6,23,0.1);
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 14px;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      color: #475569;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 12px;
+      border-radius: 8px;
+      border: 1px solid #cbd5e1;
+      box-sizing: border-box;
+    }
+
+    button {
+      padding: 10px 16px;
+      font-size: 15px;
+      font-weight: bold;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+    }
+
+    .primary {
+      background: #ff7a18;
+      color: white;
+    }
+
+    .ghost {
+      background: white;
+      color: #0b2545;
+      border: 1px solid #94a3b8;
+    }
+
+    pre {
+      background: #0b1220;
+      color: #e2e8f0;
+      padding: 14px;
+      border-radius: 8px;
+      overflow-x: auto;
+    }
+
+    footer {
+      text-align: center;
+      font-size: 12px;
+      color: #475569;
+      margin-top: 30px;
+    }
   </style>
 </head>
 <body>
-  <header>
-    <div class="container" style="display:flex; justify-content:space-between; align-items:center;">
+  <div class="overlay">
+    <header>
       <div class="brand">
-        <img src="/static/images/predictwell_background.png" alt="PredictWell" />
-        <div>PredictWell <span style="color:var(--accent)">Athletics</span></div>
+        <h1>PredictWell <span>Health.ai</span></h1>
       </div>
-      <nav style="display:flex; gap:16px;">
-        <a href="/index.html">Home</a>
+      <nav>
         <a href="/eldercare.html">Eldercare</a>
-        <span class="badge">Pitching Risk</span>
+        <a href="/athletics.html">Athletics</a>
       </nav>
-    </div>
-  </header>
+    </header>
 
-  <main class="container">
-    <div class="grid">
-      <section class="card">
-        <h1>Pitching Risk Score</h1>
-        <p class="lead">Enter today’s workload & health to get a risk band and key drivers.</p>
+    <div class="card">
+      <h2>Pitching Risk — Daily/Weekly Input</h2>
 
-        <form id="pitchForm">
-          <div class="row">
-            <div>
-              <label>Pitch Count (today)</label>
-              <input type="number" id="pitch_count" min="0" placeholder="e.g., 72" required />
-            </div>
-            <div>
-              <label>Days Rest</label>
-              <input type="number" id="days_rest" min="0" placeholder="e.g., 1" required />
-            </div>
-          </div>
+      <label>Pitcher Name</label>
+      <input id="p_name" type="text" placeholder="e.g., A. Miller" />
 
-          <div class="row">
-            <div>
-              <label>Pain Level (0–10)</label>
-              <input type="number" id="pain_level" min="0" max="10" placeholder="e.g., 3" required />
-            </div>
-            <div>
-              <label>Session Intensity (1–10)</label>
-              <input type="number" id="session_intensity" min="1" max="10" placeholder="e.g., 8" required />
-            </div>
-          </div>
+      <label>Age</label>
+      <input id="p_age" type="number" min="8" max="60" placeholder="17" />
 
-          <label>Previous Injury?</label>
-          <select id="previous_injury">
-            <option value="false">No</option>
-            <option value="true">Yes</option>
-          </select>
+      <label>Pitch Count (last 7 days)</label>
+      <input id="pitch_count_7d" type="number" min="0" step="1" placeholder="92" />
 
-          <button class="btn" id="scoreBtn" type="submit">Compute Risk</button>
-        </form>
-      </section>
+      <label>Innings (last 7 days)</label>
+      <input id="innings_7d" type="number" min="0" step="0.1" placeholder="6.2" />
 
-      <aside class="card">
-        <h2 style="margin-top:0;">Your Result</h2>
-        <div id="result" class="result">Fill the form and click <b>Compute Risk</b>.</div>
-      </aside>
+      <label>Rest days since last outing</label>
+      <input id="rest_days" type="number" min="0" max="10" step="1" placeholder="2" />
+
+      <label>Avg Velocity (mph)</label>
+      <input id="velo_avg" type="number" step="0.1" min="40" max="110" placeholder="84.7" />
+
+      <label>Pain today (0–10)</label>
+      <input id="pain_level" type="number" step="1" min="0" max="10" placeholder="2" />
+
+      <label>Throws today</label>
+      <input id="workload_today" type="number" step="1" min="0" placeholder="35" />
+
+      <label>
+        <input id="elbow_history" type="checkbox" /> Prior elbow or shoulder injury/surgery?
+      </label>
+
+      <label>Mechanics flags (optional)</label>
+      <textarea id="mech_flags" placeholder="e.g., late arm, inconsistent stride, drag line anomalies..."></textarea>
+
+      <div>
+        <button class="primary" id="riskBtn">Compute Risk</button>
+        <button class="ghost" id="pingBtn">Ping Backend</button>
+      </div>
     </div>
 
-    <p class="footer">© PredictWell Health.ai • Athletes division</p>
-  </main>
+    <div class="card">
+      <h3>Risk Score & Recommendations</h3>
+      <pre id="output">{ Submit to see results... }</pre>
+    </div>
 
-<script>
-  const BASE_API = 'https://predictwell-backend-ai.onrender.com';
+    <footer>© <span id="year"></span> PredictWell Health.ai — Athletics</footer>
+  </div>
 
-  const form = document.getElementById('pitchForm');
-  const resultEl = document.getElementById('result');
-  const scoreBtn = document.getElementById('scoreBtn');
+  <script>
+    const BASE_API = 'https://predictwell-backend-ai.onrender.com';
 
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    scoreBtn.disabled = true;
-    resultEl.textContent = 'Scoring...';
-
-    const payload = {
-      pitch: {
-        pitch_count: Number(document.getElementById('pitch_count').value || 0),
-        days_rest: Number(document.getElementById('days_rest').value || 0),
-        pain_level: Number(document.getElementById('pain_level').value || 0),
-        session_intensity: Number(document.getElementById('session_intensity').value || 1),
-        previous_injury: document.getElementById('previous_injury').value === 'true'
-      },
-      elder: null
+    const out = (obj) => {
+      const el = document.getElementById('output');
+      el.textContent = (typeof obj === 'string') ? obj : JSON.stringify(obj, null, 2);
     };
 
-    try {
-      const res = await fetch(`${BASE_API}/risk`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const data = await res.json();
-      resultEl.innerHTML = `
-        <div style="font-size:32px; font-weight:800;">${(data.risk_score*100).toFixed(0)}%</div>
-        <div class="badge" style="margin:6px 0 14px;">${data.risk_band}</div>
-        <div><b>Factors:</b> ${data.factors && data.factors.length ? data.factors.join(', ') : 'None highlighted'}</div>
-      `;
-    } catch (err) {
-      resultEl.innerHTML = `<span style="color:#b91c1c;">Error calculating risk — ${err.message}. Check API URL.</span>`;
-    } finally {
-      scoreBtn.disabled = false;
+    async function ping() {
+      try {
+        const r = await fetch(`${BASE_API}/healthz`);
+        const d = await r.json();
+        out(d);
+      } catch (e) {
+        out({ error: String(e) });
+      }
     }
-  });
-</script>
+
+    async function computeRisk() {
+      const payload = {
+        name: document.getElementById('p_name').value,
+        age: Number(document.getElementById('p_age').value),
+        workload: {
+          pitch_count_7d: Number(document.getElementById('pitch_count_7d').value),
+          innings_7d: Number(document.getElementById('innings_7d').value),
+          rest_days: Number(document.getElementById('rest_days').value),
+          velo_avg: Number(document.getElementById('velo_avg').value),
+          pain_level: Number(document.getElementById('pain_level').value),
+          workload_today: Number(document.getElementById('workload_today').value)
+        },
+        flags: {
+          elbow_history: document.getElementById('elbow_history').checked,
+          mechanics_notes: document.getElementById('mech_flags').value
+        },
+        timestamp: new Date().toISOString()
+      };
+
+      try {
+        out('Computing risk...');
+        const res = await fetch(`${BASE_API}/risk`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        out(data);
+      } catch (err) {
+        out({ error: String(err) });
+      }
+    }
+
+    document.getElementById('riskBtn').addEventListener('click', computeRisk);
+    document.getElementById('pingBtn').addEventListener('click', ping);
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
 </body>
 </html>
