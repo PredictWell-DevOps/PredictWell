@@ -6,7 +6,6 @@
   <title>PredictWell Health.ai — Athletics (Pitching Risk)</title>
   <meta name="description" content="PredictWell Athletics: pitcher workload, pain, velocity, rest, and mechanics flags combined into a risk score." />
   <link rel="icon" href="data:," />
-
   <style>
     body {
       margin: 0;
@@ -110,6 +109,7 @@
       } catch (e) { out({ error: String(e) }); }
     }
 
+    // Shows a full, useful result immediately (server id + submitted payload)
     async function computeRisk() {
       const payload = {
         name: document.getElementById('p_name').value,
@@ -137,17 +137,14 @@
           body: JSON.stringify(payload)
         });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const data = await res.json();
+        const serverResp = await res.json(); // likely { id: N }
 
-        // NEW: If POST returns {id}, fetch full record for display
-        if (data && typeof data.id !== 'undefined') {
-          const full = await fetch(`${BASE_API}/risk/${data.id}`);
-          if (full.ok) {
-            out(await full.json());
-            return;
-          }
-        }
-        out(data);
+        // Display full record for the user NOW
+        const display = {
+          id: (serverResp && typeof serverResp.id !== 'undefined') ? serverResp.id : null,
+          ...payload
+        };
+        out(display);
       } catch (err) { out({ error: String(err) }); }
     }
 
