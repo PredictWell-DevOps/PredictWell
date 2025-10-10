@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>PredictWell — Patient Portal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#0b1220;--panel:#121a2b;--ink:#e9eefc;--muted:#9bb0d3;--accent:#6ee7b7;--accent2:#93c5fd;--chip:#1f2a44}
+    *{box-sizing:border-box} body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+    .wrap{max-width:1100px;margin:40px auto;padding:0 20px}
+    .header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px}
+    .brand{font-weight:700;font-size:22px;letter-spacing:.3px}
+    .card{background:var(--panel);border:1px solid #213052;border-radius:16px;padding:20px;margin-bottom:16px}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:16px} @media(max-width:900px){.row{grid-template-columns:1fr}}
+    .btn{appearance:none;border:1px solid #2a3a5e;background:#1a2440;color:#fff;border-radius:12px;padding:14px 16px;font-weight:600;cursor:pointer}
+    .btn:hover{background:#223052}
+    .btn-primary{background:linear-gradient(90deg,#34d399,#60a5fa);border:0;color:#0b1220}
+    .muted{color:var(--muted);font-size:14px}
+    .list{display:grid;gap:10px}
+    .pill{display:inline-block;background:var(--chip);padding:6px 10px;border-radius:999px;font-size:12px;color:var(--muted)}
+    pre{background:#0b1426;border:1px solid #223052;border-radius:12px;padding:14px;overflow:auto}
+    a {color:#a6c8ff;text-decoration:none} a:hover{text-decoration:underline}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="header">
+      <div class="brand">PredictWell — Patient Portal</div>
+      <div><a href="/index.html" class="pill">← Back to landing</a></div>
+    </div>
+
+    <div class="card">
+      <h2>Start a new check-in</h2>
+      <p class="muted">Choose the flow that fits you. You can do both if relevant.</p>
+      <div class="row" style="margin-top:10px">
+        <div class="card">
+          <h3>Eldercare Sentinel</h3>
+          <p class="muted">General wellness, vitals, gait/cognitive flags, and a friendly summary.</p>
+          <button class="btn btn-primary" onclick="location.href='/eldercare.html'">Open Eldercare Check-In</button>
+        </div>
+        <div class="card">
+          <h3>Athletics Sentinel</h3>
+          <p class="muted">Workload, soreness, sleep, and a short-term risk estimate.</p>
+          <button class="btn btn-primary" onclick="location.href='/athletics.html'">Open Athletics Check-In</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>My recent submissions</h2>
+      <p class="muted">Saved locally on this device. You can export and share with your doctor.</p>
+      <div id="recent"></div>
+    </div>
+
+    <div class="card">
+      <h2>Export last result for your doctor</h2>
+      <p class="muted">Copies the most recent submission JSON to your clipboard so your doctor can paste it into the Doctor Portal.</p>
+      <div class="row">
+        <button class="btn" onclick="copyLatest('eldercare')">Copy Eldercare JSON</button>
+        <button class="btn" onclick="copyLatest('athletics')">Copy Athletics JSON</button>
+      </div>
+      <p id="copied" class="muted" style="margin-top:10px"></p>
+    </div>
+  </div>
+
+<script>
+function fmt(ts){try{return new Date(ts).toLocaleString()}catch{ return '—' }}
+function renderRecent(){
+  const el=document.getElementById('recent');
+  const eLast = JSON.parse(localStorage.getItem('eldercare:last')||'null');
+  const aLast = JSON.parse(localStorage.getItem('athletics:last')||'null');
+  if(!eLast && !aLast){ el.innerHTML = '<p class="muted">No submissions yet on this device.</p>'; return; }
+  let html = '<div class="list">';
+  if(eLast){
+    html += `<div class="card"><strong>Eldercare</strong><div class="muted">Saved: ${fmt(eLast.timestamp||Date.now())}</div><pre>${safe(JSON.stringify(eLast, null, 2))}</pre></div>`;
+  }
+  if(aLast){
+    html += `<div class="card"><strong>Athletics</strong><div class="muted">Saved: ${fmt(aLast.timestamp||Date.now())}</div><pre>${safe(JSON.stringify(aLast, null, 2))}</pre></div>`;
+  }
+  html += '</div>';
+  el.innerHTML = html;
+}
+function safe(s){return s.replace(/[<>&]/g, m=>({"<":"&lt;",">":"&gt;","&":"&amp;"}[m]))}
+async function copyLatest(kind){
+  const obj = JSON.parse(localStorage.getItem(kind + ':last')||'null');
+  const p = document.getElementById('copied');
+  if(!obj){ p.textContent = 'Nothing to copy yet.'; return; }
+  await navigator.clipboard.writeText(JSON.stringify(obj));
+  p.textContent = `Copied latest ${kind} JSON to clipboard.`;
+}
+renderRecent();
+</script>
+</body>
+</html>
