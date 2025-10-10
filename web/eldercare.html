@@ -37,6 +37,14 @@
     details.debug{margin-top:8px}
     pre{background:#0b1220;color:#e2e8f0;padding:14px;border-radius:8px;overflow:auto}
     footer{text-align:center;font-size:12px;color:#475569;margin-top:30px}
+    /* Risk bar */
+    .risk{display:grid;gap:10px}
+    .riskband{position:relative;height:12px;border-radius:999px;overflow:hidden;
+      background:linear-gradient(90deg,#22c55e 0%,#f59e0b 50%,#ef4444 100%);}
+    .riskpointer{position:absolute;top:-6px;width:0;height:0;
+      border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:12px solid #0f172a}
+    .risklegend{display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}
+    .actions li{margin:4px 0}
   </style>
 </head>
 <body>
@@ -87,11 +95,11 @@
 
     <div class="card">
       <h3>Results</h3>
-      <!-- Pretty results -->
+      <!-- Friendly results -->
       <div id="resultView" class="results-wrap">
         <p class="muted">Submit to see a friendly summary.</p>
       </div>
-      <!-- Expandable raw JSON for debugging -->
+      <!-- Raw JSON for debugging -->
       <details class="debug">
         <summary>Raw JSON</summary>
         <pre id="output">{ }</pre>
@@ -104,12 +112,48 @@
   <script>
     const BASE_API = 'https://predictwell-backend-ai.onrender.com';
 
-    // Renders the friendly, categorized view
+    // --- Risk / Actions heuristics (simple & transparent) ---
+    function eldercareRiskScore(d){
+      const m = d.metrics || {};
+      const f = d.flags || {};
+      let score = 0;
+
+      // Weighting (0–100)
+      if(m.spo2_avg && m.spo2_avg < 92) score += (92 - m.spo2_avg) * 3;      // up to ~60
+      if(m.hrv_rmssd && m.hrv_rmssd < 20) score += (20 - m.hrv_rmssd) * 1.5; // up to ~30
+      if(m.resting_hr && m.resting_hr > 80) score += (m.resting_hr - 80) * 1;
+      if(m.sleep_hours && m.sleep_hours < 6) score += (6 - m.sleep_hours) * 4;
+      if(m.steps_daily && m.steps_daily < 3000) score += ((3000 - m.steps_daily)/1000) * 4;
+      if(f.gait_concern) score += 12;
+      if(f.cognitive_flags) score += 12;
+
+      score = Math.max(0, Math.min(100, Math.round(score)));
+      let band = 'Low', color='ok';
+      if(score >= 66){ band='High'; color='err'; }
+      else if(score >= 33){ band='Moderate'; color='warn'; }
+      return { score, band, color };
+    }
+
+    function eldercareActions(d){
+      const m = d.metrics || {};
+      const f = d.flags || {};
+      const acts = [];
+      if(m.spo2_avg && m.spo2_avg < 92) acts.push('Check SpO₂ device fit; consider humidifier and deep-breathing twice daily.');
+      if(m.hrv_rmssd && m.hrv_rmssd < 20) acts.push('Add 5–10 min evening relaxation (box breathing, light stretching).');
+      if(m.resting_hr && m.resting_hr > 80) acts.push('Hydrate and take a light 10-min walk; avoid late caffeine.');
+      if(m.sleep_hours && m.sleep_hours < 6.5) acts.push('Aim for 15–30 more minutes of sleep tonight.');
+      if(m.steps_daily && m.steps_daily < 3500) acts.push('Add a 10-minute stroll after lunch.');
+      if(f.gait_concern) acts.push('Perform 2× daily balance support (wall stand, heel-to-toe). Consider PT screen.');
+      if(f.cognitive_flags) acts.push('Schedule a short cognitive check-in (orientation, recall).');
+      if(!acts.length) acts.push('Keep current routine. Great job!');
+      return acts.slice(0,5);
+    }
+
+    // --- View renderer ---
     function renderEldercareView(data){
       const wrap = document.getElementById('resultView');
       if(!data){ wrap.innerHTML = '<p class="muted">No data.</p>'; return; }
 
-      // helpers
       const y = (v, s='') => (v===null || v===undefined || v==='') ? '—' : (s?`${v}${s}`:v);
       const pill = (label, on) => `<span class="pill ${on?'warn':'ok'}">${label}: ${on?'Yes':'No'}</span>`;
 
@@ -119,8 +163,21 @@
 
       const m = data.metrics || {};
       const f = data.flags   || {};
+      const risk = eldercareRiskScore(data);
+      const actions = eldercareActions(data);
 
       wrap.innerHTML = `
+        <div class="section">
+          <h4>Risk Summary</h4>
+          <div class="risk">
+            <div class="riskband">
+              <div class="riskpointer" style="left: calc(${risk.score}% - 7px)"></div>
+            </div>
+            <div class="risklegend"><span>Low</span><span>Moderate</span><span>High</span></div>
+            <div class="kv" style="margin-top:6px"><b>Score</b><span><span class="pill ${risk.color}">${risk.band}</span> &nbsp; ${risk.score}/100</span></div>
+          </div>
+        </div>
+
         <div class="section">
           <h4>Summary</h4>
           <div class="grid">
@@ -144,7 +201,7 @@
           <h4>Sleep & Activity</h4>
           <div class="grid">
             <div class="kv"><b>Sleep</b><span>${y(m.sleep_hours, ' hrs')}</span></div>
-            <div class="kv"><b>Steps</b><span>${y(m.steps_daily, '')}</span></div>
+            <div class="kv"><b>Steps</b><span>${y(m.steps_daily)}</span></div>
           </div>
         </div>
 
@@ -157,13 +214,20 @@
         </div>
 
         <div class="section">
+          <h4>Next Actions</h4>
+          <ul class="actions">
+            ${actions.map(a=>`<li>${a}</li>`).join('')}
+          </ul>
+        </div>
+
+        <div class="section">
           <h4>Notes</h4>
           <div class="kv" style="grid-column:1/-1"><b>Notes</b><span>${y(data.notes)}</span></div>
         </div>
       `;
     }
 
-    // Raw JSON renderer (for debugging)
+    // --- Raw JSON (debug) ---
     const out = (obj) => {
       const el = document.getElementById('output');
       el.textContent = (typeof obj === 'string') ? obj : JSON.stringify(obj, null, 2);
@@ -178,7 +242,7 @@
       } catch (e) { out({ error:String(e) }); }
     }
 
-    // Show full, friendly summary immediately (server id + submitted payload)
+    // Submit and show friendly summary immediately
     async function submitCheckin() {
       const payload = {
         name: document.getElementById('name').value,
@@ -205,7 +269,7 @@
           body: JSON.stringify(payload)
         });
         if(!res.ok) throw new Error(`HTTP ${res.status}`);
-        const server = await res.json(); // { id: N } expected
+        const server = await res.json(); // { id } expected
         const display = { id: server?.id ?? null, ...payload };
         renderEldercareView(display);
         out(display);
