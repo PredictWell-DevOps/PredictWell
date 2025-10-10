@@ -4,27 +4,35 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>PredictWell Health.ai — Eldercare Sentinel</title>
-  <meta name="description" content="PredictWell Eldercare Sentinel: preventive health signals, check-ins, and gentle daily actions." />
+  <meta name="description" content="PredictWell Eldercare Sentinel: comprehensive intake + weekly check-in for proactive senior care." />
   <link rel="icon" href="data:," />
   <style>
     :root{
       --ink:#0f172a; --muted:#64748b; --navy:#0b2545; --brand:#ff7a18;
       --ok:#16a34a; --warn:#ea580c; --err:#dc2626; --card:#ffffff;
+      --line:#e2e8f0;
     }
     body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
       background-image:url("/static/images/predictwell_background.png");background-size:cover;background-position:center;background-repeat:no-repeat;background-attachment:fixed;min-height:100vh;color:var(--ink)}
-    .overlay{background:rgba(255,255,255,.92);padding:30px;min-height:100vh}
-    header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
-    .brand h1{margin:0;font-size:28px;color:var(--navy)} .brand span{color:var(--brand)}
-    nav a{text-decoration:none;color:var(--navy);font-weight:700;padding:8px 12px;border-radius:8px;background:rgba(255,255,255,.6);border:1px solid rgba(2,6,23,.1)}
-    .card{background:var(--card);border-radius:14px;padding:20px;box-shadow:0 4px 12px rgba(0,0,0,.1);margin-bottom:20px}
-    label{display:block;margin-bottom:6px;color:#475569}
-    input,textarea{width:100%;padding:10px;margin-bottom:12px;border-radius:8px;border:1px solid #cbd5e1;box-sizing:border-box}
+    .overlay{background:rgba(255,255,255,.94);padding:26px;min-height:100vh;max-width:1100px;margin:0 auto}
+    header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+    .brand h1{margin:0;font-size:26px;color:var(--navy)} .brand span{color:var(--brand)}
+    nav a{text-decoration:none;color:var(--navy);font-weight:700;padding:8px 12px;border-radius:8px;background:rgba(255,255,255,.7);border:1px solid rgba(2,6,23,.1)}
+    .card{background:var(--card);border-radius:14px;padding:18px 18px;box-shadow:0 4px 12px rgba(0,0,0,.08);margin-bottom:16px;border:1px solid var(--line)}
+    .row{display:grid;grid-template-columns:repeat(12,1fr);gap:10px}
+    .col-12{grid-column:span 12} .col-6{grid-column:span 6} .col-4{grid-column:span 4} .col-3{grid-column:span 3}
+    label{display:block;margin-bottom:6px;color:#475569;font-size:13px}
+    input,select,textarea{width:100%;padding:9px;border-radius:8px;border:1px solid #cbd5e1;background:#fff;box-sizing:border-box;font-size:14px}
+    textarea{min-height:70px}
+    h2{margin:4px 0 12px;font-size:20px;color:var(--navy)}
+    h3{margin:2px 0 10px;font-size:16px;color:var(--navy)}
+    .tiny{font-size:12px;color:var(--muted)}
+    .split{display:grid;grid-template-columns:1fr auto;align-items:center}
     button{padding:10px 16px;font-size:15px;font-weight:700;border-radius:8px;border:none;cursor:pointer}
     .primary{background:var(--brand);color:#fff}.ghost{background:#fff;color:var(--navy);border:1px solid #94a3b8}
     /* Results layout */
     .results-wrap{display:grid;gap:12px}
-    .section{border:1px solid #e2e8f0;border-radius:12px;padding:14px;background:#fff}
+    .section{border:1px solid var(--line);border-radius:12px;padding:14px;background:#fff}
     .section h4{margin:0 0 10px;color:var(--navy);font-size:14px;letter-spacing:.2px;text-transform:uppercase}
     .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
     .kv{display:flex;justify-content:space-between;gap:12px;border:1px dashed #e5e7eb;border-radius:10px;padding:8px 10px}
@@ -36,20 +44,20 @@
     .muted{color:var(--muted);font-size:12px}
     details.debug{margin-top:8px}
     pre{background:#0b1220;color:#e2e8f0;padding:14px;border-radius:8px;overflow:auto}
-    footer{text-align:center;font-size:12px;color:#475569;margin-top:30px}
+    footer{text-align:center;font-size:12px;color:#475569;margin-top:20px}
     /* Risk bar */
     .risk{display:grid;gap:10px}
     .riskband{position:relative;height:12px;border-radius:999px;overflow:hidden;
       background:linear-gradient(90deg,#22c55e 0%,#f59e0b 50%,#ef4444 100%);}
-    .riskpointer{position:absolute;top:-6px;width:0;height:0;
-      border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:12px solid #0f172a}
+    .riskpointer{position:absolute;top:-6px;width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:12px solid #0f172a}
     .risklegend{display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}
     .actions li{margin:4px 0}
+    @media (max-width:840px){.grid{grid-template-columns:1fr}.row{grid-template-columns:repeat(6,1fr)}.col-6{grid-column:span 6}.col-4{grid-column:span 6}.col-3{grid-column:span 3}}
   </style>
 </head>
 <body>
   <div class="overlay">
-    <header>
+    <header class="split">
       <div class="brand"><h1>PredictWell <span>Health.ai</span></h1></div>
       <nav>
         <a href="/eldercare.html">Eldercare</a>
@@ -57,49 +65,198 @@
       </nav>
     </header>
 
+    <!-- Demographics & Identifiers -->
     <div class="card">
-      <h2>Eldercare Sentinel — Weekly Check-In</h2>
-
-      <label>Name</label>
-      <input id="name" type="text" placeholder="e.g., Pat Quinn" />
-
-      <label>Age</label>
-      <input id="age" type="number" min="30" max="120" placeholder="79" />
-
-      <label>Avg nightly SpO₂ (%)</label>
-      <input id="avg_spo2" type="number" step="0.1" min="50" max="100" placeholder="94.5" />
-
-      <label>HRV (RMSSD, ms)</label>
-      <input id="hrv_rmssd" type="number" step="1" placeholder="18" />
-
-      <label>Resting HR (bpm)</label>
-      <input id="resting_hr" type="number" step="1" placeholder="70" />
-
-      <label>Avg sleep (hours)</label>
-      <input id="sleep_hours" type="number" step="0.1" placeholder="7" />
-
-      <label>Avg daily steps</label>
-      <input id="steps_daily" type="number" step="1" placeholder="3000" />
-
-      <label><input id="gait_concern" type="checkbox" /> Any balance or dizziness issues?</label>
-      <label><input id="cognitive_flags" type="checkbox" /> Any memory or attention concerns?</label>
-
-      <label>Notes (optional)</label>
-      <textarea id="notes" placeholder="Any changes this week?"></textarea>
-
-      <div>
-        <button class="primary" id="submitBtn">Submit Check-In</button>
-        <button class="ghost" id="pingBtn">Ping Backend</button>
+      <h2>Demographics & Identifiers</h2>
+      <div class="row">
+        <div class="col-6">
+          <label>Full Name</label>
+          <input id="name" placeholder="e.g., Pat Quinn" />
+        </div>
+        <div class="col-3">
+          <label>Patient ID</label>
+          <input id="patient_id" placeholder="ID-12345" />
+        </div>
+        <div class="col-3">
+          <label>Age</label>
+          <input id="age" type="number" min="30" max="120" placeholder="79" />
+        </div>
+        <div class="col-3">
+          <label>Sex / Gender</label>
+          <select id="sex">
+            <option value="">—</option>
+            <option>Female</option><option>Male</option><option>Intersex</option><option>Non-binary</option><option>Prefer not to say</option>
+          </select>
+        </div>
+        <div class="col-6">
+          <label>Address / Facility</label>
+          <input id="address" placeholder="123 Main St, Springtown • Meadowview Assisted Living" />
+        </div>
+        <div class="col-3">
+          <label>Contact (Primary)</label>
+          <input id="contact" placeholder="(555) 555-5555" />
+        </div>
+        <div class="col-3">
+          <label>Emergency Contact</label>
+          <input id="emergency_contact" placeholder="Caregiver / phone" />
+        </div>
       </div>
     </div>
 
+    <!-- Baseline Medical History -->
+    <div class="card">
+      <h2>Baseline Medical History</h2>
+      <div class="row">
+        <div class="col-6">
+          <label>Chronic diseases</label>
+          <input id="chronic_diseases" placeholder="HTN, DM2, COPD, CKD3..." />
+        </div>
+        <div class="col-6">
+          <label>Past surgeries / hospitalizations</label>
+          <input id="surgeries_hosp" placeholder="CABG 2012; Hip fracture 2021..." />
+        </div>
+        <div class="col-6">
+          <label>Medications</label>
+          <input id="medications" placeholder="Metformin, Lisinopril, Atorvastatin..." />
+        </div>
+        <div class="col-6">
+          <label>Allergies</label>
+          <input id="allergies" placeholder="NKDA / Penicillin rash..." />
+        </div>
+      </div>
+    </div>
+
+    <!-- Functional Status (ADLs/IADLs) -->
+    <div class="card">
+      <h2>Functional Status — ADLs / IADLs</h2>
+      <div class="row">
+        <div class="col-3"><label>Bathing</label><select id="adl_bathing"><option>Independent</option><option>Needs help</option><option>Dependent</option></select></div>
+        <div class="col-3"><label>Dressing</label><select id="adl_dressing"><option>Independent</option><option>Needs help</option><option>Dependent</option></select></div>
+        <div class="col-3"><label>Eating</label><select id="adl_eating"><option>Independent</option><option>Needs help</option><option>Dependent</option></select></div>
+        <div class="col-3"><label>Walk/Transfer</label><select id="adl_walk"><option>Independent</option><option>Needs help</option><option>Dependent</option></select></div>
+        <div class="col-3"><label>Toileting</label><select id="adl_toilet"><option>Independent</option><option>Needs help</option><option>Dependent</option></select></div>
+        <div class="col-3"><label>Manage Meds</label><select id="iadl_meds"><option>Independent</option><option>Needs help</option><option>Dependent</option></select></div>
+        <div class="col-3"><label>Finances</label><select id="iadl_finances"><option>Independent</option><option>Needs help</option><option>Dependent</option></select></div>
+        <div class="col-3"><label>Shopping/Cooking</label><select id="iadl_cook_shop"><option>Independent</option><option>Needs help</option><option>Dependent</option></select></div>
+      </div>
+      <div class="tiny">Functional loss is strongly predictive of adverse outcomes.</div>
+    </div>
+
+    <!-- Cognitive / Mental Health -->
+    <div class="card">
+      <h2>Cognitive & Mental Health</h2>
+      <div class="row">
+        <div class="col-3"><label>MMSE (0–30)</label><input id="mmse" type="number" min="0" max="30" placeholder="27" /></div>
+        <div class="col-3"><label>MoCA (0–30)</label><input id="moca" type="number" min="0" max="30" placeholder="25" /></div>
+        <div class="col-3"><label>PHQ-9 (0–27)</label><input id="phq9" type="number" min="0" max="27" placeholder="4" /></div>
+        <div class="col-3"><label>Anxiety present?</label><select id="anxiety"><option>No</option><option>Yes</option></select></div>
+        <div class="col-3"><label>Delirium risk</label><select id="delirium_risk"><option>Low</option><option>Moderate</option><option>High</option></select></div>
+      </div>
+    </div>
+
+    <!-- Social / Environmental -->
+    <div class="card">
+      <h2>Social, Environmental & Behaviors</h2>
+      <div class="row">
+        <div class="col-4"><label>Living situation</label>
+          <select id="living">
+            <option>Alone</option><option>With family/caregiver</option><option>Assisted living</option><option>Skilled nursing facility</option>
+          </select>
+        </div>
+        <div class="col-4"><label>Social support</label><select id="social_support"><option>Adequate</option><option>Limited</option><option>None</option></select></div>
+        <div class="col-4"><label>Recent weight change</label><select id="weight_change"><option>None</option><option>Loss &gt; 5%</option><option>Gain &gt; 5%</option></select></div>
+        <div class="col-3"><label>Tobacco use</label><select id="tobacco"><option>No</option><option>Yes</option><option>Former</option></select></div>
+        <div class="col-3"><label>Alcohol use</label><select id="alcohol"><option>No</option><option>Yes</option></select></div>
+        <div class="col-3"><label>Sleep (hrs)</label><input id="sleep_hours" type="number" step="0.1" placeholder="7" /></div>
+        <div class="col-3"><label>Falls history (12m)</label><select id="falls_history"><option>None</option><option>1</option><option>&ge;2</option></select></div>
+      </div>
+    </div>
+
+    <!-- Vital Signs / Physiologic -->
+    <div class="card">
+      <h2>Vital Signs & Physiologic</h2>
+      <div class="row">
+        <div class="col-3"><label>BP — Systolic</label><input id="bp_sys" type="number" placeholder="128" /></div>
+        <div class="col-3"><label>BP — Diastolic</label><input id="bp_dia" type="number" placeholder="74" /></div>
+        <div class="col-3"><label>Heart rate (bpm)</label><input id="resting_hr" type="number" placeholder="70" /></div>
+        <div class="col-3"><label>Respiratory rate</label><input id="rr" type="number" placeholder="16" /></div>
+        <div class="col-3"><label>SpO₂ (%)</label><input id="avg_spo2" type="number" step="0.1" placeholder="95" /></div>
+        <div class="col-3"><label>Temperature (°F)</label><input id="temp_f" type="number" step="0.1" placeholder="98.6" /></div>
+        <div class="col-3"><label>Weight (kg)</label><input id="weight_kg" type="number" step="0.1" placeholder="73" /></div>
+        <div class="col-3"><label>BMI</label><input id="bmi" type="number" step="0.1" placeholder="25.2" /></div>
+        <div class="col-3"><label>Gait speed (m/s)</label><input id="gait_speed" type="number" step="0.01" placeholder="0.85" /></div>
+        <div class="col-3"><label>Grip strength (kg)</label><input id="grip_kg" type="number" step="0.1" placeholder="18" /></div>
+      </div>
+      <div class="tiny">Add HRV below if available</div>
+      <div class="row">
+        <div class="col-3"><label>HRV (RMSSD, ms)</label><input id="hrv_rmssd" type="number" placeholder="18" /></div>
+        <div class="col-3"><label>Avg daily steps</label><input id="steps_daily" type="number" placeholder="3000" /></div>
+      </div>
+    </div>
+
+    <!-- Labs / Imaging -->
+    <div class="card">
+      <h2>Laboratory / Diagnostics</h2>
+      <div class="row">
+        <div class="col-3"><label>Hemoglobin (g/dL)</label><input id="lab_hgb" type="number" step="0.1" /></div>
+        <div class="col-3"><label>Creatinine (mg/dL)</label><input id="lab_cr" type="number" step="0.01" /></div>
+        <div class="col-3"><label>eGFR (mL/min)</label><input id="lab_egfr" type="number" step="1" /></div>
+        <div class="col-3"><label>Glucose (mg/dL)</label><input id="lab_glucose" type="number" step="1" /></div>
+        <div class="col-3"><label>HbA1c (%)</label><input id="lab_a1c" type="number" step="0.1" /></div>
+        <div class="col-3"><label>LDL (mg/dL)</label><input id="lab_ldl" type="number" step="1" /></div>
+        <div class="col-3"><label>Albumin (g/dL)</label><input id="lab_albumin" type="number" step="0.1" /></div>
+        <div class="col-3"><label>CRP (mg/L)</label><input id="lab_crp" type="number" step="0.1" /></div>
+        <div class="col-12"><label>Imaging / studies</label><input id="imaging_notes" placeholder="CXR clear 9/2024; Echo EF 50%..." /></div>
+      </div>
+    </div>
+
+    <!-- Recent acute events -->
+    <div class="card">
+      <h2>Recent Acute Events / Symptoms</h2>
+      <div class="row">
+        <div class="col-4"><label>New symptoms</label><input id="symptoms" placeholder="dyspnea, edema, confusion..." /></div>
+        <div class="col-4"><label>Recent falls</label><select id="recent_falls"><option>No</option><option>Yes</option></select></div>
+        <div class="col-4"><label>Recent infection</label><select id="recent_infection"><option>No</option><option>Yes</option></select></div>
+        <div class="col-4"><label>Recent hospital admission</label><select id="recent_admit"><option>No</option><option>Yes</option></select></div>
+      </div>
+    </div>
+
+    <!-- Med safety / adherence -->
+    <div class="card">
+      <h2>Medication Safety & Adherence</h2>
+      <div class="row">
+        <div class="col-3"><label># of medications</label><input id="med_count" type="number" /></div>
+        <div class="col-3"><label>Adherence (%)</label><input id="med_adherence" type="number" min="0" max="100" /></div>
+        <div class="col-3"><label>Interactions known?</label><select id="med_interactions"><option>No</option><option>Yes</option></select></div>
+        <div class="col-3"><label>Recent changes?</label><select id="med_changes"><option>No</option><option>Yes</option></select></div>
+        <div class="col-3"><label>Renal/hepatic dosing risk</label><select id="renal_hepatic_risk"><option>No</option><option>Yes</option></select></div>
+      </div>
+    </div>
+
+    <!-- PROs / QoL -->
+    <div class="card">
+      <h2>Patient-Reported Outcomes / QoL</h2>
+      <div class="row">
+        <div class="col-3"><label>Self-rated health</label><select id="self_health"><option>Excellent</option><option>Good</option><option>Fair</option><option>Poor</option></select></div>
+        <div class="col-3"><label>Pain (0–10)</label><input id="pain_0_10" type="number" min="0" max="10" /></div>
+        <div class="col-3"><label>Fatigue (0–10)</label><input id="fatigue_0_10" type="number" min="0" max="10" /></div>
+        <div class="col-3"><label>Activation (1–4)</label><select id="activation"><option>1 — Low</option><option>2</option><option>3</option><option>4 — High</option></select></div>
+      </div>
+      <label>Notes (optional)</label>
+      <textarea id="notes" placeholder="Anything else that changed this week?"></textarea>
+      <div style="margin-top:8px">
+        <button class="primary" id="submitBtn">Submit Check-In</button>
+        <button class="ghost" id="pingBtn">Ping Backend</button>
+        <span class="tiny" style="margin-left:8px">Submits to your live backend and renders a risk summary + actions.</span>
+      </div>
+    </div>
+
+    <!-- Results -->
     <div class="card">
       <h3>Results</h3>
-      <!-- Friendly results -->
       <div id="resultView" class="results-wrap">
         <p class="muted">Submit to see a friendly summary.</p>
       </div>
-      <!-- Raw JSON for debugging -->
       <details class="debug">
         <summary>Raw JSON</summary>
         <pre id="output">{ }</pre>
@@ -112,20 +269,52 @@
   <script>
     const BASE_API = 'https://predictwell-backend-ai.onrender.com';
 
-    // --- Risk / Actions heuristics (simple & transparent) ---
+    // Helpers
+    const val = id => document.getElementById(id)?.value ?? '';
+    const num = id => {
+      const v = document.getElementById(id)?.value ?? '';
+      const n = Number(v); return Number.isFinite(n) ? n : null;
+    };
+    const out = (obj) => {
+      const el = document.getElementById('output');
+      el.textContent = (typeof obj === 'string') ? obj : JSON.stringify(obj, null, 2);
+    };
+
+    // -------- Risk & Actions (transparent heuristics) ----------
     function eldercareRiskScore(d){
       const m = d.metrics || {};
-      const f = d.flags || {};
+      const vit = d.vitals || {};
+      const soc = d.social || {};
+      const meds = d.medication || {};
+      const cog = d.cognitive || {};
       let score = 0;
 
-      // Weighting (0–100)
-      if(m.spo2_avg && m.spo2_avg < 92) score += (92 - m.spo2_avg) * 3;      // up to ~60
-      if(m.hrv_rmssd && m.hrv_rmssd < 20) score += (20 - m.hrv_rmssd) * 1.5; // up to ~30
-      if(m.resting_hr && m.resting_hr > 80) score += (m.resting_hr - 80) * 1;
-      if(m.sleep_hours && m.sleep_hours < 6) score += (6 - m.sleep_hours) * 4;
-      if(m.steps_daily && m.steps_daily < 3000) score += ((3000 - m.steps_daily)/1000) * 4;
-      if(f.gait_concern) score += 12;
-      if(f.cognitive_flags) score += 12;
+      // Physiologic stress
+      if(vit.spo2 && vit.spo2 < 92) score += (92 - vit.spo2) * 3;            // up to ~60
+      if(vit.rr && vit.rr > 22) score += (vit.rr - 22) * 2;                  // tachypnea
+      if(vit.temp_f && vit.temp_f >= 100.4) score += 8;                       // fever
+      if(vit.hr && vit.hr > 90) score += Math.min(10, vit.hr - 90);           // tachycardia
+      if(vit.sbp && vit.sbp < 100) score += (100 - vit.sbp) * 0.5;            // hypotension
+      if(vit.gait_speed && vit.gait_speed < 0.8) score += (0.8 - vit.gait_speed) * 30; // slow gait
+
+      // Autonomic / sleep / activity
+      if(m.hrv_rmssd && m.hrv_rmssd < 20) score += (20 - m.hrv_rmssd) * 1.5;
+      if(m.sleep_hours && m.sleep_hours < 6) score += (6 - m.sleep_hours) * 3.5;
+      if(m.steps_daily && m.steps_daily < 3000) score += ((3000 - m.steps_daily)/1000) * 3;
+
+      // Social risk
+      if(soc.living === 'Alone') score += 6;
+      if(soc.social_support === 'None') score += 8;
+      if(soc.falls_history === '≥2' || soc.falls_history === '≥2' || soc.falls_history === '≥2') score += 8;
+
+      // Med safety
+      if(meds.count && meds.count >= 10) score += 6;          // polypharmacy
+      if(meds.interactions === 'Yes') score += 6;
+      if(meds.renal_hepatic_risk === 'Yes') score += 6;
+
+      // Cognitive
+      if(cog.mmse !== null && cog.mmse <= 23) score += 8;
+      if(cog.phq9 !== null && cog.phq9 >= 10) score += 6;
 
       score = Math.max(0, Math.min(100, Math.round(score)));
       let band = 'Low', color='ok';
@@ -135,34 +324,48 @@
     }
 
     function eldercareActions(d){
-      const m = d.metrics || {};
-      const f = d.flags || {};
+      const v = d.vitals || {};
+      const soc = d.social || {};
+      const meds = d.medication || {};
       const acts = [];
-      if(m.spo2_avg && m.spo2_avg < 92) acts.push('Check SpO₂ device fit; consider humidifier and deep-breathing twice daily.');
-      if(m.hrv_rmssd && m.hrv_rmssd < 20) acts.push('Add 5–10 min evening relaxation (box breathing, light stretching).');
-      if(m.resting_hr && m.resting_hr > 80) acts.push('Hydrate and take a light 10-min walk; avoid late caffeine.');
-      if(m.sleep_hours && m.sleep_hours < 6.5) acts.push('Aim for 15–30 more minutes of sleep tonight.');
-      if(m.steps_daily && m.steps_daily < 3500) acts.push('Add a 10-minute stroll after lunch.');
-      if(f.gait_concern) acts.push('Perform 2× daily balance support (wall stand, heel-to-toe). Consider PT screen.');
-      if(f.cognitive_flags) acts.push('Schedule a short cognitive check-in (orientation, recall).');
-      if(!acts.length) acts.push('Keep current routine. Great job!');
-      return acts.slice(0,5);
+
+      if(v.spo2 && v.spo2 < 92) acts.push('Recheck SpO₂ with proper fit; breathing exercises; consider clinical evaluation if persistent.');
+      if(v.rr && v.rr > 22) acts.push('Assess for respiratory distress; hydrate and monitor closely.');
+      if(v.temp_f && v.temp_f >= 100.4) acts.push('Fever present — rule out infection; increase fluids; consider evaluation.');
+      if(v.hr && v.hr > 90) acts.push('Encourage rest and hydration; avoid stimulants; recheck HR.');
+      if(v.gait_speed && v.gait_speed < 0.8) acts.push('Add balance + strength exercises; consider PT screening.');
+      if(soc.living === 'Alone' || soc.social_support === 'None') acts.push('Increase caregiver check-ins / community support.');
+      if(meds.count >= 10 || meds.interactions === 'Yes') acts.push('Request pharmacist review for polypharmacy / interactions.');
+      if(!acts.length) acts.push('Maintain current routine and daily walks. Great job!');
+      return acts.slice(0,6);
     }
 
-    // --- View renderer ---
-    function renderEldercareView(data){
+    // ------------- Friendly results renderer -------------------
+    function renderView(data){
       const wrap = document.getElementById('resultView');
       if(!data){ wrap.innerHTML = '<p class="muted">No data.</p>'; return; }
 
       const y = (v, s='') => (v===null || v===undefined || v==='') ? '—' : (s?`${v}${s}`:v);
-      const pill = (label, on) => `<span class="pill ${on?'warn':'ok'}">${label}: ${on?'Yes':'No'}</span>`;
+      const pill = (label, on, invert=false) => {
+        const yes = on === true || on === 'Yes';
+        const cls = (invert? !yes : yes) ? 'warn' : 'ok';
+        return `<span class="pill ${cls}">${label}: ${yes?'Yes':'No'}</span>`;
+      };
 
-      const name = data.name ?? '—';
-      const age = (data.age ?? '') === '' ? '—' : data.age;
+      const id = y(data.id);
       const ts  = data.timestamp ? new Date(data.timestamp).toLocaleString() : '—';
 
-      const m = data.metrics || {};
-      const f = data.flags   || {};
+      const demo = data.demographics || {};
+      const hist = data.history || {};
+      const func = data.function || {};
+      const cog  = data.cognitive || {};
+      const soc  = data.social || {};
+      const vit  = data.vitals || {};
+      const labs = data.labs || {};
+      const events = data.events || {};
+      const meds = data.medication || {};
+      const pros = data.pros || {};
+
       const risk = eldercareRiskScore(data);
       const actions = eldercareActions(data);
 
@@ -174,16 +377,18 @@
               <div class="riskpointer" style="left: calc(${risk.score}% - 7px)"></div>
             </div>
             <div class="risklegend"><span>Low</span><span>Moderate</span><span>High</span></div>
-            <div class="kv" style="margin-top:6px"><b>Score</b><span><span class="pill ${risk.color}">${risk.band}</span> &nbsp; ${risk.score}/100</span></div>
+            <div class="kv" style="margin-top:6px"><b>Score</b>
+              <span><span class="pill ${risk.color}">${risk.band}</span>&nbsp; ${risk.score}/100</span>
+            </div>
           </div>
         </div>
 
         <div class="section">
           <h4>Summary</h4>
           <div class="grid">
-            <div class="kv"><b>Name</b><span>${name}</span></div>
-            <div class="kv"><b>Age</b><span>${age}</span></div>
-            <div class="kv"><b>Record ID</b><span>${y(data.id)}</span></div>
+            <div class="kv"><b>Name</b><span>${y(demo.name)}</span></div>
+            <div class="kv"><b>Age</b><span>${y(demo.age)}</span></div>
+            <div class="kv"><b>ID</b><span>${y(demo.patient_id)}</span></div>
             <div class="kv"><b>Submitted</b><span>${ts}</span></div>
           </div>
         </div>
@@ -191,25 +396,64 @@
         <div class="section">
           <h4>Vitals</h4>
           <div class="grid">
-            <div class="kv"><b>SpO₂ (avg)</b><span>${y(m.spo2_avg, '%')}</span></div>
-            <div class="kv"><b>HRV (RMSSD)</b><span>${y(m.hrv_rmssd, ' ms')}</span></div>
-            <div class="kv"><b>Resting HR</b><span>${y(m.resting_hr, ' bpm')}</span></div>
+            <div class="kv"><b>BP</b><span>${y(vit.sbp)}/${y(vit.dbp)} mmHg</span></div>
+            <div class="kv"><b>HR</b><span>${y(vit.hr,' bpm')}</span></div>
+            <div class="kv"><b>RR</b><span>${y(vit.rr,' /min')}</span></div>
+            <div class="kv"><b>Temp</b><span>${y(vit.temp_f,' °F')}</span></div>
+            <div class="kv"><b>SpO₂</b><span>${y(vit.spo2,' %')}</span></div>
+            <div class="kv"><b>Gait speed</b><span>${y(vit.gait_speed,' m/s')}</span></div>
           </div>
         </div>
 
         <div class="section">
-          <h4>Sleep & Activity</h4>
+          <h4>Function & Lifestyle</h4>
           <div class="grid">
-            <div class="kv"><b>Sleep</b><span>${y(m.sleep_hours, ' hrs')}</span></div>
-            <div class="kv"><b>Steps</b><span>${y(m.steps_daily)}</span></div>
+            <div class="kv"><b>ADLs</b><span>Bath ${y(func.adl_bathing)}, Dress ${y(func.adl_dressing)}, Walk ${y(func.adl_walk)}</span></div>
+            <div class="kv"><b>IADLs</b><span>Meds ${y(func.iadl_meds)}, Finances ${y(func.iadl_finances)}, Cook/Shop ${y(func.iadl_cook_shop)}</span></div>
+            <div class="kv"><b>Sleep</b><span>${y(data.metrics?.sleep_hours,' h')}</span></div>
+            <div class="kv"><b>Steps</b><span>${y(data.metrics?.steps_daily)}</span></div>
           </div>
         </div>
 
         <div class="section">
-          <h4>Flags</h4>
+          <h4>Cognitive / Mental</h4>
           <div class="grid">
-            <div>${pill('Balance/Gait', !!f.gait_concern)}</div>
-            <div>${pill('Cognitive', !!f.cognitive_flags)}</div>
+            <div class="kv"><b>MMSE</b><span>${y(cog.mmse)}</span></div>
+            <div class="kv"><b>MoCA</b><span>${y(cog.moca)}</span></div>
+            <div class="kv"><b>PHQ-9</b><span>${y(cog.phq9)}</span></div>
+            <div>${pill('Delirium Risk High', cog.delirium_risk==='High')}</div>
+          </div>
+        </div>
+
+        <div class="section">
+          <h4>Labs</h4>
+          <div class="grid">
+            <div class="kv"><b>Hgb</b><span>${y(labs.hgb,' g/dL')}</span></div>
+            <div class="kv"><b>Cr / eGFR</b><span>${y(labs.cr,' mg/dL')} / ${y(labs.egfr,' mL/min')}</span></div>
+            <div class="kv"><b>Glucose / A1c</b><span>${y(labs.glucose)} / ${y(labs.a1c,'%')}</span></div>
+            <div class="kv"><b>LDL</b><span>${y(labs.ldl,' mg/dL')}</span></div>
+            <div class="kv"><b>Albumin</b><span>${y(labs.albumin,' g/dL')}</span></div>
+            <div class="kv"><b>CRP</b><span>${y(labs.crp,' mg/L')}</span></div>
+          </div>
+        </div>
+
+        <div class="section">
+          <h4>Medication Safety</h4>
+          <div class="grid">
+            <div class="kv"><b>Count</b><span>${y(meds.count)}</span></div>
+            <div class="kv"><b>Adherence</b><span>${y(meds.adherence,'%')}</span></div>
+            <div>${pill('Interactions', meds.interactions==='Yes')}</div>
+            <div>${pill('Renal/Hepatic Risk', meds.renal_hepatic_risk==='Yes')}</div>
+          </div>
+        </div>
+
+        <div class="section">
+          <h4>Recent Events</h4>
+          <div class="grid">
+            <div>${pill('Recent Falls', events.recent_falls==='Yes')}</div>
+            <div>${pill('Recent Infection', events.recent_infection==='Yes')}</div>
+            <div>${pill('Recent Admission', events.recent_admit==='Yes')}</div>
+            <div class="kv" style="grid-column:1/-1"><b>New Symptoms</b><span>${y(events.symptoms)}</span></div>
           </div>
         </div>
 
@@ -221,64 +465,139 @@
         </div>
 
         <div class="section">
-          <h4>Notes</h4>
-          <div class="kv" style="grid-column:1/-1"><b>Notes</b><span>${y(data.notes)}</span></div>
+          <h4>Notes / Patient-Reported</h4>
+          <div class="grid">
+            <div class="kv"><b>Self-rated health</b><span>${y(pros.self_health)}</span></div>
+            <div class="kv"><b>Pain / Fatigue</b><span>${y(pros.pain,'/10')} / ${y(pros.fatigue,'/10')}</span></div>
+            <div class="kv"><b>Activation</b><span>${y(pros.activation)}</span></div>
+            <div class="kv" style="grid-column:1/-1"><b>Notes</b><span>${y(data.notes)}</span></div>
+          </div>
         </div>
       `;
     }
 
-    // --- Raw JSON (debug) ---
-    const out = (obj) => {
-      const el = document.getElementById('output');
-      el.textContent = (typeof obj === 'string') ? obj : JSON.stringify(obj, null, 2);
-    };
-
-    async function ping() {
-      try {
+    // -------------------- API calls -----------------------------
+    async function ping(){
+      try{
         const r = await fetch(`${BASE_API}/healthz`, { cache:'no-store' });
         if(!r.ok) throw new Error(`HTTP ${r.status}`);
-        const d = await r.json();
-        out(d);
-      } catch (e) { out({ error:String(e) }); }
+        out(await r.json());
+      }catch(e){ out({error:String(e)}); }
     }
 
-    // Submit and show friendly summary immediately
-    async function submitCheckin() {
-      const payload = {
-        name: document.getElementById('name').value,
-        age: Number(document.getElementById('age').value),
-        metrics: {
-          spo2_avg: Number(document.getElementById('avg_spo2').value),
-          hrv_rmssd: Number(document.getElementById('hrv_rmssd').value),
-          resting_hr: Number(document.getElementById('resting_hr').value),
-          sleep_hours: Number(document.getElementById('sleep_hours').value),
-          steps_daily: Number(document.getElementById('steps_daily').value)
-        },
-        flags: {
-          gait_concern: document.getElementById('gait_concern').checked,
-          cognitive_flags: document.getElementById('cognitive_flags').checked
-        },
-        notes: document.getElementById('notes').value,
-        timestamp: new Date().toISOString()
+    function collectPayload(){
+      const demographics = {
+        name: val('name'),
+        patient_id: val('patient_id'),
+        age: num('age'),
+        sex: val('sex'),
+        address: val('address'),
+        contact: val('contact'),
+        emergency_contact: val('emergency_contact')
       };
 
-      try {
-        renderEldercareView(payload); // optimistic preview
+      const history = {
+        chronic_diseases: val('chronic_diseases'),
+        surgeries_hosp: val('surgeries_hosp'),
+        medications: val('medications'),
+        allergies: val('allergies')
+      };
+
+      const func = {
+        adl_bathing: val('adl_bathing'), adl_dressing: val('adl_dressing'),
+        adl_eating: val('adl_eating'), adl_walk: val('adl_walk'),
+        adl_toilet: val('adl_toilet'),
+        iadl_meds: val('iadl_meds'), iadl_finances: val('iadl_finances'),
+        iadl_cook_shop: val('iadl_cook_shop')
+      };
+
+      const cognitive = {
+        mmse: num('mmse'), moca: num('moca'), phq9: num('phq9'),
+        anxiety: val('anxiety'), delirium_risk: val('delirium_risk')
+      };
+
+      const social = {
+        living: val('living'), social_support: val('social_support'),
+        weight_change: val('weight_change'), tobacco: val('tobacco'),
+        alcohol: val('alcohol'), falls_history: val('falls_history')
+      };
+
+      const vitals = {
+        sbp: num('bp_sys'), dbp: num('bp_dia'), hr: num('resting_hr'),
+        rr: num('rr'), spo2: num('avg_spo2'), temp_f: num('temp_f'),
+        weight_kg: num('weight_kg'), bmi: num('bmi'),
+        gait_speed: num('gait_speed'), grip_kg: num('grip_kg')
+      };
+
+      const labs = {
+        hgb: num('lab_hgb'), cr: num('lab_cr'), egfr: num('lab_egfr'),
+        glucose: num('lab_glucose'), a1c: num('lab_a1c'),
+        ldl: num('lab_ldl'), albumin: num('lab_albumin'), crp: num('lab_crp'),
+        imaging_notes: val('imaging_notes')
+      };
+
+      const events = {
+        symptoms: val('symptoms'),
+        recent_falls: val('recent_falls'),
+        recent_infection: val('recent_infection'),
+        recent_admit: val('recent_admit')
+      };
+
+      const medication = {
+        count: num('med_count'),
+        adherence: num('med_adherence'),
+        interactions: val('med_interactions'),
+        changes: val('med_changes'),
+        renal_hepatic_risk: val('renal_hepatic_risk')
+      };
+
+      const pros = {
+        self_health: val('self_health'),
+        pain: num('pain_0_10'),
+        fatigue: num('fatigue_0_10'),
+        activation: val('activation')
+      };
+
+      // keep compatibility fields you already had
+      const metrics = {
+        spo2_avg: vitals.spo2,
+        hrv_rmssd: num('hrv_rmssd'),
+        resting_hr: vitals.hr,
+        sleep_hours: num('sleep_hours'),
+        steps_daily: num('steps_daily')
+      };
+
+      return {
+        demographics, history, function: func, cognitive, social,
+        vitals, labs, events, medication, pros,
+        metrics,
+        notes: val('notes'),
+        timestamp: new Date().toISOString()
+      };
+    }
+
+    async function submitCheckin(){
+      const payload = collectPayload();
+
+      try{
+        renderView(payload); // optimistic preview
         const res = await fetch(`${BASE_API}/eldercare/checkin`, {
-          method:'POST', headers:{'Content-Type':'application/json'},
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
           body: JSON.stringify(payload)
         });
         if(!res.ok) throw new Error(`HTTP ${res.status}`);
-        const server = await res.json(); // { id } expected
+        const server = await res.json(); // usually { id }
         const display = { id: server?.id ?? null, ...payload };
-        renderEldercareView(display);
+        renderView(display);
         out(display);
-      } catch (err) {
-        renderEldercareView(null);
-        out({ error:String(err) });
+      }catch(err){
+        renderView(null);
+        out({error:String(err)});
       }
     }
 
+    // Wire up
     document.getElementById('submitBtn').addEventListener('click', submitCheckin);
     document.getElementById('pingBtn').addEventListener('click', ping);
     document.getElementById('year').textContent = new Date().getFullYear();
