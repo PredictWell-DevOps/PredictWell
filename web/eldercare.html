@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>PredictWell Health.ai — Eldercare Sentinel</title>
-  <meta name="description" content="Comprehensive eldercare intake + weekly check-in with risk and next actions." />
+  <meta name="description" content="Comprehensive eldercare intake + weekly check-in with risk, prediction, and next actions." />
   <link rel="icon" href="data:," />
   <style>
     :root{
@@ -12,19 +12,30 @@
       --ok:#16a34a; --warn:#ea580c; --err:#dc2626; --card:#ffffff; --line:#e2e8f0;
     }
     *{box-sizing:border-box}
-    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
-      background-image:url("/static/images/predictwell_background.png");background-size:cover;background-position:center;
-      background-repeat:no-repeat;background-attachment:fixed;min-height:100vh;color:var(--ink)}
+    body{
+      margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+      background-image:url("/static/images/predictwell_background.png");
+      background-size:cover;background-position:center;background-repeat:no-repeat;background-attachment:fixed;
+      min-height:100vh;color:var(--ink)
+    }
     .overlay{background:rgba(255,255,255,.94);padding:26px;min-height:100vh;max-width:1100px;margin:0 auto}
     header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
     .brand h1{margin:0;font-size:26px;color:var(--navy)} .brand span{color:var(--brand)}
     nav a{text-decoration:none;color:var(--navy);font-weight:700;padding:8px 12px;border-radius:8px;background:rgba(255,255,255,.7);border:1px solid rgba(2,6,23,.1)}
     .toolbar{display:flex;flex-wrap:wrap;gap:8px}
     .card{background:var(--card);border-radius:14px;padding:16px 16px;box-shadow:0 4px 12px rgba(0,0,0,.08);margin-bottom:14px;border:1px solid var(--line)}
+
+    /* Accordion sections — consistent size */
     details.section{border:1px solid var(--line);border-radius:12px;background:#fff;margin-bottom:12px;overflow:hidden}
-    details.section>summary{list-style:none;cursor:pointer;font-weight:700;color:var(--navy);padding:12px 14px;background:#f8fafc;border-bottom:1px solid var(--line)}
+    details.section>summary{
+      list-style:none;cursor:pointer;font-weight:700;color:var(--navy);
+      padding:14px 16px;min-height:48px;display:flex;align-items:center;justify-content:space-between;
+      background:#f8fafc;border-bottom:1px solid var(--line)
+    }
     details.section[open]>summary{background:#eef2ff}
+    summary::-webkit-details-marker{display:none}
     .section-body{padding:14px}
+
     .row{display:grid;grid-template-columns:repeat(12,1fr);gap:10px}
     .col-12{grid-column:span 12} .col-6{grid-column:span 6} .col-4{grid-column:span 4} .col-3{grid-column:span 3}
     label{display:block;margin-bottom:6px;color:#475569;font-size:13px}
@@ -35,10 +46,10 @@
     button{padding:10px 14px;font-size:14px;font-weight:700;border-radius:8px;border:1px solid transparent;cursor:pointer}
     .primary{background:var(--brand);color:#fff;border-color:var(--brand)}
     .ghost{background:#fff;color:var(--navy);border-color:#94a3b8}
-    .subtle{background:#fff;color:#0f172a;border-color:var(--line)}
     .danger{background:#fff;color:var(--err);border-color:#fecaca}
+    .subtle{background:#fff;color:#0f172a;border-color:var(--line)}
 
-    /* Results view */
+    /* Results + small UI bits */
     .results-wrap{display:grid;gap:12px}
     .box{border:1px solid var(--line);border-radius:12px;padding:14px;background:#fff}
     .box h4{margin:0 0 10px;color:var(--navy);font-size:14px;letter-spacing:.2px;text-transform:uppercase}
@@ -50,9 +61,8 @@
     .pill.warn{background:#fff7ed;color:var(--warn);border:1px solid #fed7aa}
     .pill.err{background:#fef2f2;color:var(--err);border:1px solid #fecaca}
     .muted{color:var(--muted);font-size:12px}
-    details.debug{margin-top:8px}
-    pre{background:#0b1220;color:#e2e8f0;padding:14px;border-radius:8px;overflow:auto}
-    footer{text-align:center;font-size:12px;color:#475569;margin-top:18px}
+    .actions li{margin:4px 0}
+    .error{color:var(--err);font-size:12px;margin-top:4px}
 
     /* Risk bar */
     .risk{display:grid;gap:10px}
@@ -60,22 +70,31 @@
       background:linear-gradient(90deg,#22c55e 0%,#f59e0b 50%,#ef4444 100%);}
     .riskpointer{position:absolute;top:-6px;width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:12px solid #0f172a}
     .risklegend{display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}
-    .actions li{margin:4px 0}
-    .error{color:var(--err);font-size:12px;margin-top:4px}
 
-    @media (max-width:860px){.grid{grid-template-columns:1fr}.row{grid-template-columns:repeat(6,1fr)}.col-6{grid-column:span 6}.col-4{grid-column:span 6}.col-3{grid-column:span 3}}
+    pre{background:#0b1220;color:#e2e8f0;padding:14px;border-radius:8px;overflow:auto}
+    footer{text-align:center;font-size:12px;color:#475569;margin-top:18px}
+
+    @media (max-width:860px){
+      .grid{grid-template-columns:1fr}
+      .row{grid-template-columns:repeat(6,1fr)}
+      .col-6{grid-column:span 6}.col-4{grid-column:span 6}.col-3{grid-column:span 3}
+    }
   </style>
 </head>
 <body>
   <div class="overlay">
     <header style="gap:12px;align-items:flex-start">
-      <div class="brand"><h1>PredictWell <span>Health.ai</span></h1><div class="help">Eldercare Sentinel — comprehensive intake + weekly check-in</div></div>
+      <div class="brand">
+        <h1>PredictWell <span>Health.ai</span></h1>
+        <div class="help">Eldercare Sentinel — comprehensive intake + weekly check-in</div>
+      </div>
       <nav class="toolbar">
         <a class="subtle" href="/eldercare.html">Eldercare</a>
         <a class="subtle" href="/athletics.html">Athletics</a>
       </nav>
     </header>
 
+    <!-- Top action bar -->
     <div class="card">
       <div class="toolbar">
         <button class="primary" id="submitBtnTop">Submit Check-In</button>
@@ -89,7 +108,7 @@
       </div>
     </div>
 
-    <!-- Demographics & Identifiers -->
+    <!-- Demographics -->
     <details class="section" open>
       <summary>Demographics & Identifiers</summary>
       <div class="section-body">
@@ -112,7 +131,8 @@
             <label>Sex / Gender</label>
             <select id="sex">
               <option value="">—</option>
-              <option>Female</option><option>Male</option><option>Intersex</option><option>Non-binary</option><option>Prefer not to say</option>
+              <option>Female</option><option>Male</option><option>Intersex</option>
+              <option>Non-binary</option><option>Prefer not to say</option>
             </select>
           </div>
           <div class="col-6">
@@ -131,7 +151,7 @@
       </div>
     </details>
 
-    <!-- Baseline Medical History -->
+    <!-- Baseline medical -->
     <details class="section">
       <summary>Baseline Medical History</summary>
       <div class="section-body">
@@ -144,7 +164,7 @@
       </div>
     </details>
 
-    <!-- Functional Status (ADLs/IADLs) -->
+    <!-- Functional -->
     <details class="section">
       <summary>Functional Status — ADLs / IADLs</summary>
       <div class="section-body">
@@ -161,7 +181,7 @@
       </div>
     </details>
 
-    <!-- Cognitive / Mental Health -->
+    <!-- Cognitive -->
     <details class="section">
       <summary>Cognitive & Mental Health</summary>
       <div class="section-body">
@@ -175,7 +195,7 @@
       </div>
     </details>
 
-    <!-- Social / Environmental -->
+    <!-- Social -->
     <details class="section">
       <summary>Social, Environmental & Behaviors</summary>
       <div class="section-body">
@@ -195,7 +215,7 @@
       </div>
     </details>
 
-    <!-- Vital Signs / Physiologic -->
+    <!-- Vitals -->
     <details class="section" open>
       <summary>Vital Signs & Physiologic</summary>
       <div class="section-body">
@@ -231,7 +251,7 @@
           <div class="col-3"><label>Gait speed (m/s)</label><input id="gait_speed" type="number" step="0.01" placeholder="0.85" /></div>
           <div class="col-3"><label>Grip strength (kg)</label><input id="grip_kg" type="number" step="0.1" placeholder="18" /></div>
         </div>
-        <div class="help">Risk updates live as you type. Minimum required fields are marked with *.</div>
+        <div class="help">Risk & prediction update live as you type. Minimum required fields are marked with *.</div>
         <div class="row">
           <div class="col-3"><label>HRV (RMSSD, ms)</label><input id="hrv_rmssd" type="number" placeholder="18" /></div>
           <div class="col-3"><label>Avg daily steps</label><input id="steps_daily" type="number" placeholder="3000" /></div>
@@ -239,8 +259,8 @@
       </div>
     </details>
 
-    <!-- Labs / Imaging -->
-    <details class="section>
+    <!-- Labs -->
+    <details class="section">
       <summary>Laboratory / Diagnostics</summary>
       <div class="section-body">
         <div class="row">
@@ -270,7 +290,7 @@
       </div>
     </details>
 
-    <!-- Med safety / adherence -->
+    <!-- Med safety -->
     <details class="section">
       <summary>Medication Safety & Adherence</summary>
       <div class="section-body">
@@ -284,7 +304,7 @@
       </div>
     </details>
 
-    <!-- PROs / QoL -->
+    <!-- PROs -->
     <details class="section">
       <summary>Patient-Reported Outcomes / Quality of Life</summary>
       <div class="section-body">
@@ -299,7 +319,7 @@
       </div>
     </details>
 
-    <!-- LIVE RISK PANEL -->
+    <!-- LIVE RISK -->
     <div class="card">
       <div class="box">
         <h4>Live Risk (updates as you type)</h4>
@@ -313,6 +333,26 @@
         <div class="toolbar" style="margin-top:10px">
           <button class="primary" id="submitBtnRisk">Submit Check-In</button>
           <button class="ghost" id="pingBtnRisk">Ping Backend</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PREDICTION -->
+    <div class="card">
+      <div class="box">
+        <h4>Prediction (beta)</h4>
+        <div class="grid">
+          <div class="kv">
+            <b>Estimated 30-day deterioration risk</b>
+            <span><span id="predProbText">—</span></span>
+          </div>
+          <div class="kv">
+            <b>Band</b>
+            <span><span id="predBand" class="pill ok">Low</span></span>
+          </div>
+        </div>
+        <div class="help" style="margin-top:8px">
+          This estimate updates from your entries and will improve once we plug in a trained model. Not medical advice.
         </div>
       </div>
     </div>
@@ -336,13 +376,12 @@
     const BASE_API = 'https://predictwell-backend-ai.onrender.com';
     const DRAFT_KEY = 'pw_eldercare_draft_v1';
 
-    // ---------- helpers ----------
     const el = id => document.getElementById(id);
     const val = id => el(id)?.value ?? '';
     const num = id => { const v = val(id); const n = Number(v); return Number.isFinite(n) ? n : null; };
-    const out = (obj) => { el('output').textContent = (typeof obj === 'string') ? obj : JSON.stringify(obj, null, 2); };
+    const out = obj => { el('output').textContent = (typeof obj === 'string') ? obj : JSON.stringify(obj, null, 2); };
 
-    // ---------- risk & actions ----------
+    /* ---------- Risk score (0–100) ---------- */
     function riskScore(data){
       const m = data.metrics || {};
       const v = data.vitals || {};
@@ -379,29 +418,65 @@
       return { score, band, color };
     }
 
-    function actions(data){
+    /* ---------- Probability (beta) ---------- */
+    // Maps features to a logistic probability (0..1). Weights are conservative defaults.
+    function predictProbability(data) {
       const v = data.vitals || {};
+      const m = data.metrics || {};
       const s = data.social || {};
       const meds = data.medication || {};
-      const a = [];
-      if(v.spo2 && v.spo2 < 92) a.push('Recheck SpO₂ fit; breathing exercises; consider evaluation if persistent.');
-      if(v.rr && v.rr > 22) a.push('Assess respiratory status; hydrate; monitor closely.');
-      if(v.temp_f && v.temp_f >= 100.4) a.push('Fever — rule out infection; increase fluids; consider evaluation.');
-      if(v.hr && v.hr > 90) a.push('Rest & hydrate; avoid stimulants; recheck HR.');
-      if(v.gait_speed && v.gait_speed < 0.8) a.push('Add balance/strength routine; consider PT screen.');
-      if(s.living === 'Alone' || s.social_support === 'None') a.push('Increase caregiver check-ins/community support.');
-      if(meds.count >= 10 || meds.interactions === 'Yes') a.push('Pharmacist review for polypharmacy/interactions.');
-      if(!a.length) a.push('Maintain current routine and daily walks.');
-      return a.slice(0,6);
+      const cog = data.cognitive || {};
+
+      const spo2Gap = v.spo2 ? Math.max(0, 92 - v.spo2) : 0;
+      const rrHigh = v.rr ? Math.max(0, v.rr - 20) : 0;
+      const hrHigh = v.hr ? Math.max(0, v.hr - 85) : 0;
+      const tempHigh = v.temp_f ? Math.max(0, v.temp_f - 99.5) : 0;
+      const sbpLow = v.sbp ? Math.max(0, 110 - v.sbp) : 0;
+      const gaitLow = v.gait_speed ? Math.max(0, 0.9 - v.gait_speed) : 0;
+      const hrvLow = m.hrv_rmssd ? Math.max(0, 25 - m.hrv_rmssd) : 0;
+      const sleepLow = m.sleep_hours ? Math.max(0, 7 - m.sleep_hours) : 0;
+      const stepsLow = m.steps_daily ? Math.max(0, (4000 - m.steps_daily) / 1000) : 0;
+      const livesAlone = (s.living === 'Alone') ? 1 : 0;
+      const noSupport = (s.social_support === 'None') ? 1 : 0;
+      const polypharm = meds.count ? (meds.count >= 10 ? 1 : 0) : 0;
+      const interactions = meds.interactions === 'Yes' ? 1 : 0;
+      const renalHep = meds.renal_hepatic_risk === 'Yes' ? 1 : 0;
+      const mmseLow = (cog.mmse !== null && cog.mmse !== undefined) ? (cog.mmse <= 23 ? 1 : 0) : 0;
+      const phqHigh = (cog.phq9 !== null && cog.phq9 !== undefined) ? (cog.phq9 >= 10 ? 1 : 0) : 0;
+
+      let z =
+        (-2.1) +
+        (0.22 * spo2Gap) + (0.10 * rrHigh) + (0.06 * hrHigh) + (0.35 * tempHigh) +
+        (0.02 * sbpLow) + (1.2 * gaitLow) + (0.05 * hrvLow) + (0.30 * sleepLow) +
+        (0.18 * stepsLow) + (0.60 * livesAlone) + (0.80 * noSupport) +
+        (0.65 * polypharm) + (0.70 * interactions) + (0.70 * renalHep) +
+        (0.80 * mmseLow) + (0.45 * phqHigh);
+
+      const prob = 1 / (1 + Math.exp(-z));
+      const p = Math.min(0.95, Math.max(0.01, prob));
+      let band='Low', color='ok';
+      if(p >= 0.33){ band='High'; color='err'; }
+      else if(p >= 0.15){ band='Moderate'; color='warn'; }
+      return { p, band, color };
     }
 
-    // ---------- view renderers ----------
+    function renderPrediction(data){
+      const r = predictProbability(data);
+      const pct = Math.round(r.p * 100);
+      const text = el('predProbText'), band = el('predBand');
+      if(!text || !band) return;
+      text.textContent = `${pct}%`;
+      band.textContent = r.band;
+      band.className = `pill ${r.color}`;
+    }
+
+    /* ---------- Views ---------- */
     function renderSubmittedView(data){
       const wrap = el('resultView'); if(!data){ wrap.innerHTML = '<p class="muted">No data.</p>'; return; }
       const y = (v,s='') => (v===null||v===undefined||v==='')? '—' : (s?`${v}${s}`:v);
       const pill = (label,on,invert=false)=>{const yes=(on===true||on==='Yes');const cls=(invert?!yes:yes)?'warn':'ok';return `<span class="pill ${cls}">${label}: ${yes?'Yes':'No'}</span>`;}
 
-      const demo=data.demographics||{}, vit=data.vitals||{}, labs=data.labs||{}, func=data.function||{}, soc=data.social||{}, cog=data.cognitive||{}, meds=data.medication||{}, ev=data.events||{}, pros=data.pros||{};
+      const demo=data.demographics||{}, vit=data.vitals||{}, labs=data.labs||{}, func=data.function||{}, soc=data.social||{}, cog=data.cognitive||{}, meds=data.medication||{}, ev=data.events||{};
       const r=riskScore(data), ts=data.timestamp?new Date(data.timestamp).toLocaleString():'—';
 
       wrap.innerHTML=`
@@ -482,7 +557,19 @@
         </div>
         <div class="box">
           <h4>Next Actions</h4>
-          <ul class="actions">${actions(data).map(a=>`<li>${a}</li>`).join('')}</ul>
+          <ul class="actions">${(function(data){
+            const v=data.vitals||{}, s=data.social||{}, meds=data.medication||{};
+            const a=[];
+            if(v.spo2 && v.spo2<92) a.push('Recheck SpO₂ fit; breathing exercises; consider evaluation if persistent.');
+            if(v.rr && v.rr>22) a.push('Assess respiratory status; hydrate; monitor closely.');
+            if(v.temp_f && v.temp_f>=100.4) a.push('Fever — rule out infection; increase fluids; consider evaluation.');
+            if(v.hr && v.hr>90) a.push('Rest & hydrate; avoid stimulants; recheck HR.');
+            if(v.gait_speed && v.gait_speed<0.8) a.push('Add balance/strength routine; consider PT screen.');
+            if(s.living==='Alone' || s.social_support==='None') a.push('Increase caregiver check-ins/community support.');
+            if(meds.count>=10 || meds.interactions==='Yes') a.push('Pharmacist review for polypharmacy/interactions.');
+            if(!a.length) a.push('Maintain current routine and daily walks.');
+            return a.slice(0,6).map(x=>`<li>${x}</li>`).join('');
+          })(data)}</ul>
         </div>
       `;
     }
@@ -493,9 +580,10 @@
       el('livePointer').style.left = `calc(${r.score}% - 7px)`;
       el('liveScore').textContent = r.score;
       const band = el('liveBand'); band.textContent = r.band; band.className = `pill ${r.color}`;
+      renderPrediction(payload);
     }
 
-    // ---------- collect payload ----------
+    /* ---------- Collect payload ---------- */
     function collectPayload(){
       const demographics = { name: val('name'), patient_id: val('patient_id'), age: num('age'), sex: val('sex'),
         address: val('address'), contact: val('contact'), emergency_contact: val('emergency_contact') };
@@ -530,7 +618,7 @@
       return { demographics, history, function: func, cognitive, social, vitals, labs, events, medication, pros, metrics, notes: val('notes'), timestamp: new Date().toISOString() };
     }
 
-    // ---------- validation ----------
+    /* ---------- Validation ---------- */
     function validateRequired(){
       let ok=true;
       const setErr=(id,msg)=>{ el(id).textContent=msg||''; if(msg) ok=false; };
@@ -544,34 +632,39 @@
       return ok;
     }
 
-    // ---------- API ----------
+    /* ---------- API ---------- */
     async function ping(){ try{ const r=await fetch(`${BASE_API}/healthz`,{cache:'no-store'}); if(!r.ok) throw new Error(`HTTP ${r.status}`); out(await r.json()); }catch(e){ out({error:String(e)}) } }
 
     async function submitCheckin(){
       if(!validateRequired()){ window.scrollTo({top:0,behavior:'smooth'}); return; }
       const payload = collectPayload();
       try{
-        renderSubmittedView(payload); // optimistic
-        const r = await fetch(`${BASE_API}/eldercare/checkin`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload) });
+        renderSubmittedView(payload);            // optimistic
+        renderPrediction(payload);               // update probability
+        const r = await fetch(`${BASE_API}/eldercare/checkin`, {
+          method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload)
+        });
         if(!r.ok) throw new Error(`HTTP ${r.status}`);
         const server = await r.json();
         const display = { id: server?.id ?? null, ...payload };
         renderSubmittedView(display);
+        renderPrediction(display);
         out(display);
       }catch(err){
         renderSubmittedView(null); out({error:String(err)});
       }
     }
 
-    // ---------- draft (localStorage) ----------
+    /* ---------- Draft ---------- */
     function saveDraft(){ localStorage.setItem(DRAFT_KEY, JSON.stringify(collectPayload())); }
     function loadDraft(){
       const raw = localStorage.getItem(DRAFT_KEY); if(!raw) return;
       try{
         const d = JSON.parse(raw);
         const set=(id,v)=>{ if(el(id) && v!==undefined && v!==null) el(id).value=v; };
-        const dm=d.demographics||{}, vit=d.vitals||{}, m=d.metrics||{}, soc=d.social||{}, meds=d.medication||{}, labs=d.labs||{}, func=d.function||{}, cog=d.cognitive||{}, ev=d.events||{}, pros=d.pros||{};
-        set('name',dm.name); set('patient_id',dm.patient_id); set('age',dm.age); set('sex',dm.sex); set('address',dm.address); set('contact',dm.contact); set('emergency_contact',dm.emergency_contact);
+        const dm=d.demographics||{}, vit=d.vitals||{}, m=d.metrics||{}, soc=d.social||{}, meds=d.medication||{}, labs=d.labs||{}, func=d.function||{}, cog=d.cognitive||{}, ev=d.events||{};
+        set('name',dm.name); set('patient_id',dm.patient_id); set('age',dm.age); set('sex',dm.sex);
+        set('address',dm.address); set('contact',dm.contact); set('emergency_contact',dm.emergency_contact);
         set('bp_sys',vit.sbp); set('bp_dia',vit.dbp); set('resting_hr',vit.hr); set('rr',vit.rr); set('avg_spo2',vit.spo2); set('temp_f',vit.temp_f);
         set('sleep_hours',m.sleep_hours); set('steps_daily',m.steps_daily); set('hrv_rmssd',m.hrv_rmssd);
         set('living',soc.living); set('social_support',soc.social_support); set('falls_history',soc.falls_history);
@@ -585,27 +678,23 @@
     }
     function clearDraft(){ localStorage.removeItem(DRAFT_KEY); }
 
-    // ---------- utilities ----------
-    function exportJSON(){ const dataStr = "data:application/json;charset=utf-8," + encodeURIComponent(JSON.stringify(collectPayload(),null,2)); const a=document.createElement('a'); a.href=dataStr; a.download=`eldercare_${Date.now()}.json`; a.click(); }
+    /* ---------- Utilities ---------- */
+    function exportJSON(){ const dataStr="data:application/json;charset=utf-8,"+encodeURIComponent(JSON.stringify(collectPayload(),null,2)); const a=document.createElement('a'); a.href=dataStr; a.download=`eldercare_${Date.now()}.json`; a.click(); }
     function printPage(){ window.print(); }
 
-    // live risk update on input
-    document.addEventListener('input', (e)=>{ if(e.target.matches('input,select,textarea')){ updateLiveRisk(); } });
-
-    // wire buttons
+    /* ---------- Wireup ---------- */
+    document.addEventListener('input', (e)=>{ if(e.target.matches('input,select,textarea')) updateLiveRisk(); });
     document.getElementById('submitBtnTop').addEventListener('click', submitCheckin);
     document.getElementById('pingBtnTop').addEventListener('click', ping);
     document.getElementById('submitBtnRisk').addEventListener('click', submitCheckin);
     document.getElementById('pingBtnRisk').addEventListener('click', ping);
-
-    el('saveDraft').addEventListener('click', ()=>{ saveDraft(); });
+    el('saveDraft').addEventListener('click', saveDraft);
     el('clearDraft').addEventListener('click', ()=>{ clearDraft(); location.reload(); });
     el('exportBtn').addEventListener('click', exportJSON);
     el('printBtn').addEventListener('click', printPage);
-    el('expandAll').addEventListener('click', ()=>{ document.querySelectorAll('details.section').forEach(d=>d.open=true); });
-    el('collapseAll').addEventListener('click', ()=>{ document.querySelectorAll('details.section').forEach(d=>d.open=false); });
+    el('expandAll').addEventListener('click', ()=>document.querySelectorAll('details.section').forEach(d=>d.open=true));
+    el('collapseAll').addEventListener('click', ()=>document.querySelectorAll('details.section').forEach(d=>d.open=false));
 
-    // init
     document.getElementById('year').textContent = new Date().getFullYear();
     loadDraft();
     updateLiveRisk();
