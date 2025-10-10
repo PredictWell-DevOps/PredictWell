@@ -1,268 +1,177 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
+  <title>PredictWell Health — Home</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>PredictWell Health.ai</title>
-  <meta name="description" content="AI that spots risk early and gives clear next steps for seniors and athletes." />
-  <link rel="icon" href="data:,">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 
   <style>
     :root{
-      --brand:#0f172a;
-      --brand-2:#2563eb;
-      --accent:#06b6d4;
-      --ink:#0b1220;
-      --muted:#6b7280;
-      --bg:#ffffff;
-      --badge:#f3f4f6;
-      --ok:#16a34a;
-      --danger:#ef4444;
-      --shadow:0 10px 30px rgba(2,6,23,.15);
-      --radius:16px;
-      --radius-sm:12px;
+      --bg:#0b1220;
+      --panel:#121a2b;
+      --ink:#e9eefc;
+      --muted:#9bb0d3;
+      --chip:#1f2a44;
+      --line:#213052;
+      --primary:#1a2440;
+      --btn-gradient:linear-gradient(90deg,#34d399,#60a5fa);
+      --btn-dark:#1a2440;
+      --btn-dark-border:#2a3a5e;
     }
     *{box-sizing:border-box}
-    html,body{margin:0;padding:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif;color:var(--ink);background:var(--bg)}
-    a{color:inherit;text-decoration:none}
-    img{max-width:100%;display:block}
-    .topbar{
-      background:linear-gradient(90deg,var(--brand-2),var(--accent));
-      color:#fff;font-weight:600;letter-spacing:.2px;
-      padding:.5rem 1rem;text-align:center;font-size:.95rem;
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+      color:var(--ink);
+      background:
+        radial-gradient(1200px 600px at 10% -10%, rgba(52,211,153,.07), transparent 60%),
+        radial-gradient(1200px 600px at 110% 110%, rgba(96,165,250,.07), transparent 60%),
+        var(--bg);
     }
-    .topbar b{white-space:nowrap}
+
+    /* Layout */
+    .wrap{max-width:1160px;margin:0 auto;padding:24px}
     header{
-      position:sticky;top:0;z-index:50;background:#fffffff2;backdrop-filter:blur(10px);
-      border-bottom:1px solid #e5e7eb;
+      display:flex;align-items:center;justify-content:space-between;
+      gap:16px;padding:8px 0 16px
     }
-    .container{max-width:1200px;margin:0 auto;padding:0 16px}
-    .nav{display:flex;align-items:center;justify-content:space-between;height:64px;}
-    .logo{display:flex;align-items:center;gap:.6rem;font-weight:800;color:var(--brand)}
-    .logo-badge{width:34px;height:34px;border-radius:10px;background:linear-gradient(145deg,var(--brand-2),var(--accent));box-shadow:var(--shadow)}
-    .nav-links{display:flex;align-items:center;gap:1.25rem}
-    .nav-links a{color:#111827;font-weight:600}
-    .cta{padding:.65rem 1rem;border-radius:999px;background:var(--brand-2);color:#fff;font-weight:700;box-shadow:var(--shadow)}
-    .cta:hover{transform:translateY(-1px)}
-    .hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer}
-    .bar{width:24px;height:2.5px;background:#0f172a;border-radius:2px}
-    .mobile{display:none;border-top:1px solid #e5e7eb}
-    .mobile a{display:block;padding:12px 2px;font-weight:600;color:#111827}
-    .hero{position:relative;overflow:hidden;background:#000;}
-    .hero::before{
-      content:"";position:absolute;inset:0;
-      background-image:url("/static/images/predictwell_background.png");
-      background-size:cover;background-position:center;filter:brightness(.55);
+    .brand{display:flex;align-items:center;gap:12px;font-weight:700}
+    .logo{
+      width:32px;height:32px;border-radius:8px;
+      background:var(--btn-gradient);box-shadow:0 0 0 2px #0b1220;
     }
-    .hero-inner{position:relative;z-index:1;min-height:68vh;display:flex;align-items:center;justify-content:center;text-align:center;color:#fff;padding:72px 16px;}
-    .hero h1{margin:0 auto;max-width:900px;line-height:1.1;font-size:clamp(28px,5vw,54px);font-weight:900;letter-spacing:.3px;text-shadow:0 10px 30px rgba(0,0,0,.35);}
-    .hero p{margin:16px auto 28px;max-width:820px;font-size:clamp(16px,2.4vw,20px);color:#e5e7eb}
-    .cta-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
-    .btn{padding:.8rem 1.1rem;border-radius:12px;font-weight:800;border:2px solid transparent;box-shadow:var(--shadow);transition:.2s transform;}
-    .btn.primary{background:var(--brand-2);color:#fff}
-    .btn.secondary{background:#ffffff;color:#0f172a;border-color:#e5e7eb}
-    .btn:hover{transform:translateY(-2px)}
-    .trust{display:flex;gap:18px;justify-content:center;align-items:center;flex-wrap:wrap;padding:18px 12px;background:#0f172a;color:#cbd5e1;border-top:1px solid #0b1220;border-bottom:1px solid #0b1220;}
-    .trust img{height:26px;opacity:.9}
-    section{padding:56px 0}
-    .section-title{font-size:clamp(22px,3.4vw,34px);text-align:center;margin:0 0 8px;font-weight:900;color:var(--brand)}
-    .section-sub{max-width:800px;margin:0 auto 28px;text-align:center;color:var(--muted)}
-    .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
-    .card{border:1px solid #e5e7eb;border-radius:var(--radius);padding:20px;background:#fff;box-shadow:0 4px 16px rgba(2,6,23,.06);}
-    .step-num{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(145deg,var(--brand-2),var(--accent));color:#fff;font-weight:900;box-shadow:var(--shadow);margin-bottom:12px;}
-    .card h3{margin:4px 0 8px;font-size:20px}
-    .card p{margin:0;color:#4b5563}
-    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
-    .feature{overflow:hidden;border-radius:var(--radius);border:1px solid #e5e7eb;background:#fff;box-shadow:0 7px 20px rgba(2,6,23,.08);}
-    .feature img{height:200px;width:100%;object-fit:cover}
-    .feature .body{padding:16px}
-    .chip{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:#eef2ff;color:#3730a3;font-weight:700;font-size:.8rem}
-    .list{margin:12px 0 0;padding:0 0 0 16px;color:#4b5563}
-    .list li{margin:6px 0}
-    .testi{background:linear-gradient(180deg,#f8fafc,#eef2ff);border-top:1px solid #e5e7eb;border-bottom:1px solid #e5e7eb;padding:48px 0;}
-    .quote{max-width:960px;margin:0 auto;text-align:center;font-size:20px;color:#0b1220;font-weight:700}
-    .quote small{display:block;margin-top:12px;color:#64748b;font-weight:600}
-    footer{background:#0b1220;color:#cbd5e1;padding:36px 0}
-    .foot{display:grid;grid-template-columns:2fr 1fr 1fr;gap:18px}
-    .foot h4{margin:0 0 10px;color:#fff}
-    .foot a{color:#cbd5e1}
-    .copyright{margin-top:16px;border-top:1px solid #1e293b;padding-top:12px;color:#94a3b8;font-size:.9rem}
-    @media (max-width:980px){.grid{grid-template-columns:1fr 1fr}.steps{grid-template-columns:1fr}.foot{grid-template-columns:1fr 1fr}.hero-inner{min-height:64vh}.nav-links{display:none}.hamburger{display:flex}.mobile.show{display:block}}
-    @media (max-width:640px){.grid{grid-template-columns:1fr}.foot{grid-template-columns:1fr}}
+    nav a{color:#a6c8ff;text-decoration:none;margin-left:16px;font-weight:600}
+    nav a:hover{text-decoration:underline}
+
+    /* Hero */
+    .hero{
+      display:grid;grid-template-columns:1.2fr 1fr;gap:24px;align-items:center;
+      padding:28px 0 8px;
+    }
+    @media (max-width: 960px){ .hero{grid-template-columns:1fr} }
+    .hero-card{
+      background:var(--panel);border:1px solid var(--line);border-radius:18px;
+      padding:28px 26px;
+    }
+    h1{font-size:34px;line-height:1.2;margin:0 0 8px}
+    p.lead{color:var(--muted);margin:0 0 18px}
+
+    .cta-row{display:flex;flex-wrap:wrap;gap:12px}
+    .btn{
+      display:inline-block;cursor:pointer;font-weight:700;text-decoration:none;
+      padding:12px 16px;border-radius:12px;transition:.2s transform;
+    }
+    .btn:hover{transform:translateY(-1px)}
+    .btn-primary{background:var(--btn-gradient);color:#0b1220;border:0}
+    .btn-dark{background:var(--btn-dark);border:1px solid var(--btn-dark-border);color:#fff}
+
+    /* Sections */
+    .section{margin-top:26px}
+    .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+    @media (max-width: 960px){ .grid{grid-template-columns:1fr} }
+
+    .card{
+      background:var(--panel);border:1px solid var(--line);border-radius:18px;
+      padding:20px;display:flex;flex-direction:column;gap:8px
+    }
+    .muted{color:var(--muted)}
+    .pill{display:inline-block;background:var(--chip);color:var(--muted);border-radius:999px;padding:6px 10px;font-size:12px}
+
+    footer{
+      margin:36px 0 14px;color:var(--muted);font-size:13px;text-align:center
+    }
   </style>
 </head>
 <body>
+  <div class="wrap">
 
-  <!-- Top contact banner -->
-  <div class="topbar">
-    <span><b>Questions?</b> Call us: <a href="tel:+1-530-545-1624" style="text-decoration:underline;">530-545-1624</a> • Proactive AI for Eldercare & Athletics</span>
-  </div>
-
-  <header>
-    <div class="container">
-      <nav class="nav" aria-label="Main">
-        <a class="logo" href="/">
-          <span class="logo-badge"></span>
-          <span>PredictWell <span style="color:var(--brand-2)">Health.ai</span></span>
-        </a>
-        <div class="nav-links" role="menubar">
-          <a href="#how">How it works</a>
-          <a href="#features">Features</a>
-          <a href="#reviews">Reviews</a>
-          <a href="#contact">Contact</a>
-          <a class="cta" href="/athletics.html">Try Athletics</a>
-        </div>
-        <button class="hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false" aria-controls="mobileNav">
-          <span class="bar"></span><span class="bar"></span><span class="bar"></span>
-        </button>
+    <!-- Top bar -->
+    <header>
+      <div class="brand">
+        <div class="logo"></div>
+        <div>PredictWell Health</div>
+      </div>
+      <nav>
+        <a href="/eldercare.html">Eldercare</a>
+        <a href="/athletics.html">Athletics</a>
+        <a href="/patient.html">Patients Portal</a>
+        <a href="/doctor.html">Doctors Portal</a>
       </nav>
+    </header>
 
-      <div id="mobileNav" class="mobile container" role="menu" aria-hidden="true">
-        <a href="#how">How it works</a>
-        <a href="#features">Features</a>
-        <a href="#reviews">Reviews</a>
-        <a href="#contact">Contact</a>
-        <a class="cta" style="display:inline-block;margin:8px 0" href="/eldercare.html">Explore Eldercare</a>
-        <a class="cta" style="display:inline-block;margin:8px 0;background:#111827" href="/athletics.html">Explore Athletics</a>
-      </div>
-    </div>
-  </header>
-
-  <section class="hero">
-    <div class="hero-inner container">
-      <div>
-        <h1>AI that spots risk early and gives clear next steps</h1>
-        <p>Weekly voice & gait check-ins + wearable signals help catch fall/cognition risks for seniors — and workload & mechanics risks for athletes.</p>
+    <!-- Hero -->
+    <section class="hero">
+      <div class="hero-card">
+        <h1>Early insight. Safer care.</h1>
+        <p class="lead">
+          PredictWell turns quick check-ins into clear, actionable risk signals for
+          older adults and athletes — no app installs or logins required.
+        </p>
         <div class="cta-row">
-          <a class="btn primary" href="/eldercare.html">Explore Eldercare</a>
-          <a class="btn secondary" href="/athletics.html">Explore Athletics</a>
+          <a class="btn btn-primary" href="/eldercare.html">Start Eldercare Check-In</a>
+          <a class="btn btn-dark" href="/athletics.html">Start Athletics Check-In</a>
+        </div>
+        <div style="margin-top:14px">
+          <span class="pill">Fast • Private • Evidence-informed</span>
         </div>
       </div>
-    </div>
-  </section>
 
-  <div class="trust">
-    <img src="/static/images/badge_hipaa.png" alt="HIPAA-ready badge" />
-    <img src="/static/images/badge_secure.png" alt="Secure & Private badge" />
-    <img src="/static/images/badge_cloud.png" alt="Cloud Hosted badge" />
-    <span aria-hidden="true">•</span>
-    <span>24/7 Monitoring & Alerts</span>
-  </div>
-
-  <section id="how">
-    <div class="container">
-      <h2 class="section-title">How it works</h2>
-      <p class="section-sub">Simple 1-2-3 flow modeled after best-in-class alert systems: press/record, we analyze, you get clear next steps.</p>
-      <div class="steps">
-        <div class="card"><div class="step-num">1</div><h3>Check-in or Press Help</h3><p>Users complete a 60-second voice & gait check-in, or press a help button in the app if something feels off.</p></div>
-        <div class="card"><div class="step-num">2</div><h3>AI analyzes signals</h3><p>Predictive models review trends from wearables + check-ins to detect fall, cognition, or overuse risk patterns.</p></div>
-        <div class="card"><div class="step-num">3</div><h3>Clear next steps</h3><p>Get step-by-step guidance: call caregiver, do a balance drill, rest day for pitchers, or escalate if needed.</p></div>
+      <div class="hero-card" style="display:flex;flex-direction:column;gap:10px">
+        <h2 style="margin:0">Clinicians & Patients</h2>
+        <p class="muted" style="margin:0 0 6px">
+          Prefer a simple portal? Use these views to review or share results.
+        </p>
+        <div class="cta-row">
+          <a class="btn btn-dark" href="/patient.html">Open Patients Portal</a>
+          <a class="btn btn-dark" href="/doctor.html">Open Doctors Portal</a>
+        </div>
+        <div class="muted" style="font-size:13px;margin-top:6px">
+          Portals are optional — your check-ins work without accounts.
+        </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <section id="features">
-    <div class="container">
-      <h2 class="section-title">Two divisions, one platform</h2>
-      <p class="section-sub">Purpose-built guidance for seniors and athletes — under one brand.</p>
-
+    <!-- What you can do -->
+    <section class="section">
       <div class="grid">
-        <article class="feature">
-          <img src="/static/images/eldercare_feature.jpg" alt="Smiling seniors walking on beach">
-          <div class="body">
-            <span class="chip">Eldercare</span>
-            <h3>Preventive fall & cognition checks</h3>
-            <ul class="list">
-              <li>Weekly voice & gait check-ins</li>
-              <li>Caregiver alerts & history</li>
-              <li>Simple next-step actions</li>
-            </ul>
-            <div style="margin-top:12px">
-              <a href="/eldercare.html" class="btn primary" style="padding:.6rem .9rem">Explore Eldercare</a>
-            </div>
+        <div class="card">
+          <h3 style="margin:0">Eldercare Sentinel</h3>
+          <p class="muted">
+            Capture vitals, sleep, steps, and cognitive/gait warnings. We show a friendly
+            summary and a live risk gauge as you type.
+          </p>
+          <div class="cta-row">
+            <a class="btn btn-primary" href="/eldercare.html">Open Eldercare</a>
+            <a class="btn btn-dark" href="/patient.html">Go to Patients Portal</a>
           </div>
-        </article>
-
-        <article class="feature">
-          <img src="/static/images/baseball_feature.jpg" alt="Baseball pitcher in motion">
-          <div class="body">
-            <span class="chip">Athletics</span>
-            <h3>Pitching workload & mechanics risk</h3>
-            <ul class="list">
-              <li>Inputs: pitch count, rest, pain, video</li>
-              <li>Risk score + flags</li>
-              <li>Personalized prehab plan</li>
-            </ul>
-            <div style="margin-top:12px">
-              <a href="/athletics.html" class="btn secondary" style="padding:.6rem .9rem">Explore Athletics</a>
-            </div>
-          </div>
-        </article>
-
-        <article class="feature">
-          <img src="/static/images/app_feature.jpg" alt="Mobile app screenshots">
-          <div class="body">
-            <span class="chip">App & Portal</span>
-            <h3>Caregiver app & web dashboard</h3>
-            <ul class="list">
-              <li>Battery/status notifications</li>
-              <li>Trend views & exports</li>
-              <li>Privacy-first controls</li>
-            </ul>
-            <div style="margin-top:12px">
-              <a href="#contact" class="btn primary" style="padding:.6rem .9rem">Request access</a>
-            </div>
-          </div>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <section id="reviews" class="testi">
-    <div class="container">
-      <div class="quote">“The weekly check-ins caught balance changes we would’ve missed. The clear steps make it easy for our family to act.”<small>— Pilot family in Missoula, MT</small></div>
-    </div>
-  </section>
-
-  <section id="contact">
-    <div class="container">
-      <h2 class="section-title">Talk with us</h2>
-      <p class="section-sub">Have questions about Eldercare or Athletics? We’ll help you get started.</p>
-      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
-        <a class="btn primary" href="mailto:hello@predictwellhealth.ai">Email hello@predictwellhealth.ai</a>
-        <a class="btn secondary" href="tel:+1-530-545-1624">Call 530-545-1624</a>
-      </div>
-    </div>
-  </section>
-
-  <footer>
-    <div class="container">
-      <div class="foot">
-        <div>
-          <div class="logo" style="color:#fff;margin-bottom:6px"><span class="logo-badge"></span>PredictWell Health.ai</div>
-          <p style="color:#9ca3af;max-width:520px">Proactive health AI for seniors and athletes. Not a medical device; information only. If this is an emergency, call 911.</p>
         </div>
-        <div>
-          <h4>Company</h4>
-          <a href="#how">How it works</a><br/>
-          <a href="#features">Features</a><br/>
-          <a href="#reviews">Reviews</a>
-        </div>
-        <div>
-          <h4>Get Help</h4>
-          <a href="mailto:hello@predictwellhealth.ai">Support</a><br/>
-          <a href="#contact">Contact</a>
+
+        <div class="card">
+          <h3 style="margin:0">Athletics Sentinel</h3>
+          <p class="muted">
+            Track workload, soreness, and recovery to estimate short-term injury/under-performance risk.
+          </p>
+          <div class="cta-row">
+            <a class="btn btn-primary" href="/athletics.html">Open Athletics</a>
+            <a class="btn btn-dark" href="/doctor.html">Go to Doctors Portal</a>
+          </div>
         </div>
       </div>
-      <div class="copyright">© <span id="year"></span> PredictWell Health.ai • All rights reserved</div>
-    </div>
-  </footer>
+    </section>
+
+    <footer>
+      © <span id="yr"></span> PredictWell Health — All rights reserved
+    </footer>
+  </div>
 
   <script>
-    const btn=document.getElementById('hamburger');
-    const mob=document.getElementById('mobileNav');
-    btn?.addEventListener('click',()=>{const open=mob.classList.toggle('show');btn.setAttribute('aria-expanded',open?'true':'false');mob.setAttribute('aria-hidden',open?'false':'true');});
-    document.getElementById('year').textContent=new Date().getFullYear();
+    // tiny nicety: keep the year current
+    document.getElementById('yr').textContent = new Date().getFullYear();
   </script>
 </body>
 </html>
