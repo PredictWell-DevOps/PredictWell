@@ -1,49 +1,14 @@
-# backend/server.py
-from fastapi import FastAPI
+# backend/server.py — PredictWell API (complete, ready to run)
+
+from typing import Optional
+from fastapi import FastAPI, Body
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
-from typing import Optional, List
-import sqlite3
-import os
 
-# ----- Schemas -----
-class PitchRiskInput(BaseModel):
-    pitch_count: int = Field(ge=0)
-    days_rest: int = Field(ge=0)
-    pain_level: int = Field(ge=0, le=10)
-    session_intensity: int = Field(ge=1, le=10)
-    previous_injury: bool = False
+app = FastAPI(title="PredictWell API", version="1.0.0")
 
-class EldercareRiskInput(BaseModel):
-    age: int = Field(ge=0)
-    falls_last_6mo: int = Field(ge=0)
-    dizziness: int = Field(ge=0, le=10)
-    steps: int = Field(ge=0)
-    sleep_hours: float = Field(ge=0)
-    hydration_cups: int = Field(ge=0)
-    meds_changed: bool = False
-
-class RiskOutput(BaseModel):
-    risk_score: float
-    risk_band: str
-    factors: List[str]
-
-class EldercareCheckinIn(BaseModel):
-    patient_id: Optional[int] = None
-    sleep_hours: Optional[float] = None
-    hydration_cups: Optional[int] = None
-    steps: Optional[int] = None
-    dizziness: Optional[int] = None
-    mood: Optional[int] = None
-    notes: Optional[str] = None
-
-class RiskRequest(BaseModel):
-    pitch: Optional[PitchRiskInput] = None
-    elder: Optional[EldercareRiskInput] = None
-
-# ----- App -----
-app = FastAPI(title="PredictWell API")
-
+# CORS so the static site can call this backend
+# You can restrict allow_origins later to ["https://predictwellhealth.ai"]
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -52,85 +17,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ----- SQLite (simple) -----
-DB_PATH = os.path.join(os.path.dirname(__file__), "predictwell.db")
-
-def init_db():
-    conn = sqlite3.connect(DB_PATH)
-    cur = conn.cursor()
-    cur.execute(
-        """
-        CREATE TABLE IF NOT EXISTS eldercare_checkins(
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            patient_id INTEGER,
-            sleep_hours REAL,
-            hydration_cups INTEGER,
-            steps INTEGER,
-            dizziness INTEGER,
-            mood INTEGER,
-            notes TEXT,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        );
-        """
-    )
-    conn.commit()
-    conn.close()
-
-init_db()
-
-# ----- Risk helpers -----
-def _band(score: float) -> str:
-    if score < 0.33:
-        return "Low"
-    if score < 0.66:
-        return "Moderate"
-    return "High"
-
-def compute_pitch_score(p: PitchRiskInput, factors: List[str]) -> float:
-    s = 0.0
-    s += min(p.pitch_count / 100, 1.0) * 0.25
-    s += min(p.session_intensity / 10, 1.0) * 0.20
-    s += min(p.pain_level / 10, 1.0) * 0.25
-    s += (0 if p.days_rest >= 2 else 0.15)
-    s += (0.15 if p.previous_injury else 0.0)
-
-    if p.pitch_count > 85:
-        factors.append("High pitch count")
-    if p.days_rest < 2:
-        factors.append("Low rest")
-    if p.pain_level >= 4:
-        factors.append("Reported pain")
-    if p.previous_injury:
-        factors.append("History of injury")
-    if p.session_intensity >= 8:
-        factors.append("High session intensity")
-    return s
-
-def compute_elder_score(e: EldercareRiskInput, factors: List[str]) -> float:
-    s = 0.0
-    s += min(e.age / 100, 1.0) * 0.10
-    s += min(e.falls_last_6mo / 3, 1.0) * 0.25
-    s += min(e.dizziness / 10, 1.0) * 0.20
-    s += (0.15 if e.meds_changed else 0.0)
-    s += (0.10 if e.steps < 3000 else 0.0)
-    s += (0.10 if e.sleep_hours < 6 else 0.0)
-    s += (0.10 if e.hydration_cups < 6 else 0.0)
-
-    if e.falls_last_6mo >= 1:
-        factors.append("Recent falls")
-    if e.dizziness >= 4:
-        factors.append("Dizziness")
-    if e.meds_changed:
-        factors.append("Medication change")
-    if e.steps < 3000:
-        factors.append("Low activity")
-    if e.sleep_hours < 6:
-        factors.append("Low sleep")
-    if e.hydration_cups < 6:
-        factors.append("Low hydration")
-    return s
-
-# ----- Routes -----
+# -------------------------------
+# Root & Health
+# -------------------------------
 @app.get("/")
 def root():
     return {"message": "PredictWell API is running. Visit /docs for Swagger."}
@@ -139,44 +28,96 @@ def root():
 def healthz():
     return {"status": "ok"}
 
+# -------------------------------
+# Optional: simple risk stub
+# -------------------------------
+class RiskRequest(BaseModel):
+    value: Optional[float] = None
+    label: Optional[str] = None
+
+class RiskOutput(BaseModel):
+    score: int
+    band: str
+
 @app.post("/risk", response_model=RiskOutput)
 def risk(req: RiskRequest):
-    score: float = 0.0
-    factors: List[str] = []
-    if req.pitch:
-        score += compute_pitch_score(req.pitch, factors)
-    if req.elder:
-        score += compute_elder_score(req.elder, factors)
-    score = max(0.0, min(score, 1.0))
-    return {"risk_score": round(score, 3), "risk_band": _band(score), "factors": factors}
+    base = int((req.value or 0) % 101)
+    band = "Low" if base < 33 else ("Moderate" if base < 66 else "High")
+    return RiskOutput(score=base, band=band)
+
+# -------------------------------
+# Eldercare Check-in (returns id)
+# -------------------------------
+ELDERCARE_ID = 0
 
 @app.post("/eldercare/checkin")
-def eldercare_checkin(payload: EldercareCheckinIn):
-    conn = sqlite3.connect(DB_PATH)
-    cur = conn.cursor()
-    cur.execute(
-        """
-        INSERT INTO eldercare_checkins
-        (patient_id, sleep_hours, hydration_cups, steps, dizziness, mood, notes)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
-        """,
-        (
-            payload.patient_id,
-            payload.sleep_hours,
-            payload.hydration_cups,
-            payload.steps,
-            payload.dizziness,
-            payload.mood,
-            payload.notes,
-        ),
-    )
-    conn.commit()
-    new_id = cur.lastrowid
-    conn.close()
-    return {"id": new_id}
+def eldercare_checkin(payload: dict = Body(...)):
+    """
+    Accepts any eldercare JSON payload and returns a server id.
+    Replace with DB writes if you want persistence.
+    """
+    global ELDERCARE_ID
+    ELDERCARE_ID += 1
+    return {"id": ELDERCARE_ID}
 
-# ----- Direct start for Render -----
-if __name__ == "__main__":
-    import uvicorn
-    port = int(os.getenv("PORT", "8000"))
-    uvicorn.run("server:app", host="0.0.0.0", port=port, reload=False)
+# -------------------------------
+# Athletics Check-in (returns id)
+# -------------------------------
+class Athlete(BaseModel):
+    name: Optional[str] = None
+    athlete_id: Optional[str] = None
+    age: Optional[int] = Field(None, ge=12, le=60)
+    sex: Optional[str] = None
+    sport: Optional[str] = None
+    position: Optional[str] = None
+    team: Optional[str] = None
+
+class Workload(BaseModel):
+    rpe: Optional[float] = None
+    duration_min: Optional[float] = None
+    distance_km: Optional[float] = None
+    sprints: Optional[int] = None
+    jumps: Optional[int] = None
+    strength_sets: Optional[int] = None
+    atl: Optional[float] = None
+    ctl: Optional[float] = None
+    session_load: Optional[float] = None
+    acwr: Optional[float] = None
+
+class Wellness(BaseModel):
+    sleep_hours: Optional[float] = None
+    soreness: Optional[float] = None
+    fatigue: Optional[float] = None
+    stress: Optional[float] = None
+    mood: Optional[float] = None
+
+class Vitals(BaseModel):
+    resting_hr: Optional[float] = None
+    hrv_rmssd: Optional[float] = None
+    spo2: Optional[float] = None
+
+class Health(BaseModel):
+    pain_areas: Optional[str] = None
+    recent_injury: Optional[str] = None
+    recent_illness: Optional[str] = None
+
+class AthleticsCheckin(BaseModel):
+    athlete: Optional[Athlete] = None
+    workload: Optional[Workload] = None
+    wellness: Optional[Wellness] = None
+    vitals: Optional[Vitals] = None
+    health: Optional[Health] = None
+    notes: Optional[str] = None
+    timestamp: Optional[str] = None
+
+ATHLETICS_ID = 0
+
+@app.post("/athletics/checkin")
+def athletics_checkin(payload: AthleticsCheckin):
+    """
+    Accepts an athletics check-in payload and returns a server id.
+    Replace with DB writes if you want persistence.
+    """
+    global ATHLETICS_ID
+    ATHLETICS_ID += 1
+    return {"id": ATHLE
