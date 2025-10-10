@@ -314,14 +314,13 @@
     }
 
     /* ---------- Probability (beta) ---------- */
-    // Conservative weights mapping to 14-day injury/underperformance risk
     function predictProbability(data){
       const v = data.vitals || {};
       const w = data.workload || {};
       const wl = data.wellness || {};
       const h = data.health || {};
 
-      const loadZ = w.session_load ? Math.max(0, (w.session_load - 400)/100) : 0; // heavy day
+      const loadZ = w.session_load ? Math.max(0, (w.session_load - 400)/100) : 0;
       const acwrHi = (w.acwr && w.acwr > 1.5) ? (w.acwr - 1.5) : 0;
       const acwrLo = (w.acwr && w.acwr < 0.8) ? (0.8 - w.acwr) : 0;
 
@@ -332,7 +331,7 @@
       const sore = wl.soreness ? Math.max(0, wl.soreness - 4) : 0;
       const fatig = wl.fatigue ? Math.max(0, wl.fatigue - 4) : 0;
       const stress = wl.stress ? Math.max(0, wl.stress - 4) : 0;
-      const lowMood = wl.mood ? Math.max(0, 3 - wl.mood) : 0; // below neutral
+      const lowMood = wl.mood ? Math.max(0, 3 - wl.mood) : 0;
 
       const pain = h.pain_areas && h.pain_areas.trim().length ? 1 : 0;
       const inj = (h.recent_injury === 'Yes') ? 1 : 0;
