@@ -3,29 +3,58 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>PredictWell Health.ai — Athletics (Pitching Risk)</title>
-  <meta name="description" content="PredictWell Athletics: pitcher workload, pain, velocity, rest, and mechanics flags combined into a risk score." />
+  <title>PredictWell Health.ai — Athletics Sentinel</title>
+  <meta name="description" content="Athlete wellness & workload check-in with risk, prediction, and next actions." />
   <link rel="icon" href="data:," />
   <style>
     :root{
       --ink:#0f172a; --muted:#64748b; --navy:#0b2545; --brand:#ff7a18;
-      --ok:#16a34a; --warn:#ea580c; --err:#dc2626; --card:#ffffff;
+      --ok:#16a34a; --warn:#ea580c; --err:#dc2626; --card:#ffffff; --line:#e2e8f0;
     }
-    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
-      background-image:url("/static/images/predictwell_background.png");background-size:cover;background-position:center;background-repeat:no-repeat;background-attachment:fixed;min-height:100vh;color:var(--ink)}
-    .overlay{background:rgba(255,255,255,.92);padding:30px;min-height:100vh}
-    header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
-    .brand h1{margin:0;font-size:28px;color:var(--navy)} .brand span{color:var(--brand)}
-    nav a{text-decoration:none;color:var(--navy);font-weight:700;padding:8px 12px;border-radius:8px;background:rgba(255,255,255,.6);border:1px solid rgba(2,6,23,.1)}
-    .card{background:var(--card);border-radius:14px;padding:20px;box-shadow:0 4px 12px rgba(0,0,0,.1);margin-bottom:20px}
-    label{display:block;margin-bottom:6px;color:#475569}
-    input,textarea{width:100%;padding:10px;margin-bottom:12px;border-radius:8px;border:1px solid #cbd5e1;box-sizing:border-box}
-    button{padding:10px 16px;font-size:15px;font-weight:700;border-radius:8px;border:none;cursor:pointer}
-    .primary{background:var(--brand);color:#fff}.ghost{background:#fff;color:var(--navy);border:1px solid #94a3b8}
-    /* Results */
+    *{box-sizing:border-box}
+    body{
+      margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+      background-image:url("/static/images/predictwell_background.png");
+      background-size:cover;background-position:center;background-repeat:no-repeat;background-attachment:fixed;
+      min-height:100vh;color:var(--ink)
+    }
+    .overlay{background:rgba(255,255,255,.94);padding:26px;min-height:100vh;max-width:1100px;margin:0 auto}
+    header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+    .brand h1{margin:0;font-size:26px;color:var(--navy)}
+    .brand a{text-decoration:none;color:var(--navy)}
+    .brand a span{color:var(--brand)}
+    nav a{text-decoration:none;color:var(--navy);font-weight:700;padding:8px 12px;border-radius:8px;background:rgba(255,255,255,.7);border:1px solid rgba(2,6,23,.1)}
+    .toolbar{display:flex;flex-wrap:wrap;gap:8px}
+    .card{background:var(--card);border-radius:14px;padding:16px 16px;box-shadow:0 4px 12px rgba(0,0,0,.08);margin-bottom:14px;border:1px solid var(--line)}
+
+    /* Accordion sections — consistent size */
+    details.section{border:1px solid var(--line);border-radius:12px;background:#fff;margin-bottom:12px;overflow:hidden}
+    details.section>summary{
+      list-style:none;cursor:pointer;font-weight:700;color:var(--navy);
+      padding:14px 16px;min-height:48px;display:flex;align-items:center;justify-content:space-between;
+      background:#f8fafc;border-bottom:1px solid var(--line)
+    }
+    details.section[open]>summary{background:#eef2ff}
+    summary::-webkit-details-marker{display:none}
+    .section-body{padding:14px}
+
+    .row{display:grid;grid-template-columns:repeat(12,1fr);gap:10px}
+    .col-12{grid-column:span 12} .col-6{grid-column:span 6} .col-4{grid-column:span 4} .col-3{grid-column:span 3}
+    label{display:block;margin-bottom:6px;color:#475569;font-size:13px}
+    .req::after{content:" *";color:var(--err);font-weight:700}
+    input,select,textarea{width:100%;padding:9px;border-radius:8px;border:1px solid #cbd5e1;background:#fff;font-size:14px}
+    textarea{min-height:70px}
+    .help{font-size:12px;color:var(--muted)}
+    button{padding:10px 14px;font-size:14px;font-weight:700;border-radius:8px;border:1px solid transparent;cursor:pointer}
+    .primary{background:var(--brand);color:#fff;border-color:var(--brand)}
+    .ghost{background:#fff;color:var(--navy);border-color:#94a3b8}
+    .danger{background:#fff;color:var(--err);border-color:#fecaca}
+    .subtle{background:#fff;color:#0f172a;border-color:var(--line)}
+
+    /* Results + small UI bits */
     .results-wrap{display:grid;gap:12px}
-    .section{border:1px solid #e2e8f0;border-radius:12px;padding:14px;background:#fff}
-    .section h4{margin:0 0 10px;color:var(--navy);font-size:14px;letter-spacing:.2px;text-transform:uppercase}
+    .box{border:1px solid var(--line);border-radius:12px;padding:14px;background:#fff}
+    .box h4{margin:0 0 10px;color:var(--navy);font-size:14px;letter-spacing:.2px;text-transform:uppercase}
     .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
     .kv{display:flex;justify-content:space-between;gap:12px;border:1px dashed #e5e7eb;border-radius:10px;padding:8px 10px}
     .kv b{color:var(--muted);font-weight:600}
@@ -34,69 +63,186 @@
     .pill.warn{background:#fff7ed;color:var(--warn);border:1px solid #fed7aa}
     .pill.err{background:#fef2f2;color:var(--err);border:1px solid #fecaca}
     .muted{color:var(--muted);font-size:12px}
-    details.debug{margin-top:8px}
-    pre{background:#0b1220;color:#e2e8f0;padding:14px;border-radius:8px;overflow:auto}
-    footer{text-align:center;font-size:12px;color:#475569;margin-top:30px}
+    .actions li{margin:4px 0}
+    .error{color:var(--err);font-size:12px;margin-top:4px}
+
     /* Risk bar */
     .risk{display:grid;gap:10px}
     .riskband{position:relative;height:12px;border-radius:999px;overflow:hidden;
       background:linear-gradient(90deg,#22c55e 0%,#f59e0b 50%,#ef4444 100%);}
-    .riskpointer{position:absolute;top:-6px;width:0;height:0;
-      border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:12px solid #0f172a}
+    .riskpointer{position:absolute;top:-6px;width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:12px solid #0f172a}
     .risklegend{display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}
-    .actions li{margin:4px 0}
+
+    pre{background:#0b1220;color:#e2e8f0;padding:14px;border-radius:8px;overflow:auto}
+    footer{text-align:center;font-size:12px;color:#475569;margin-top:18px}
+
+    @media (max-width:860px){
+      .grid{grid-template-columns:1fr}
+      .row{grid-template-columns:repeat(6,1fr)}
+      .col-6{grid-column:span 6}.col-4{grid-column:span 6}.col-3{grid-column:span 3}
+    }
   </style>
 </head>
 <body>
   <div class="overlay">
-    <header>
-      <div class="brand"><h1>PredictWell <span>Health.ai</span></h1></div>
-      <nav>
-        <a href="/eldercare.html">Eldercare</a>
-        <a href="/athletics.html">Athletics</a>
+    <header style="gap:12px;align-items:flex-start">
+      <div class="brand">
+        <h1 style="margin:0;">
+          <a href="/" aria-label="Go to PredictWell landing page">
+            PredictWell <span>Health.ai</span>
+          </a>
+        </h1>
+        <div class="help">Athletics Sentinel — daily wellness & workload check-in</div>
+      </div>
+      <nav class="toolbar">
+        <a class="subtle" href="/">Home</a>
+        <a class="subtle" href="/eldercare.html">Eldercare</a>
+        <a class="subtle" href="/athletics.html">Athletics</a>
       </nav>
     </header>
 
+    <!-- Top action bar -->
     <div class="card">
-      <h2>Pitching Risk — Daily/Weekly Input</h2>
-
-      <label>Pitcher Name</label>
-      <input id="p_name" type="text" placeholder="e.g., A. Miller" />
-
-      <label>Age</label>
-      <input id="p_age" type="number" min="8" max="60" placeholder="17" />
-
-      <label>Pitch Count (last 7 days)</label>
-      <input id="pitch_count_7d" type="number" min="0" step="1" placeholder="92" />
-
-      <label>Innings (last 7 days)</label>
-      <input id="innings_7d" type="number" min="0" step="0.1" placeholder="6.2" />
-
-      <label>Rest days since last outing</label>
-      <input id="rest_days" type="number" min="0" max="10" step="1" placeholder="2" />
-
-      <label>Avg Velocity (mph)</label>
-      <input id="velo_avg" type="number" step="0.1" min="40" max="110" placeholder="84.7" />
-
-      <label>Pain today (0–10)</label>
-      <input id="pain_level" type="number" step="1" min="0" max="10" placeholder="2" />
-
-      <label>Throws today</label>
-      <input id="workload_today" type="number" step="1" min="0" placeholder="35" />
-
-      <label><input id="elbow_history" type="checkbox" /> Prior elbow or shoulder injury/surgery?</label>
-
-      <label>Mechanics flags (optional)</label>
-      <textarea id="mech_flags" placeholder="e.g., late arm, inconsistent stride, drag line anomalies..."></textarea>
-
-      <div>
-        <button class="primary" id="riskBtn">Compute Risk</button>
-        <button class="ghost" id="pingBtn">Ping Backend</button>
+      <div class="toolbar">
+        <button class="primary" id="submitBtnTop">Submit Check-In</button>
+        <button class="ghost" id="pingBtnTop">Ping Backend</button>
+        <button class="ghost" id="expandAll">Expand all</button>
+        <button class="ghost" id="collapseAll">Collapse all</button>
+        <button class="ghost" id="saveDraft">Save draft</button>
+        <button class="danger" id="clearDraft">Clear draft</button>
+        <button class="ghost" id="printBtn">Print</button>
+        <button class="ghost" id="exportBtn">Export JSON</button>
       </div>
     </div>
 
+    <!-- Athlete & identifiers -->
+    <details class="section" open>
+      <summary>Athlete & Identifiers</summary>
+      <div class="section-body">
+        <div class="row">
+          <div class="col-6">
+            <label class="req">Athlete Name</label>
+            <input id="name" placeholder="e.g., Jordan Diaz" />
+            <div class="error" id="err_name"></div>
+          </div>
+          <div class="col-3">
+            <label>Athlete ID</label>
+            <input id="athlete_id" placeholder="ATH-00123" />
+          </div>
+          <div class="col-3">
+            <label class="req">Age</label>
+            <input id="age" type="number" min="12" max="60" placeholder="22" />
+            <div class="error" id="err_age"></div>
+          </div>
+          <div class="col-3">
+            <label>Sex</label>
+            <select id="sex"><option value="">—</option><option>Female</option><option>Male</option><option>Non-binary</option></select>
+          </div>
+          <div class="col-3">
+            <label>Sport</label>
+            <input id="sport" placeholder="Soccer, Track, Basketball..." />
+          </div>
+          <div class="col-3">
+            <label>Position / Event</label>
+            <input id="position" placeholder="Midfielder, 400m, Guard..." />
+          </div>
+          <div class="col-6">
+            <label>Team / Organization</label>
+            <input id="team" placeholder="Club / University / Pro" />
+          </div>
+        </div>
+      </div>
+    </details>
+
+    <!-- Workload -->
+    <details class="section">
+      <summary>Training Workload</summary>
+      <div class="section-body">
+        <div class="row">
+          <div class="col-3"><label class="req">Session RPE (1–10)</label><input id="rpe" type="number" min="1" max="10" placeholder="6" /><div class="error" id="err_rpe"></div></div>
+          <div class="col-3"><label class="req">Duration (min)</label><input id="duration_min" type="number" min="0" placeholder="75" /><div class="error" id="err_duration"></div></div>
+          <div class="col-3"><label>Distance (km)</label><input id="distance_km" type="number" step="0.01" placeholder="8.2" /></div>
+          <div class="col-3"><label>Sprints (count)</label><input id="sprints" type="number" placeholder="18" /></div>
+          <div class="col-3"><label>Jumps/Plyos (count)</label><input id="jumps" type="number" placeholder="40" /></div>
+          <div class="col-3"><label>Strength sets (count)</label><input id="strength_sets" type="number" placeholder="20" /></div>
+          <div class="col-3"><label>Acute TL (7d)</label><input id="atl" type="number" step="0.1" placeholder="420" /></div>
+          <div class="col-3"><label>Chronic TL (28d)</label><input id="ctl" type="number" step="0.1" placeholder="1500" /></div>
+        </div>
+        <div class="help">Session Load = RPE × Duration. ACWR auto-computes from ATL/CTL when available.</div>
+      </div>
+    </details>
+
+    <!-- Wellness -->
+    <details class="section">
+      <summary>Wellness & Recovery</summary>
+      <div class="section-body">
+        <div class="row">
+          <div class="col-3"><label class="req">Sleep (hrs)</label><input id="sleep_hours" type="number" step="0.1" placeholder="7.4" /><div class="error" id="err_sleep"></div></div>
+          <div class="col-3"><label class="req">Resting HR</label><input id="resting_hr" type="number" placeholder="54" /><div class="error" id="err_rhr"></div></div>
+          <div class="col-3"><label>HRV (RMSSD, ms)</label><input id="hrv_rmssd" type="number" placeholder="48" /></div>
+          <div class="col-3"><label>SpO₂ (%)</label><input id="avg_spo2" type="number" step="0.1" placeholder="97" /></div>
+          <div class="col-3"><label>Soreness (0–10)</label><input id="soreness" type="number" min="0" max="10" placeholder="3" /></div>
+          <div class="col-3"><label>Fatigue (0–10)</label><input id="fatigue" type="number" min="0" max="10" placeholder="4" /></div>
+          <div class="col-3"><label>Stress (0–10)</label><input id="stress" type="number" min="0" max="10" placeholder="3" /></div>
+          <div class="col-3"><label>Mood (1–5)</label><input id="mood" type="number" min="1" max="5" placeholder="4" /></div>
+        </div>
+      </div>
+    </details>
+
+    <!-- Health flags -->
+    <details class="section">
+      <summary>Injuries / Illness</summary>
+      <div class="section-body">
+        <div class="row">
+          <div class="col-4"><label>New pain area(s)</label><input id="pain_areas" placeholder="Left hamstring, ankle..." /></div>
+          <div class="col-4"><label>Recent injury?</label><select id="recent_injury"><option>No</option><option>Yes</option></select></div>
+          <div class="col-4"><label>Recent illness?</label><select id="recent_illness"><option>No</option><option>Yes</option></select></div>
+          <div class="col-12"><label>Notes (optional)</label><textarea id="notes" placeholder="Anything else coaches/ATC should know?"></textarea></div>
+        </div>
+      </div>
+    </details>
+
+    <!-- LIVE RISK -->
     <div class="card">
-      <h3>Risk Score & Recommendations</h3>
+      <div class="box">
+        <h4>Live Risk (updates as you type)</h4>
+        <div class="risk">
+          <div class="riskband"><div id="livePointer" class="riskpointer" style="left:-7px"></div></div>
+          <div class="risklegend"><span>Low</span><span>Moderate</span><span>High</span></div>
+          <div class="kv" style="margin-top:6px"><b>Score</b>
+            <span><span id="liveBand" class="pill ok">Low</span>&nbsp; <span id="liveScore">0</span>/100</span>
+          </div>
+        </div>
+        <div class="toolbar" style="margin-top:10px">
+          <button class="primary" id="submitBtnRisk">Submit Check-In</button>
+          <button class="ghost" id="pingBtnRisk">Ping Backend</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PREDICTION -->
+    <div class="card">
+      <div class="box">
+        <h4>Prediction (beta)</h4>
+        <div class="grid">
+          <div class="kv">
+            <b>Estimated 14-day injury/underperformance risk</b>
+            <span><span id="predProbText">—</span></span>
+          </div>
+          <div class="kv">
+            <b>Band</b>
+            <span><span id="predBand" class="pill ok">Low</span></span>
+          </div>
+        </div>
+        <div class="help" style="margin-top:8px">
+          This estimate updates from entries and will improve with a trained model. Not medical advice.
+        </div>
+      </div>
+    </div>
+
+    <!-- Results -->
+    <div class="card">
+      <h3>Submitted Results</h3>
       <div id="resultView" class="results-wrap">
         <p class="muted">Submit to see a friendly summary.</p>
       </div>
@@ -106,26 +252,52 @@
       </details>
     </div>
 
-    <footer>© <span id="year"></span> PredictWell Health.ai — Athletics</footer>
+    <footer>© <span id="year"></span> PredictWell Health.ai — Athletics Sentinel</footer>
   </div>
 
   <script>
     const BASE_API = 'https://predictwell-backend-ai.onrender.com';
+    const DRAFT_KEY = 'pw_athletics_draft_v1';
 
-    // --- Risk / Actions heuristics ---
-    function athleticsRiskScore(d){
-      const w = d.workload || {};
-      const f = d.flags || {};
+    const el = id => document.getElementById(id);
+    const val = id => el(id)?.value ?? '';
+    const num = id => { const v = val(id); const n = Number(v); return Number.isFinite(n) ? n : null; };
+    const out = obj => { el('output').textContent = (typeof obj === 'string') ? obj : JSON.stringify(obj, null, 2); };
+
+    /* ---------- Derived metrics ---------- */
+    function sessionLoad(rpe, minutes){ return (rpe && minutes) ? (rpe * minutes) : null; }
+    function acwr(atl, ctl){ return (atl && ctl && ctl>0) ? (atl / ctl) : null; }
+
+    /* ---------- Risk score (0–100) ---------- */
+    function riskScore(data){
+      const v = data.vitals || {};
+      const w = data.workload || {};
+      const wl = data.wellness || {};
+      const h = data.health || {};
       let score = 0;
 
-      // Workload components (0–100 overall)
-      if(w.pitch_count_7d) score += Math.min(40, w.pitch_count_7d * 0.3);   // up to ~40
-      if(w.innings_7d)     score += Math.min(20, w.innings_7d * 2.5);       // up to ~20
-      if(w.rest_days!==undefined && w.rest_days < 3) score += (3 - w.rest_days) * 6; // up to 18
-      if(w.pain_level)     score += Math.min(20, w.pain_level * 2.5);       // up to 20
-      if(f.elbow_history)  score += 12;
-      // Slight bump if velo >= 90 (higher stress context)
-      if(w.velo_avg && w.velo_avg >= 90) score += 6;
+      // Workload stress
+      if(w.session_load && w.session_load > 500) score += Math.min(20, (w.session_load-500)/25);
+      if(w.acwr){
+        if(w.acwr > 1.5) score += Math.min(18, (w.acwr-1.5)*20);
+        else if(w.acwr < 0.8) score += Math.min(10, (0.8-w.acwr)*12);
+      }
+
+      // Wellness strain
+      if(wl.sleep_hours && wl.sleep_hours < 6.5) score += (6.5 - wl.sleep_hours) * 3.5;
+      if(v.resting_hr && v.resting_hr > 60) score += Math.min(10, (v.resting_hr-60)/2);
+      if(v.hrv_rmssd && v.hrv_rmssd < 35) score += (35 - v.hrv_rmssd) * 0.6;
+
+      // Subjective scales
+      if(wl.soreness && wl.soreness >= 5) score += (wl.soreness-4) * 2.5;
+      if(wl.fatigue && wl.fatigue >= 6) score += (wl.fatigue-5) * 2.5;
+      if(wl.stress && wl.stress >= 6) score += (wl.stress-5) * 2.0;
+      if(wl.mood && wl.mood <= 2) score += (3 - wl.mood) * 4;
+
+      // Health flags
+      if(h.recent_injury === 'Yes') score += 12;
+      if(h.recent_illness === 'Yes') score += 8;
+      if(h.pain_areas && h.pain_areas.trim().length) score += 6;
 
       score = Math.max(0, Math.min(100, Math.round(score)));
       let band='Low', color='ok';
@@ -134,145 +306,263 @@
       return { score, band, color };
     }
 
-    function athleticsActions(d){
-      const w = d.workload || {};
-      const f = d.flags || {};
-      const a = [];
-      if(w.pain_level>=4) a.push('Cease throwing today; ice and monitor pain, reassess tomorrow.');
-      if((w.rest_days??0)<2) a.push('Schedule a rest/recovery day (mobility + band work only).');
-      if((w.pitch_count_7d??0)>90) a.push('Cap next outing; target low-stress bullpen instead of game load.');
-      if(f.elbow_history) a.push('Add pre-throwing warm-up: scap activation + light band series.');
-      if((w.velo_avg??0)>=90) a.push('Increase post-throw shoulder care (sleeper stretch, posterior cuff).');
-      if(!a.length) a.push('Proceed as planned with standard warm-up and 48h recovery window.');
-      return a.slice(0,5);
+    /* ---------- Probability (beta) ---------- */
+    // Conservative weights mapping to 14-day injury/underperformance risk
+    function predictProbability(data){
+      const v = data.vitals || {};
+      const w = data.workload || {};
+      const wl = data.wellness || {};
+      const h = data.health || {};
+
+      const loadZ = w.session_load ? Math.max(0, (w.session_load - 400)/100) : 0; // heavy day
+      const acwrHi = (w.acwr && w.acwr > 1.5) ? (w.acwr - 1.5) : 0;
+      const acwrLo = (w.acwr && w.acwr < 0.8) ? (0.8 - w.acwr) : 0;
+
+      const sleepLow = wl.sleep_hours ? Math.max(0, 7 - wl.sleep_hours) : 0;
+      const rhrHigh = v.resting_hr ? Math.max(0, v.resting_hr - 58) : 0;
+      const hrvLow = v.hrv_rmssd ? Math.max(0, 40 - v.hrv_rmssd) : 0;
+
+      const sore = wl.soreness ? Math.max(0, wl.soreness - 4) : 0;
+      const fatig = wl.fatigue ? Math.max(0, wl.fatigue - 4) : 0;
+      const stress = wl.stress ? Math.max(0, wl.stress - 4) : 0;
+      const lowMood = wl.mood ? Math.max(0, 3 - wl.mood) : 0; // below neutral
+
+      const pain = h.pain_areas && h.pain_areas.trim().length ? 1 : 0;
+      const inj = (h.recent_injury === 'Yes') ? 1 : 0;
+      const ill = (h.recent_illness === 'Yes') ? 1 : 0;
+
+      // Intercept tuned for ~8–12% baseline
+      let z =
+        (-2.2) +
+        (0.35 * loadZ) + (0.9 * acwrHi) + (0.5 * acwrLo) +
+        (0.28 * sleepLow) + (0.06 * rhrHigh) + (0.04 * hrvLow) +
+        (0.22 * sore) + (0.22 * fatig) + (0.18 * stress) + (0.35 * lowMood) +
+        (0.65 * pain) + (0.9 * inj) + (0.6 * ill);
+
+      const p = 1 / (1 + Math.exp(-z));
+      const clamped = Math.min(0.95, Math.max(0.01, p));
+      let band='Low', color='ok';
+      if(clamped >= 0.33){ band='High'; color='err'; }
+      else if(clamped >= 0.15){ band='Moderate'; color='warn'; }
+      return { p: clamped, band, color };
     }
 
-    function renderAthleticsView(data){
-      const wrap = document.getElementById('resultView');
-      if(!data){ wrap.innerHTML = '<p class="muted">No data.</p>'; return; }
+    function renderPrediction(data){
+      const r = predictProbability(data);
+      const pct = Math.round(r.p * 100);
+      const text = el('predProbText'), band = el('predBand');
+      if(!text || !band) return;
+      text.textContent = `${pct}%`;
+      band.textContent = r.band;
+      band.className = `pill ${r.color}`;
+    }
 
-      const y = (v,s='') => (v===null||v===undefined||v==='')?'—':(s?`${v}${s}`:v);
-      const painPill = (n)=>{
-        if(n>=7) return `<span class="pill err">Pain: ${n}/10</span>`;
-        if(n>=4) return `<span class="pill warn">Pain: ${n}/10</span>`;
-        return `<span class="pill ok">Pain: ${n}/10</span>`;
-      };
-      const elbowPill = (on)=>`<span class="pill ${on?'warn':'ok'}">Elbow/Shoulder: ${on?'History':'None'}</span>`;
-
+    /* ---------- Next actions ---------- */
+    function nextActions(data){
       const w = data.workload || {};
-      const f = data.flags || {};
-      const ts = data.timestamp ? new Date(data.timestamp).toLocaleString() : '—';
-      const risk = athleticsRiskScore(data);
-      const actions = athleticsActions(data);
+      const wl = data.wellness || {};
+      const v = data.vitals || {};
+      const h = data.health || {};
+      const a = [];
 
-      wrap.innerHTML = `
-        <div class="section">
+      if(w.acwr && w.acwr > 1.5) a.push('High ACWR — cut next session volume by 20–30% and emphasize recovery.');
+      if(w.acwr && w.acwr < 0.8) a.push('Low ACWR — small progressive increase (5–10%) over the next week.');
+      if(w.session_load && w.session_load > 600) a.push('Heavy day — schedule low-impact recovery (mobility, light aerobic).');
+      if(wl.sleep_hours && wl.sleep_hours < 7) a.push('Target 7–9h sleep; add 20–30 min nap or earlier lights-out.');
+      if(v.resting_hr && v.resting_hr > 60) a.push('Elevated resting HR — hydrate, reduce stimulant intake, monitor.');
+      if(v.hrv_rmssd && v.hrv_rmssd < 40) a.push('Low HRV — prioritize parasympathetic recovery (breathing, light walk).');
+      if(wl.soreness >= 6) a.push('High soreness — swap high-impact drills for technique or pool work.');
+      if(h.pain_areas) a.push('New pain — flag ATC/physio for quick screen before high-intensity work.');
+      if(h.recent_injury === 'Yes') a.push('Recent injury — follow RTP plan, avoid unscripted max efforts.');
+      if(!a.length) a.push('Green day — proceed with planned session and finish with 10–15 min mobility.');
+
+      return a.slice(0,6);
+    }
+
+    /* ---------- Render submitted summary ---------- */
+    function renderSubmittedView(data){
+      const wrap = el('resultView'); if(!data){ wrap.innerHTML = '<p class="muted">No data.</p>'; return; }
+      const y = (v,s='') => (v===null||v===undefined||v==='')? '—' : (s?`${v}${s}`:v);
+      const pill = (label,on)=>`<span class="pill ${on?'warn':'ok'}">${label}: ${on?'Yes':'No'}</span>`;
+
+      const a=data.athlete||{}, w=data.workload||{}, wl=data.wellness||{}, v=data.vitals||{}, h=data.health||{};
+      const r=riskScore(data), ts=data.timestamp?new Date(data.timestamp).toLocaleString():'—';
+
+      wrap.innerHTML=`
+        <div class="box">
           <h4>Risk Summary</h4>
           <div class="risk">
-            <div class="riskband">
-              <div class="riskpointer" style="left: calc(${risk.score}% - 7px)"></div>
-            </div>
+            <div class="riskband"><div class="riskpointer" style="left: calc(${r.score}% - 7px)"></div></div>
             <div class="risklegend"><span>Low</span><span>Moderate</span><span>High</span></div>
-            <div class="kv" style="margin-top:6px"><b>Score</b><span><span class="pill ${risk.color}">${risk.band}</span> &nbsp; ${risk.score}/100</span></div>
+            <div class="kv" style="margin-top:6px"><b>Score</b><span><span class="pill ${r.color}">${r.band}</span>&nbsp; ${r.score}/100</span></div>
           </div>
         </div>
-
-        <div class="section">
-          <h4>Summary</h4>
+        <div class="box">
+          <h4>Athlete</h4>
           <div class="grid">
-            <div class="kv"><b>Pitcher</b><span>${y(data.name)}</span></div>
-            <div class="kv"><b>Age</b><span>${y(data.age)}</span></div>
-            <div class="kv"><b>Record ID</b><span>${y(data.id)}</span></div>
+            <div class="kv"><b>Name</b><span>${y(a.name)}</span></div>
+            <div class="kv"><b>ID</b><span>${y(a.athlete_id)}</span></div>
+            <div class="kv"><b>Age</b><span>${y(a.age)}</span></div>
+            <div class="kv"><b>Sport / Position</b><span>${y(a.sport)} / ${y(a.position)}</span></div>
+            <div class="kv"><b>Team</b><span>${y(a.team)}</span></div>
             <div class="kv"><b>Submitted</b><span>${ts}</span></div>
           </div>
         </div>
-
-        <div class="section">
-          <h4>Workload (7d + Today)</h4>
+        <div class="box">
+          <h4>Workload</h4>
           <div class="grid">
-            <div class="kv"><b>Pitch Count (7d)</b><span>${y(w.pitch_count_7d)}</span></div>
-            <div class="kv"><b>Innings (7d)</b><span>${y(w.innings_7d)}</span></div>
-            <div class="kv"><b>Throws Today</b><span>${y(w.workload_today)}</span></div>
-            <div class="kv"><b>Rest Days</b><span>${y(w.rest_days)}</span></div>
+            <div class="kv"><b>Session Load</b><span>${y(w.session_load)}</span></div>
+            <div class="kv"><b>Duration</b><span>${y(w.duration_min,' min')}</span></div>
+            <div class="kv"><b>RPE</b><span>${y(w.rpe)}</span></div>
+            <div class="kv"><b>ACWR</b><span>${y(w.acwr)}</span></div>
+            <div class="kv"><b>Distance</b><span>${y(w.distance_km,' km')}</span></div>
+            <div class="kv"><b>Sprints / Jumps / Sets</b><span>${y(w.sprints)} / ${y(w.jumps)} / ${y(w.strength_sets)}</span></div>
           </div>
         </div>
-
-        <div class="section">
-          <h4>Health & Performance</h4>
+        <div class="box">
+          <h4>Wellness & Vitals</h4>
           <div class="grid">
-            <div>${painPill(Number(w.pain_level||0))}</div>
-            <div class="kv"><b>Velocity (avg)</b><span>${y(w.velo_avg,' mph')}</span></div>
-            <div>${elbowPill(!!f.elbow_history)}</div>
+            <div class="kv"><b>Sleep</b><span>${y(wl.sleep_hours,' h')}</span></div>
+            <div class="kv"><b>Resting HR</b><span>${y(v.resting_hr,' bpm')}</span></div>
+            <div class="kv"><b>HRV</b><span>${y(v.hrv_rmssd,' ms')}</span></div>
+            <div class="kv"><b>SpO₂</b><span>${y(v.spo2,' %')}</span></div>
+            <div class="kv"><b>Soreness / Fatigue / Stress</b><span>${y(wl.soreness)} / ${y(wl.fatigue)} / ${y(wl.stress)}</span></div>
+            <div class="kv"><b>Mood</b><span>${y(wl.mood,' /5')}</span></div>
           </div>
         </div>
-
-        <div class="section">
+        <div class="box">
+          <h4>Health Flags</h4>
+          <div class="grid">
+            <div>${pill('Recent Injury', h.recent_injury==='Yes')}</div>
+            <div>${pill('Recent Illness', h.recent_illness==='Yes')}</div>
+            <div class="kv" style="grid-column:1/-1"><b>Pain Areas</b><span>${y(h.pain_areas)}</span></div>
+          </div>
+        </div>
+        <div class="box">
           <h4>Next Actions</h4>
-          <ul class="actions">
-            ${actions.map(a=>`<li>${a}</li>`).join('')}
-          </ul>
-        </div>
-
-        <div class="section">
-          <h4>Mechanics Notes</h4>
-          <div class="kv" style="grid-column:1/-1"><b>Notes</b><span>${y(f.mechanics_notes)}</span></div>
+          <ul class="actions">${nextActions(data).map(a=>`<li>${a}</li>`).join('')}</ul>
         </div>
       `;
     }
 
-    const out = (obj) => {
-      const el = document.getElementById('output');
-      el.textContent = (typeof obj === 'string') ? obj : JSON.stringify(obj, null, 2);
-    };
-
-    async function ping(){
-      try{
-        const r = await fetch(`${BASE_API}/healthz`, { cache:'no-store' });
-        if(!r.ok) throw new Error(`HTTP ${r.status}`);
-        out(await r.json());
-      }catch(e){ out({error:String(e)}); }
+    function updateLiveRisk(){
+      const payload = collectPayload();
+      const r = riskScore(payload);
+      el('livePointer').style.left = `calc(${r.score}% - 7px)`;
+      el('liveScore').textContent = r.score;
+      const band = el('liveBand'); band.textContent = r.band; band.className = `pill ${r.color}`;
+      renderPrediction(payload);
     }
 
-    // Submit and show friendly summary + risk immediately
-    async function computeRisk(){
-      const payload = {
-        name: document.getElementById('p_name').value,
-        age: Number(document.getElementById('p_age').value),
-        workload: {
-          pitch_count_7d: Number(document.getElementById('pitch_count_7d').value),
-          innings_7d: Number(document.getElementById('innings_7d').value),
-          rest_days: Number(document.getElementById('rest_days').value),
-          velo_avg: Number(document.getElementById('velo_avg').value),
-          pain_level: Number(document.getElementById('pain_level').value),
-          workload_today: Number(document.getElementById('workload_today').value)
-        },
-        flags: {
-          elbow_history: document.getElementById('elbow_history').checked,
-          mechanics_notes: document.getElementById('mech_flags').value
-        },
-        timestamp: new Date().toISOString()
+    /* ---------- Collect payload ---------- */
+    function collectPayload(){
+      const athlete = {
+        name: val('name'), athlete_id: val('athlete_id'), age: num('age'), sex: val('sex'),
+        sport: val('sport'), position: val('position'), team: val('team')
       };
 
+      const workload = {
+        rpe: num('rpe'), duration_min: num('duration_min'),
+        distance_km: num('distance_km'), sprints: num('sprints'), jumps: num('jumps'), strength_sets: num('strength_sets'),
+        atl: num('atl'), ctl: num('ctl')
+      };
+      workload.session_load = sessionLoad(workload.rpe, workload.duration_min);
+      const compACWR = acwr(workload.atl, workload.ctl);
+      workload.acwr = compACWR !== null ? Math.round(compACWR*100)/100 : null;
+
+      const wellness = {
+        sleep_hours: num('sleep_hours'), soreness: num('soreness'), fatigue: num('fatigue'),
+        stress: num('stress'), mood: num('mood')
+      };
+
+      const vitals = {
+        resting_hr: num('resting_hr'), hrv_rmssd: num('hrv_rmssd'), spo2: num('avg_spo2')
+      };
+
+      const health = {
+        pain_areas: val('pain_areas'), recent_injury: val('recent_injury'), recent_illness: val('recent_illness')
+      };
+
+      return { athlete, workload, wellness, vitals, health, notes: val('notes'), timestamp: new Date().toISOString() };
+    }
+
+    /* ---------- Validation ---------- */
+    function validateRequired(){
+      let ok=true;
+      const setErr=(id,msg)=>{ el(id).textContent=msg||''; if(msg) ok=false; };
+      setErr('err_name',  val('name') ? '' : 'Name is required.');
+      const a = num('age'); setErr('err_age', (a!==null && a>=12 && a<=60) ? '' : 'Enter a valid age (12–60).');
+      setErr('err_rpe', num('rpe')!==null ? '' : 'RPE required.');
+      setErr('err_duration', num('duration_min')!==null ? '' : 'Duration required.');
+      setErr('err_sleep', num('sleep_hours')!==null ? '' : 'Sleep required.');
+      setErr('err_rhr', num('resting_hr')!==null ? '' : 'Resting HR required.');
+      return ok;
+    }
+
+    /* ---------- API ---------- */
+    async function ping(){ try{ const r=await fetch(`${BASE_API}/healthz`,{cache:'no-store'}); if(!r.ok) throw new Error(`HTTP ${r.status}`); out(await r.json()); }catch(e){ out({error:String(e)}) } }
+
+    async function submitCheckin(){
+      if(!validateRequired()){ window.scrollTo({top:0,behavior:'smooth'}); return; }
+      const payload = collectPayload();
       try{
-        renderAthleticsView(payload); // optimistic preview
-        const res = await fetch(`${BASE_API}/risk`, {
-          method:'POST', headers:{'Content-Type':'application/json'},
-          body: JSON.stringify(payload)
+        renderSubmittedView(payload);
+        renderPrediction(payload);
+        const r = await fetch(`${BASE_API}/athletics/checkin`, {
+          method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload)
         });
-        if(!res.ok) throw new Error(`HTTP ${res.status}`);
-        const server = await res.json(); // { id }
+        if(!r.ok) throw new Error(`HTTP ${r.status}`);
+        const server = await r.json();
         const display = { id: server?.id ?? null, ...payload };
-        renderAthleticsView(display);
+        renderSubmittedView(display);
+        renderPrediction(display);
         out(display);
       }catch(err){
-        renderAthleticsView(null);
-        out({error:String(err)});
+        renderSubmittedView(null); out({error:String(err)});
       }
     }
 
-    document.getElementById('riskBtn').addEventListener('click', computeRisk);
-    document.getElementById('pingBtn').addEventListener('click', ping);
+    /* ---------- Draft ---------- */
+    function saveDraft(){ localStorage.setItem(DRAFT_KEY, JSON.stringify(collectPayload())); }
+    function loadDraft(){
+      const raw = localStorage.getItem(DRAFT_KEY); if(!raw) return;
+      try{
+        const d = JSON.parse(raw);
+        const set=(id,v)=>{ if(el(id) && v!==undefined && v!==null) el(id).value=v; };
+        const a=d.athlete||{}, w=d.workload||{}, wl=d.wellness||{}, v=d.vitals||{}, h=d.health||{};
+        set('name',a.name); set('athlete_id',a.athlete_id); set('age',a.age); set('sex',a.sex);
+        set('sport',a.sport); set('position',a.position); set('team',a.team);
+        set('rpe',w.rpe); set('duration_min',w.duration_min); set('distance_km',w.distance_km);
+        set('sprints',w.sprints); set('jumps',w.jumps); set('strength_sets',w.strength_sets);
+        set('atl',w.atl); set('ctl',w.ctl);
+        set('sleep_hours',wl.sleep_hours); set('soreness',wl.soreness); set('fatigue',wl.fatigue); set('stress',wl.stress); set('mood',wl.mood);
+        set('resting_hr',v.resting_hr); set('hrv_rmssd',v.hrv_rmssd); set('avg_spo2',v.spo2);
+        set('pain_areas',h.pain_areas); set('recent_injury',h.recent_injury); set('recent_illness',h.recent_illness);
+        updateLiveRisk();
+      }catch{}
+    }
+    function clearDraft(){ localStorage.removeItem(DRAFT_KEY); }
+
+    /* ---------- Utilities ---------- */
+    function exportJSON(){ const dataStr="data:application/json;charset=utf-8,"+encodeURIComponent(JSON.stringify(collectPayload(),null,2)); const a=document.createElement('a'); a.href=dataStr; a.download=`athletics_${Date.now()}.json`; a.click(); }
+    function printPage(){ window.print(); }
+
+    /* ---------- Wireup ---------- */
+    document.addEventListener('input', (e)=>{ if(e.target.matches('input,select,textarea')) updateLiveRisk(); });
+    document.getElementById('submitBtnTop').addEventListener('click', submitCheckin);
+    document.getElementById('pingBtnTop').addEventListener('click', ping);
+    document.getElementById('submitBtnRisk').addEventListener('click', submitCheckin);
+    document.getElementById('pingBtnRisk').addEventListener('click', ping);
+    el('saveDraft').addEventListener('click', saveDraft);
+    el('clearDraft').addEventListener('click', ()=>{ clearDraft(); location.reload(); });
+    el('exportBtn').addEventListener('click', exportJSON);
+    el('printBtn').addEventListener('click', printPage);
+    el('expandAll').addEventListener('click', ()=>document.querySelectorAll('details.section').forEach(d=>d.open=true));
+    el('collapseAll').addEventListener('click', ()=>document.querySelectorAll('details.section').forEach(d=>d.open=false));
+
     document.getElementById('year').textContent = new Date().getFullYear();
+    loadDraft();
+    updateLiveRisk();
   </script>
 </body>
 </html>
