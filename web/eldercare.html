@@ -78,6 +78,8 @@
 
     <div class="card">
       <div class="toolbar">
+        <button class="primary" id="submitBtnTop">Submit Check-In</button>
+        <button class="ghost" id="pingBtnTop">Ping Backend</button>
         <button class="ghost" id="expandAll">Expand all</button>
         <button class="ghost" id="collapseAll">Collapse all</button>
         <button class="ghost" id="saveDraft">Save draft</button>
@@ -238,7 +240,7 @@
     </details>
 
     <!-- Labs / Imaging -->
-    <details class="section">
+    <details class="section>
       <summary>Laboratory / Diagnostics</summary>
       <div class="section-body">
         <div class="row">
@@ -294,11 +296,6 @@
         </div>
         <label>Notes (optional)</label>
         <textarea id="notes" placeholder="Anything else that changed this week?"></textarea>
-        <div style="margin-top:10px" class="toolbar">
-          <button class="primary" id="submitBtn">Submit Check-In</button>
-          <button class="ghost" id="pingBtn">Ping Backend</button>
-          <span class="help">Posts to your live backend and shows a summary below.</span>
-        </div>
       </div>
     </details>
 
@@ -312,6 +309,10 @@
           <div class="kv" style="margin-top:6px"><b>Score</b>
             <span><span id="liveBand" class="pill ok">Low</span>&nbsp; <span id="liveScore">0</span>/100</span>
           </div>
+        </div>
+        <div class="toolbar" style="margin-top:10px">
+          <button class="primary" id="submitBtnRisk">Submit Check-In</button>
+          <button class="ghost" id="pingBtnRisk">Ping Backend</button>
         </div>
       </div>
     </div>
@@ -487,17 +488,15 @@
     }
 
     function updateLiveRisk(){
-      const payload = collectPayload(false); // minimal
+      const payload = collectPayload(false);
       const r = riskScore(payload);
       el('livePointer').style.left = `calc(${r.score}% - 7px)`;
       el('liveScore').textContent = r.score;
-      const band = el('liveBand');
-      band.textContent = r.band;
-      band.className = `pill ${r.color}`;
+      const band = el('liveBand'); band.textContent = r.band; band.className = `pill ${r.color}`;
     }
 
     // ---------- collect payload ----------
-    function collectPayload(withCompat=true){
+    function collectPayload(){
       const demographics = { name: val('name'), patient_id: val('patient_id'), age: num('age'), sex: val('sex'),
         address: val('address'), contact: val('contact'), emergency_contact: val('emergency_contact') };
 
@@ -528,9 +527,7 @@
 
       const metrics = { spo2_avg: vitals.spo2, hrv_rmssd: num('hrv_rmssd'), resting_hr: vitals.hr, sleep_hours: num('sleep_hours'), steps_daily: num('steps_daily') };
 
-      const base = { demographics, history, function: func, cognitive, social, vitals, labs, events, medication, pros, timestamp: new Date().toISOString() };
-      if(!withCompat) return { ...base, metrics, notes: val('notes') };
-      return { ...base, metrics, notes: val('notes') };
+      return { demographics, history, function: func, cognitive, social, vitals, labs, events, medication, pros, metrics, notes: val('notes'), timestamp: new Date().toISOString() };
     }
 
     // ---------- validation ----------
@@ -552,7 +549,7 @@
 
     async function submitCheckin(){
       if(!validateRequired()){ window.scrollTo({top:0,behavior:'smooth'}); return; }
-      const payload = collectPayload(true);
+      const payload = collectPayload();
       try{
         renderSubmittedView(payload); // optimistic
         const r = await fetch(`${BASE_API}/eldercare/checkin`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload) });
@@ -567,14 +564,12 @@
     }
 
     // ---------- draft (localStorage) ----------
-    function saveDraft(){ localStorage.setItem(DRAFT_KEY, JSON.stringify(collectPayload(true))); }
+    function saveDraft(){ localStorage.setItem(DRAFT_KEY, JSON.stringify(collectPayload())); }
     function loadDraft(){
       const raw = localStorage.getItem(DRAFT_KEY); if(!raw) return;
       try{
         const d = JSON.parse(raw);
-        // fill a few common fields (not doing every single one to keep it light)
         const set=(id,v)=>{ if(el(id) && v!==undefined && v!==null) el(id).value=v; };
-        const g=(o,k)=>o&&o[k]!==undefined?o[k]:'';
         const dm=d.demographics||{}, vit=d.vitals||{}, m=d.metrics||{}, soc=d.social||{}, meds=d.medication||{}, labs=d.labs||{}, func=d.function||{}, cog=d.cognitive||{}, ev=d.events||{}, pros=d.pros||{};
         set('name',dm.name); set('patient_id',dm.patient_id); set('age',dm.age); set('sex',dm.sex); set('address',dm.address); set('contact',dm.contact); set('emergency_contact',dm.emergency_contact);
         set('bp_sys',vit.sbp); set('bp_dia',vit.dbp); set('resting_hr',vit.hr); set('rr',vit.rr); set('avg_spo2',vit.spo2); set('temp_f',vit.temp_f);
@@ -591,15 +586,18 @@
     function clearDraft(){ localStorage.removeItem(DRAFT_KEY); }
 
     // ---------- utilities ----------
-    function exportJSON(){ const dataStr = "data:application/json;charset=utf-8," + encodeURIComponent(JSON.stringify(collectPayload(true),null,2)); const a=document.createElement('a'); a.href=dataStr; a.download=`eldercare_${Date.now()}.json`; a.click(); }
+    function exportJSON(){ const dataStr = "data:application/json;charset=utf-8," + encodeURIComponent(JSON.stringify(collectPayload(),null,2)); const a=document.createElement('a'); a.href=dataStr; a.download=`eldercare_${Date.now()}.json`; a.click(); }
     function printPage(){ window.print(); }
 
     // live risk update on input
     document.addEventListener('input', (e)=>{ if(e.target.matches('input,select,textarea')){ updateLiveRisk(); } });
 
-    // buttons
-    el('submitBtn').addEventListener('click', submitCheckin);
-    el('pingBtn').addEventListener('click', ping);
+    // wire buttons
+    document.getElementById('submitBtnTop').addEventListener('click', submitCheckin);
+    document.getElementById('pingBtnTop').addEventListener('click', ping);
+    document.getElementById('submitBtnRisk').addEventListener('click', submitCheckin);
+    document.getElementById('pingBtnRisk').addEventListener('click', ping);
+
     el('saveDraft').addEventListener('click', ()=>{ saveDraft(); });
     el('clearDraft').addEventListener('click', ()=>{ clearDraft(); location.reload(); });
     el('exportBtn').addEventListener('click', exportJSON);
