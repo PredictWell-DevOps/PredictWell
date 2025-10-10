@@ -1,4 +1,4 @@
-# backend/server.py — PredictWell API (complete, ready to run)
+# backend/server.py — PredictWell API (complete, working)
 
 from typing import Optional
 from fastapi import FastAPI, Body
@@ -8,7 +8,7 @@ from pydantic import BaseModel, Field
 app = FastAPI(title="PredictWell API", version="1.0.0")
 
 # CORS so the static site can call this backend
-# You can restrict allow_origins later to ["https://predictwellhealth.ai"]
+# (You can later restrict allow_origins to ["https://predictwellhealth.ai"])
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -17,9 +17,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# -------------------------------
+# -----------------------------------------------------------------------------
 # Root & Health
-# -------------------------------
+# -----------------------------------------------------------------------------
 @app.get("/")
 def root():
     return {"message": "PredictWell API is running. Visit /docs for Swagger."}
@@ -28,9 +28,9 @@ def root():
 def healthz():
     return {"status": "ok"}
 
-# -------------------------------
-# Optional: simple risk stub
-# -------------------------------
+# -----------------------------------------------------------------------------
+# Optional: simple risk stub (kept for compatibility/testing)
+# -----------------------------------------------------------------------------
 class RiskRequest(BaseModel):
     value: Optional[float] = None
     label: Optional[str] = None
@@ -45,9 +45,9 @@ def risk(req: RiskRequest):
     band = "Low" if base < 33 else ("Moderate" if base < 66 else "High")
     return RiskOutput(score=base, band=band)
 
-# -------------------------------
-# Eldercare Check-in (returns id)
-# -------------------------------
+# -----------------------------------------------------------------------------
+# Eldercare Check-in (returns id only)
+# -----------------------------------------------------------------------------
 ELDERCARE_ID = 0
 
 @app.post("/eldercare/checkin")
@@ -60,9 +60,9 @@ def eldercare_checkin(payload: dict = Body(...)):
     ELDERCARE_ID += 1
     return {"id": ELDERCARE_ID}
 
-# -------------------------------
-# Athletics Check-in (returns id)
-# -------------------------------
+# -----------------------------------------------------------------------------
+# Athletics Check-in (returns id only)
+# -----------------------------------------------------------------------------
 class Athlete(BaseModel):
     name: Optional[str] = None
     athlete_id: Optional[str] = None
@@ -120,4 +120,15 @@ def athletics_checkin(payload: AthleticsCheckin):
     """
     global ATHLETICS_ID
     ATHLETICS_ID += 1
-    return {"id": ATHLE
+    return {"id": ATHLETICS_ID}
+
+# -----------------------------------------------------------------------------
+# Local dev entry (Render runs `python server.py` inside /backend)
+# -----------------------------------------------------------------------------
+if __name__ == "__main__":
+    import os
+    import uvicorn
+    # Render provides PORT env var; default for local runs if unset
+    port = int(os.environ.get("PORT", "8000"))
+    # Because Start Command is `backend/ $ python server.py`, the module path is `server:app`
+    uvicorn.run("server:app", host="0.0.0.0", port=port)
