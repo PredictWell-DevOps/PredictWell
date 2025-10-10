@@ -19,105 +19,27 @@
       min-height: 100vh;
       color: #0f172a;
     }
+    .overlay { background: rgba(255,255,255,0.9); padding: 30px; min-height: 100vh; }
 
-    .overlay {
-      background: rgba(255, 255, 255, 0.9);
-      padding: 30px;
-      min-height: 100vh;
-    }
+    header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .brand h1 { margin: 0; font-size: 28px; color: #0b2545; }
+    .brand span { color: #ff7a18; }
+    nav a { text-decoration: none; color: #0b2545; font-weight: 700; padding: 8px 12px; border-radius: 8px; background: rgba(255,255,255,0.6); border: 1px solid rgba(2,6,23,0.1); }
 
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-    }
-
-    .brand h1 {
-      margin: 0;
-      font-size: 28px;
-      color: #0b2545;
-    }
-
-    .brand span {
-      color: #ff7a18;
-    }
-
-    nav a {
-      text-decoration: none;
-      color: #0b2545;
-      font-weight: bold;
-      padding: 8px 12px;
-      border-radius: 8px;
-      background: rgba(255, 255, 255, 0.6);
-      border: 1px solid rgba(2,6,23,0.1);
-    }
-
-    .card {
-      background: #fff;
-      border-radius: 14px;
-      padding: 20px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      margin-bottom: 20px;
-    }
-
-    label {
-      display: block;
-      margin-bottom: 6px;
-      color: #475569;
-    }
-
-    input, textarea {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 12px;
-      border-radius: 8px;
-      border: 1px solid #cbd5e1;
-      box-sizing: border-box;
-    }
-
-    button {
-      padding: 10px 16px;
-      font-size: 15px;
-      font-weight: bold;
-      border-radius: 8px;
-      border: none;
-      cursor: pointer;
-    }
-
-    .primary {
-      background: #ff7a18;
-      color: white;
-    }
-
-    .ghost {
-      background: white;
-      color: #0b2545;
-      border: 1px solid #94a3b8;
-    }
-
-    pre {
-      background: #0b1220;
-      color: #e2e8f0;
-      padding: 14px;
-      border-radius: 8px;
-      overflow-x: auto;
-    }
-
-    footer {
-      text-align: center;
-      font-size: 12px;
-      color: #475569;
-      margin-top: 30px;
-    }
+    .card { background: #fff; border-radius: 14px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 20px; }
+    label { display: block; margin-bottom: 6px; color: #475569; }
+    input, textarea { width: 100%; padding: 10px; margin-bottom: 12px; border-radius: 8px; border: 1px solid #cbd5e1; box-sizing: border-box; }
+    button { padding: 10px 16px; font-size: 15px; font-weight: 700; border-radius: 8px; border: none; cursor: pointer; }
+    .primary { background: #ff7a18; color: #fff; }
+    .ghost { background: #fff; color: #0b2545; border: 1px solid #94a3b8; }
+    pre { background: #0b1220; color: #e2e8f0; padding: 14px; border-radius: 8px; overflow-x: auto; }
+    footer { text-align: center; font-size: 12px; color: #475569; margin-top: 30px; }
   </style>
 </head>
 <body>
   <div class="overlay">
     <header>
-      <div class="brand">
-        <h1>PredictWell <span>Health.ai</span></h1>
-      </div>
+      <div class="brand"><h1>PredictWell <span>Health.ai</span></h1></div>
       <nav>
         <a href="/eldercare.html">Eldercare</a>
         <a href="/athletics.html">Athletics</a>
@@ -126,28 +48,34 @@
 
     <div class="card">
       <h2>Eldercare Sentinel — Weekly Check-In</h2>
+
       <label>Name</label>
       <input id="name" type="text" placeholder="e.g., Pat Quinn" />
+
       <label>Age</label>
       <input id="age" type="number" min="30" max="120" placeholder="79" />
+
       <label>Avg nightly SpO₂ (%)</label>
       <input id="avg_spo2" type="number" step="0.1" min="50" max="100" placeholder="94.5" />
+
       <label>HRV (RMSSD, ms)</label>
       <input id="hrv_rmssd" type="number" step="1" placeholder="18" />
+
       <label>Resting HR (bpm)</label>
-      <input id="resting_hr" type="number" step="1" placeholder="68" />
+      <input id="resting_hr" type="number" step="1" placeholder="70" />
+
       <label>Avg sleep (hours)</label>
-      <input id="sleep_hours" type="number" step="0.1" placeholder="6.7" />
+      <input id="sleep_hours" type="number" step="0.1" placeholder="7" />
+
       <label>Avg daily steps</label>
-      <input id="steps_daily" type="number" step="1" placeholder="4200" />
-      <label>
-        <input id="gait_concern" type="checkbox" /> Any balance or dizziness issues?
-      </label>
-      <label>
-        <input id="cognitive_flags" type="checkbox" /> Any memory or attention concerns?
-      </label>
+      <input id="steps_daily" type="number" step="1" placeholder="3000" />
+
+      <label><input id="gait_concern" type="checkbox" /> Any balance or dizziness issues?</label>
+      <label><input id="cognitive_flags" type="checkbox" /> Any memory or attention concerns?</label>
+
       <label>Notes (optional)</label>
       <textarea id="notes" placeholder="Any changes this week?"></textarea>
+
       <div>
         <button class="primary" id="submitBtn">Submit Check-In</button>
         <button class="ghost" id="pingBtn">Ping Backend</button>
@@ -172,12 +100,10 @@
 
     async function ping() {
       try {
-        const r = await fetch(`${BASE_API}/healthz`);
-        const d = await r.json();
-        out(d);
-      } catch (e) {
-        out({ error: String(e) });
-      }
+        const r = await fetch(`${BASE_API}/healthz`, { cache: 'no-store' });
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        out(await r.json());
+      } catch (e) { out({ error: String(e) }); }
     }
 
     async function submitCheckin() {
@@ -206,11 +132,19 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
         });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
+
+        // NEW: Fetch full record by id and show it
+        if (data && typeof data.id !== 'undefined') {
+          const full = await fetch(`${BASE_API}/eldercare/checkin/${data.id}`);
+          if (full.ok) {
+            out(await full.json());
+            return;
+          }
+        }
         out(data);
-      } catch (err) {
-        out({ error: String(err) });
-      }
+      } catch (err) { out({ error: String(err) }); }
     }
 
     document.getElementById('submitBtn').addEventListener('click', submitCheckin);
