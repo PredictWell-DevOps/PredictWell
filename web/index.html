@@ -4,23 +4,18 @@
   <meta charset="utf-8" />
   <title>PredictWell Health — Home</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-
   <style>
     :root{
       --bg:#0b1220;
-      --panel:#121a2b;
       --ink:#e9eefc;
       --muted:#9bb0d3;
+      --panel:rgba(10,16,30,.72);
+      --line:rgba(255,255,255,.08);
       --chip:#1f2a44;
-      --line:#213052;
       --primary:#1a2440;
-      --btn-gradient:linear-gradient(90deg,#34d399,#60a5fa);
-      --btn-dark:#1a2440;
-      --btn-dark-border:#2a3a5e;
+      --btn-grad:linear-gradient(90deg,#34d399,#60a5fa);
     }
     *{box-sizing:border-box}
     html,body{height:100%}
@@ -28,150 +23,150 @@
       margin:0;
       font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
       color:var(--ink);
-      background:
-        radial-gradient(1200px 600px at 10% -10%, rgba(52,211,153,.07), transparent 60%),
-        radial-gradient(1200px 600px at 110% 110%, rgba(96,165,250,.07), transparent 60%),
-        var(--bg);
+      background: var(--bg) no-repeat center/cover fixed;
+      /* ⬇️ Update this path if your image name differs */
+      background-image:
+        radial-gradient(1200px 600px at 10% -10%, rgba(52,211,153,.10), transparent 60%),
+        radial-gradient(1200px 600px at 110% 110%, rgba(96,165,250,.10), transparent 60%),
+        url('/static/images/home-bg.jpg');
+    }
+    .overlay{
+      min-height:100%;
+      backdrop-filter:saturate(120%) blur(0px);
+      background: linear-gradient(180deg, rgba(8,12,24,.65), rgba(8,12,24,.75));
     }
 
-    /* Layout */
-    .wrap{max-width:1160px;margin:0 auto;padding:24px}
-    header{
-      display:flex;align-items:center;justify-content:space-between;
-      gap:16px;padding:8px 0 16px
-    }
-    .brand{display:flex;align-items:center;gap:12px;font-weight:700}
-    .logo{
-      width:32px;height:32px;border-radius:8px;
-      background:var(--btn-gradient);box-shadow:0 0 0 2px #0b1220;
-    }
+    .wrap{max-width:1180px;margin:0 auto;padding:26px}
+
+    header{display:flex;align-items:center;justify-content:space-between;padding:6px 0 18px}
+    .brand{display:flex;gap:10px;align-items:center;font-weight:700}
+    .logo{width:28px;height:28px;border-radius:8px;background:var(--btn-grad);box-shadow:0 0 0 2px rgba(11,18,32,.7)}
+
     nav a{color:#a6c8ff;text-decoration:none;margin-left:16px;font-weight:600}
     nav a:hover{text-decoration:underline}
 
-    /* Hero */
-    .hero{
-      display:grid;grid-template-columns:1.2fr 1fr;gap:24px;align-items:center;
-      padding:28px 0 8px;
-    }
+    .hero{display:grid;grid-template-columns:1.2fr 1fr;gap:22px;align-items:stretch}
     @media (max-width: 960px){ .hero{grid-template-columns:1fr} }
-    .hero-card{
-      background:var(--panel);border:1px solid var(--line);border-radius:18px;
-      padding:28px 26px;
-    }
-    h1{font-size:34px;line-height:1.2;margin:0 0 8px}
-    p.lead{color:var(--muted);margin:0 0 18px}
-
-    .cta-row{display:flex;flex-wrap:wrap;gap:12px}
-    .btn{
-      display:inline-block;cursor:pointer;font-weight:700;text-decoration:none;
-      padding:12px 16px;border-radius:12px;transition:.2s transform;
-    }
-    .btn:hover{transform:translateY(-1px)}
-    .btn-primary{background:var(--btn-gradient);color:#0b1220;border:0}
-    .btn-dark{background:var(--btn-dark);border:1px solid var(--btn-dark-border);color:#fff}
-
-    /* Sections */
-    .section{margin-top:26px}
-    .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
-    @media (max-width: 960px){ .grid{grid-template-columns:1fr} }
 
     .card{
-      background:var(--panel);border:1px solid var(--line);border-radius:18px;
-      padding:20px;display:flex;flex-direction:column;gap:8px
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:24px;
     }
-    .muted{color:var(--muted)}
-    .pill{display:inline-block;background:var(--chip);color:var(--muted);border-radius:999px;padding:6px 10px;font-size:12px}
+    h1{margin:0 0 10px;font-size:34px;line-height:1.2}
+    h2{margin:0 0 10px}
+    p.lead{margin:0 0 16px;color:var(--muted)}
 
-    footer{
-      margin:36px 0 14px;color:var(--muted);font-size:13px;text-align:center
-    }
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    @media (max-width: 960px){ .grid{grid-template-columns:1fr} }
+
+    .panel-title{font-weight:700;margin:0 0 6px}
+    .muted{color:var(--muted)} .pill{display:inline-block;background:var(--chip);color:var(--muted);padding:6px 10px;border-radius:999px;font-size:12px}
+
+    .btn{display:inline-block;font-weight:700;text-decoration:none;padding:12px 16px;border-radius:12px}
+    .btn-primary{background:var(--btn-grad);color:#0b1220;border:0}
+    .btn-dark{background:#1a2440;border:1px solid rgba(255,255,255,.08);color:#fff}
+    .row{display:flex;flex-wrap:wrap;gap:12px}
+    .two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    @media (max-width: 640px){ .two{grid-template-columns:1fr} }
+
+    footer{margin:36px 0 12px;text-align:center;color:var(--muted);font-size:13px}
   </style>
 </head>
 <body>
+<div class="overlay">
   <div class="wrap">
 
-    <!-- Top bar -->
     <header>
       <div class="brand">
         <div class="logo"></div>
         <div>PredictWell Health</div>
       </div>
       <nav>
-        <a href="/eldercare.html">Eldercare</a>
-        <a href="/athletics.html">Athletics</a>
-        <a href="/patient.html">Patients Portal</a>
-        <a href="/doctor.html">Doctors Portal</a>
+        <a href="/eldercare.html">Eldercare (Doctors)</a>
+        <a href="/athletics.html">Athletics (Doctors)</a>
       </nav>
     </header>
 
-    <!-- Hero -->
     <section class="hero">
-      <div class="hero-card">
+      <!-- Left: value + quick CTAs -->
+      <div class="card">
         <h1>Early insight. Safer care.</h1>
-        <p class="lead">
-          PredictWell turns quick check-ins into clear, actionable risk signals for
-          older adults and athletes — no app installs or logins required.
-        </p>
-        <div class="cta-row">
-          <a class="btn btn-primary" href="/eldercare.html">Start Eldercare Check-In</a>
-          <a class="btn btn-dark" href="/athletics.html">Start Athletics Check-In</a>
+        <p class="lead">PredictWell turns quick check-ins into clear, actionable risk signals for older adults and athletes.</p>
+        <div class="row">
+          <a class="btn btn-primary" href="/eldercare.html">Start Eldercare (Doctors)</a>
+          <a class="btn btn-dark" href="/athletics.html">Start Athletics (Doctors)</a>
         </div>
-        <div style="margin-top:14px">
-          <span class="pill">Fast • Private • Evidence-informed</span>
-        </div>
+        <div style="margin-top:12px"><span class="pill">Fast • Private • Evidence-informed</span></div>
       </div>
 
-      <div class="hero-card" style="display:flex;flex-direction:column;gap:10px">
-        <h2 style="margin:0">Clinicians & Patients</h2>
-        <p class="muted" style="margin:0 0 6px">
-          Prefer a simple portal? Use these views to review or share results.
-        </p>
-        <div class="cta-row">
-          <a class="btn btn-dark" href="/patient.html">Open Patients Portal</a>
-          <a class="btn btn-dark" href="/doctor.html">Open Doctors Portal</a>
-        </div>
-        <div class="muted" style="font-size:13px;margin-top:6px">
-          Portals are optional — your check-ins work without accounts.
+      <!-- Right: four options (as requested) -->
+      <div class="card">
+        <h2>Choose your path</h2>
+        <p class="muted" style="margin-top:4px">Two options for Eldercare and two for Athletics.</p>
+        <div class="grid" style="margin-top:12px">
+          <div class="card">
+            <div class="panel-title">Eldercare — Doctors</div>
+            <p class="muted">Full assessment with rich results.</p>
+            <div class="two">
+              <a class="btn btn-primary" href="/eldercare.html">Open</a>
+              <a class="btn btn-dark" href="/eldercare.html">Go</a>
+            </div>
+          </div>
+          <div class="card">
+            <div class="panel-title">Eldercare — Patients</div>
+            <p class="muted">Simple form and easy-to-read results.</p>
+            <div class="two">
+              <a class="btn btn-primary" href="/eldercare-patient.html">Open</a>
+              <a class="btn btn-dark" href="/eldercare-patient.html">Go</a>
+            </div>
+          </div>
+          <div class="card">
+            <div class="panel-title">Athletics — Doctors</div>
+            <p class="muted">Full workload & wellness risk view.</p>
+            <div class="two">
+              <a class="btn btn-primary" href="/athletics.html">Open</a>
+              <a class="btn btn-dark" href="/athletics.html">Go</a>
+            </div>
+          </div>
+          <div class="card">
+            <div class="panel-title">Athletics — Patients</div>
+            <p class="muted">Quick check-in with simple result.</p>
+            <div class="two">
+              <a class="btn btn-primary" href="/athletics-patient.html">Open</a>
+              <a class="btn btn-dark" href="/athletics-patient.html">Go</a>
+            </div>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- What you can do -->
-    <section class="section">
+    <section style="margin-top:18px">
       <div class="grid">
         <div class="card">
-          <h3 style="margin:0">Eldercare Sentinel</h3>
-          <p class="muted">
-            Capture vitals, sleep, steps, and cognitive/gait warnings. We show a friendly
-            summary and a live risk gauge as you type.
-          </p>
-          <div class="cta-row">
-            <a class="btn btn-primary" href="/eldercare.html">Open Eldercare</a>
-            <a class="btn btn-dark" href="/patient.html">Go to Patients Portal</a>
+          <div class="panel-title">Eldercare Sentinel</div>
+          <p class="muted">Vitals, sleep, steps, gait/cognitive flags, and a friendly summary with a live risk gauge.</p>
+          <div class="row">
+            <a class="btn btn-primary" href="/eldercare.html">Doctors</a>
+            <a class="btn btn-dark" href="/eldercare-patient.html">Patients</a>
           </div>
         </div>
-
         <div class="card">
-          <h3 style="margin:0">Athletics Sentinel</h3>
-          <p class="muted">
-            Track workload, soreness, and recovery to estimate short-term injury/under-performance risk.
-          </p>
-          <div class="cta-row">
-            <a class="btn btn-primary" href="/athletics.html">Open Athletics</a>
-            <a class="btn btn-dark" href="/doctor.html">Go to Doctors Portal</a>
+          <div class="panel-title">Athletics Sentinel</div>
+          <p class="muted">Workload & wellness to estimate short-term injury/under-performance risk.</p>
+          <div class="row">
+            <a class="btn btn-primary" href="/athletics.html">Doctors</a>
+            <a class="btn btn-dark" href="/athletics-patient.html">Patients</a>
           </div>
         </div>
       </div>
     </section>
 
-    <footer>
-      © <span id="yr"></span> PredictWell Health — All rights reserved
-    </footer>
+    <footer>© <span id="yr"></span> PredictWell Health — All rights reserved</footer>
   </div>
+</div>
 
-  <script>
-    // tiny nicety: keep the year current
-    document.getElementById('yr').textContent = new Date().getFullYear();
-  </script>
+<script>document.getElementById('yr').textContent=new Date().getFullYear();</script>
 </body>
 </html>
