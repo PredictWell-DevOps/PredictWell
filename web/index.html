@@ -87,7 +87,7 @@
   <!-- Header -->
   <header class="header">
     <div class="header-inner">
-      <a class="brand" href="#top">
+      <a class="brand" href="/">
         <div class="brand-logo"></div>
         <div>
           <div class="brand-title"><span class="hi">PredictWell Health</span><span class="ai">.ai</span></div>
@@ -289,9 +289,26 @@
   <script>
     const menuBtn = document.getElementById('menuBtn');
     const menu = document.getElementById('menu');
+
+    // Toggle open/close on button
     document.addEventListener('click', (e) => {
-      if (menuBtn.contains(e.target)) { menu.style.display = menu.style.display === 'block' ? 'none' : 'block'; }
-      else if (!menu.contains(e.target)) { menu.style.display = 'none'; }
+      if (menuBtn.contains(e.target)) {
+        menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+      } else if (!menu.contains(e.target)) {
+        menu.style.display = 'none';
+      }
+    });
+
+    // Close menu when a link is clicked
+    menu.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', () => {
+        menu.style.display = 'none';
+      });
+    });
+
+    // Close on Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') menu.style.display = 'none';
     });
 
     function leadSubmit(){
