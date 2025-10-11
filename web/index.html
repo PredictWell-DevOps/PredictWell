@@ -32,34 +32,30 @@
     .menu a { display: block; padding: 10px 12px; border-radius: 10px; text-decoration: none; color: #111827; min-width: 220px; }
     .menu a:hover { background: rgba(17,24,39,0.06); }
 
-    /* Email provider picker (kept) */
+    /* Email picker (unchanged) */
     .email-wrap { position: relative; display: inline-block; }
     .header-email { font-size: 14px; color: #111827; text-decoration: none; margin-right: 12px; font-weight: 600; cursor: pointer; }
     .header-email:hover { text-decoration: underline; }
     .email-menu {
       position: absolute; right: 0; top: 120%;
       background: rgba(255,255,255,0.96);
-      backdrop-filter: blur(6px);
       border: 1px solid rgba(17,24,39,0.08);
       border-radius: 10px;
       box-shadow: 0 10px 30px rgba(0,0,0,0.18);
       padding: 6px; min-width: 230px; display: none; z-index: 60;
     }
-    .email-menu a {
-      display: block; padding: 8px 10px; border-radius: 8px;
-      text-decoration: none; color: #111827; font-size: 14px;
-    }
+    .email-menu a { display: block; padding: 8px 10px; border-radius: 8px; text-decoration: none; color: #111827; font-size: 14px; }
     .email-menu a:hover { background: rgba(17,24,39,0.06); }
 
-    /* Main hero (legacy) */
+    /* Main container & legacy hero */
     .main { max-width: 1080px; margin: 40px auto; padding: 0 18px; }
     .hero { background: rgba(255,255,255,0.78); border-radius: 18px; box-shadow: 0 10px 30px rgba(0,0,0,0.18); padding: 22px 24px; margin-bottom: 18px; }
     .hero h1 { font-size: 26px; margin-top: 0; }
 
-    /* NEW: top landing hero (like your reference) */
-    .landing-hero { background: linear-gradient(120deg, rgba(255,255,255,0.9), rgba(240,247,255,0.92)); border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.18); padding: 32px 28px; margin-bottom: 22px; border: 1px solid rgba(17,24,39,0.06); }
-    .landing-hero h1 { margin: 0 0 10px 0; font-size: clamp(28px, 3vw, 40px); line-height: 1.2; color: #0b1020; }
-    .landing-hero p { margin: 0 0 16px 0; font-size: 16px; color: #1f2937; line-height: 1.65; max-width: 900px; }
+    /* New landing hero inner styles */
+    .landing-hero-box { background: linear-gradient(120deg, rgba(255,255,255,0.9), rgba(240,247,255,0.92)); border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.18); padding: 32px 28px; border: 1px solid rgba(17,24,39,0.06); }
+    .landing-hero-box h1 { margin: 0 0 10px 0; font-size: clamp(28px, 3vw, 40px); line-height: 1.2; color: #0b1020; }
+    .landing-hero-box p { margin: 0 0 16px 0; font-size: 16px; color: #1f2937; line-height: 1.65; max-width: 900px; }
     .landing-cta-row { display: flex; gap: 12px; flex-wrap: wrap; }
     .pw-btn { border: none; cursor: pointer; padding: 10px 16px; border-radius: 999px; font-weight: 700; color: #fff; box-shadow: 0 10px 24px rgba(0,0,0,0.12); }
     .pw-btn-primary { background: linear-gradient(135deg,#2563eb,#60a5fa); }
@@ -121,7 +117,7 @@
       </a>
       <div class="spacer"></div>
 
-      <!-- Universal email picker (kept) -->
+      <!-- Email picker -->
       <div class="email-wrap">
         <a href="mailto:info@predictwellhealth.ai" class="header-email" id="emailLink">info@predictwellhealth.ai</a>
         <div class="email-menu" id="emailMenu" role="menu" aria-label="Email options">
@@ -141,24 +137,26 @@
     </div>
   </header>
 
-  <!-- Main -->
-  <main class="main" id="top">
-
-    <!-- NEW TOP LANDING BANNER -->
-    <section class="landing-hero">
-      <h1>PredictWell Health.ai is Preventative Health AI</h1>
-      <p>
-        PredictWell continuously learns your normal patterns from wearables and quick check-ins, then spots subtle changes in
-        balance, mobility, sleep, and cognition to flag risk early. It turns everyday data into simple, timely guidance—helping
-        prevent events like <strong>falls</strong> and avoidable hospitalizations while supporting confident independence for users and
-        clearer decision-making for clinicians and families.
-      </p>
-      <div class="landing-cta-row">
-        <button class="pw-btn pw-btn-primary" onclick="location.href='#contact'">Start Here</button>
+  <!-- NEW TOP LANDING BANNER (now same width as ABOUT via pw-mobile-section/wrap) -->
+  <section class="pw-mobile-section">
+    <div class="pw-mobile-wrap">
+      <div class="landing-hero-box">
+        <h1>PredictWell Health.ai is Preventative Health AI</h1>
+        <p>
+          PredictWell continuously learns your normal patterns from wearables and quick check-ins, then spots subtle changes in
+          balance, mobility, sleep, and cognition to flag risk early. It turns everyday data into simple, timely guidance—helping
+          prevent events like <strong>falls</strong> and avoidable hospitalizations while supporting confident independence for users and
+          clearer decision-making for clinicians and families.
+        </p>
+        <div class="landing-cta-row">
+          <button class="pw-btn pw-btn-primary" onclick="location.href='#contact'">Start Here</button>
+        </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- Two-column cards (unchanged) -->
+  <!-- Main (columns stay exactly as they are) -->
+  <main class="main" id="top">
     <div class="cards">
       <div class="column">
         <div class="card" id="eldercare">
@@ -190,7 +188,7 @@
     </div>
   </main>
 
-  <!-- MOVED & RESIZED ABOUT SECTION (now same size as other banners) -->
+  <!-- ABOUT (already same width style) -->
   <section class="pw-mobile-section">
     <div class="pw-mobile-wrap">
       <h2 class="pw-mobile-header" style="text-align:left;margin-bottom:8px;">ABOUT</h2>
@@ -374,7 +372,7 @@
       if (e.key === 'Escape') menu.style.display = 'none';
     });
 
-    // Email picker behavior (kept)
+    // Email picker behavior
     (function () {
       const emailLink = document.getElementById('emailLink');
       const emailMenu = document.getElementById('emailMenu');
