@@ -1,11 +1,11 @@
-<!-- ====== eldercare-patient.html (Patient Portal — 12-input AI-optimized + client-side score) ====== -->
+<!-- ====== eldercare-patient.html (Patient Portal — 12-input + client-side score + visual badge) ====== -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>PredictWell Health.ai — Eldercare Patient Portal</title>
-  <meta name="description" content="Simple 12-question checkup for seniors and caregivers. Instant client-side score + server AI insights." />
+  <meta name="description" content="Simple 12-question checkup for seniors and caregivers. Instant score + AI insights." />
   <link rel="icon" href="data:,">
   <style>
     :root{ --glass-bg: rgba(255,255,255,0.78); --radius: 18px; --shadow: 0 10px 30px rgba(0,0,0,0.18);
@@ -49,7 +49,13 @@
     .btn-blue{ background:linear-gradient(135deg,#2563eb,#60a5fa); }
     .btn-gray{ background:linear-gradient(135deg,#6b7280,#9ca3af); color:#0b1020; }
     .muted{ color:var(--muted); font-size:12px; }
+
+    /* Results */
+    .results-head{ display:flex; align-items:center; gap:12px; margin-bottom:10px; flex-wrap:wrap; }
+    .badge{ display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px; font-weight:800; box-shadow:var(--shadow); background:#e5e7eb; color:#0b1020; }
+    .badge .dot{ width:10px; height:10px; border-radius:999px; background:#9ca3af; }
     pre.results{ margin:0; padding:14px; background:#0b1020; color:#c7d2fe; border-radius:14px; min-height:160px; overflow:auto; white-space:pre-wrap; word-break:break-word; }
+
     .footer{ text-align:center; color:#374151; font-size:12px; margin-top:28px; text-shadow:0 1px 0 rgba(255,255,255,0.75); }
   </style>
 </head>
@@ -133,7 +139,13 @@
     </form>
 
     <section class="section">
-      <h2>Your Results</h2>
+      <div class="results-head">
+        <div id="scoreBadge" class="badge" aria-live="polite" aria-atomic="true" style="display:none;">
+          <span class="dot" id="scoreDot"></span>
+          <span id="badgeText">PredictWell Score</span>
+        </div>
+        <h2 style="margin:0;">Your Results</h2>
+      </div>
       <pre class="results" id="resultsBox">{ "status": "ready" }</pre>
     </section>
 
@@ -194,39 +206,26 @@
     // ---------- Client-side scoring (instant) ----------
     function scoreBuckets(score){
       // 0–8 Low, 9–16 Moderate, 17–24 High, 25+ Very High
-      if (score >= 25) return { level: 'Very High', color: '#991b1b' };
-      if (score >= 17) return { level: 'High', color: '#b45309' };
-      if (score >= 9)  return { level: 'Moderate', color: '#065f46' };
-      return { level: 'Low', color: '#1d4ed8' };
+      if (score >= 25) return { level: 'Very High', color: '#991b1b' };   // red
+      if (score >= 17) return { level: 'High', color: '#b45309' };        // amber
+      if (score >= 9)  return { level: 'Moderate', color: '#065f46' };    // green
+      return { level: 'Low', color: '#1d4ed8' };                          // blue
     }
 
     function computePredictWellScore(p){
       let s = 0;
-      // Age
       if (p.age >= 85) s += 3; else if (p.age >= 75) s += 2; else if (p.age >= 65) s += 1;
-      // Living
       if (p.living === 'Alone') s += 2; else if (p.living === 'Assisted living') s += 1;
-      // Falls history
       if (p.falls_12m === '1') s += 2; else if (p.falls_12m === '2 or more') s += 4;
-      // Unsteady / device
       if (p.unsteady === 'Sometimes') s += 2; else if (p.unsteady === 'Often') s += 4;
-      // Fear of falling
       if (p.fear_fall === 'Yes') s += 2;
-      // Chair rise
       if (p.chair_rise === 'Yes, but hard') s += 2; else if (p.chair_rise === 'No') s += 4;
-      // Dizziness on standing
       if (p.dizzy_stand === 'Occasionally') s += 1; else if (p.dizzy_stand === 'Often') s += 3;
-      // Med count
       if (p.med_count === '3–4') s += 1; else if (p.med_count === '5 or more') s += 2;
-      // Memory change
       if (p.memory_change === 'Some days') s += 2; else if (p.memory_change === 'Most days') s += 3;
-      // Mood
       if (p.mood === 'Somewhat down/anxious') s += 1; else if (p.mood === 'Depressed or anxious') s += 2;
-      // Activity
       if (p.activity === 'Lightly active') s += 1; else if (p.activity === 'Hardly active') s += 2;
-      // Home hazards
       if (p.home_hazards === 'Yes') s += 2; else if (p.home_hazards === 'Not sure') s += 1;
-
       const bucket = scoreBuckets(s);
       return { score: s, level: bucket.level, color: bucket.color };
     }
@@ -244,12 +243,24 @@
       if (p.activity === 'Hardly active') sug.push('Begin a gentle daily walking plan (5–10 minutes).');
       if (p.home_hazards === 'Yes' || p.home_hazards === 'Not sure') sug.push('Remove throw rugs, add night lights, and install bathroom grab bars.');
       if (p.living === 'Alone') sug.push('Set up a daily check-in or wearable alert button.');
-
-      // Return top 3 most relevant (keep it short)
       return sug.slice(0, 3);
     }
 
-    // Ping backend
+    // Badge updater
+    function updateBadge(local){
+      const badge = document.getElementById('scoreBadge');
+      const dot = document.getElementById('scoreDot');
+      const text = document.getElementById('badgeText');
+      badge.style.display = 'inline-flex';
+      dot.style.background = local.color;
+      text.textContent = `PredictWell Score: ${local.score} — ${local.level}`;
+      // Light tint for chip background based on level color
+      badge.style.background = '#ffffffcc';
+      badge.style.border = `1px solid ${local.color}33`;
+      badge.style.color = '#0b1020';
+    }
+
+    // Backend status
     async function pingBackend() {
       const badge = document.getElementById('backendStatus');
       try { const r = await fetch(`${BASE_API}/healthz`); await r.json();
@@ -258,12 +269,11 @@
     }
     pingBackend();
 
-    // Run analysis: show client score instantly, then append server AI
+    // Run analysis: badge + client JSON, then server merge
     async function runAnalysis(){
       const resultsBox = document.getElementById('resultsBox');
       const payload = collectPayload();
 
-      // Client-side score
       const local = computePredictWellScore(payload);
       const suggestions = buildSuggestions(payload);
       const localBlock = {
@@ -272,16 +282,16 @@
         client_suggestions: suggestions
       };
 
+      updateBadge(local);
       resultsBox.textContent = JSON.stringify(localBlock, null, 2);
 
-      // Send to backend; append its response
       try{
         const res = await fetch(`${BASE_API}/eldercare/checkin`, {
-          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ ...payload, client_score: local.score, client_category: local.level })
         });
         const json = await res.json();
-        // Merge and show both
         const merged = { ...localBlock, server_response: json };
         resultsBox.textContent = JSON.stringify(merged, null, 2);
       }catch(e){
