@@ -1,4 +1,4 @@
-<!-- ====== eldercare.html (Doctor Portal with Intake + Linked Header) ====== -->
+<!-- ====== eldercare.html (Doctor Portal — FINAL LONG INTAKE) ====== -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,13 +7,11 @@
   <title>PredictWell Health.ai — Eldercare Doctor Portal</title>
   <meta name="description" content="Eldercare Sentinel — Doctor Intake. Submit vitals, meds, labs, cognition, activity; model returns risk and suggested micro-actions.">
   <link rel="icon" href="data:,">
-
   <style>
     :root{
       --card-bg: rgba(255,255,255,0.92);
       --muted: rgba(0,0,0,0.55);
       --pill: #eef4ff;
-      --accent: #0a66c2;
       --radius: 18px;
     }
     *{box-sizing:border-box}
@@ -26,99 +24,63 @@
       background-repeat:no-repeat;background-attachment:fixed;
       min-height:100vh;
     }
-    .topbar{
-      position:sticky;top:0;z-index:50;
-      backdrop-filter:saturate(120%) blur(8px);
-      background:rgba(255,255,255,0.78);
-      border-bottom:1px solid rgba(0,0,0,0.06);
-    }
-    .topwrap{
-      max-width:1180px;margin:0 auto;
-      display:flex;align-items:center;gap:12px;
-      padding:12px 18px;
-    }
-    .logo{
-      width:28px;height:28px;border-radius:9px;
-      background:linear-gradient(145deg,#1f6feb,#7aa8ff);
-      box-shadow:0 6px 20px rgba(31,111,235,0.35);
-    }
+    /* Header */
+    .topbar{position:sticky;top:0;z-index:50;backdrop-filter:saturate(120%) blur(8px);
+      background:rgba(255,255,255,0.78);border-bottom:1px solid rgba(0,0,0,0.06)}
+    .topwrap{max-width:1180px;margin:0 auto;display:flex;align-items:center;gap:12px;padding:12px 18px}
+    .logo{width:28px;height:28px;border-radius:9px;background:linear-gradient(145deg,#1f6feb,#7aa8ff);
+      box-shadow:0 6px 20px rgba(31,111,235,0.35)}
     .brand{font-weight:700}
     .tagline{font-size:12px;color:var(--muted)}
-    .hamburger{margin-left:auto;width:36px;height:36px;border-radius:12px;
-      background:var(--card-bg);display:grid;place-items:center;border:1px solid rgba(0,0,0,0.06)}
+    .hamburger{margin-left:auto;width:36px;height:36px;border-radius:12px;background:var(--card-bg);
+      display:grid;place-items:center;border:1px solid rgba(0,0,0,0.06)}
     .hamburger span{display:block;width:16px;height:2px;background:#111;position:relative}
     .hamburger span:before,.hamburger span:after{content:"";position:absolute;left:0;width:16px;height:2px;background:#111}
     .hamburger span:before{top:-6px}.hamburger span:after{top:6px}
-    .hero{
-      max-width:1180px;margin:22px auto 0;padding:0 18px 22px;
-    }
-    .titlecard{
-      background:var(--card-bg);border-radius:var(--radius);
-      padding:22px;display:grid;gap:10px;
-      box-shadow:0 10px 30px rgba(0,0,0,0.06);
-    }
+
+    /* Title area */
+    .hero{max-width:1180px;margin:22px auto 0;padding:0 18px 22px}
+    .titlecard{background:var(--card-bg);border-radius:var(--radius);padding:22px;display:grid;gap:10px;box-shadow:0 10px 30px rgba(0,0,0,0.06)}
     .title{font-size:28px;margin:0}
     .subtitle{font-size:14px;color:var(--muted);margin:0}
     .chips{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
-    .chip{
-      background:var(--pill);color:#0a2a66;border:1px solid rgba(10,42,102,0.12);
-      padding:6px 10px;border-radius:999px;font-size:12px;font-weight:600;
-    }
-    .grid{
-      max-width:1180px;margin:18px auto 32px;padding:0 18px;
-      display:grid;grid-template-columns:1.2fr .8fr;gap:20px;
-    }
+    .chip{background:var(--pill);color:#0a2a66;border:1px solid rgba(10,42,102,0.12);padding:6px 10px;border-radius:999px;font-size:12px;font-weight:600}
+
+    /* Layout */
+    .grid{max-width:1180px;margin:18px auto 32px;padding:0 18px;display:grid;grid-template-columns:1.2fr .8fr;gap:20px}
     @media (max-width:980px){.grid{grid-template-columns:1fr}}
-    .card{
-      background:var(--card-bg);border-radius:var(--radius);
-      box-shadow:0 10px 30px rgba(0,0,0,0.06);
-      border:1px solid rgba(0,0,0,0.06);
-    }
+    .card{background:var(--card-bg);border-radius:var(--radius);box-shadow:0 10px 30px rgba(0,0,0,0.06);border:1px solid rgba(0,0,0,0.06)}
     .card.pad{padding:18px}
     .card h3{margin:4px 0 10px 0}
     .muted{color:var(--muted);font-size:14px}
+
+    /* Form */
     form.doctor-intake{display:grid;gap:16px}
-    .section{
-      border:1px dashed rgba(0,0,0,0.08);
-      border-radius:14px;padding:14px 12px;
-      background:rgba(248,250,255,0.75);
-    }
+    .section{border:1px dashed rgba(0,0,0,0.08);border-radius:14px;padding:14px 12px;background:rgba(248,250,255,0.75)}
     .section h4{margin:2px 2px 10px 2px;font-size:15px}
     .row{display:grid;grid-template-columns:repeat(12,1fr);gap:10px}
-    .col-6{grid-column:span 6}
-    .col-4{grid-column:span 4}
-    .col-3{grid-column:span 3}
-    .col-12{grid-column:span 12}
-    @media(max-width:720px){.col-6,.col-4,.col-3{grid-column:span 12}}
+    .col-12{grid-column:span 12}.col-9{grid-column:span 9}.col-6{grid-column:span 6}.col-4{grid-column:span 4}.col-3{grid-column:span 3}
+    @media (max-width:720px){.col-9,.col-6,.col-4,.col-3{grid-column:span 12}}
     label{display:block;font-size:12px;color:#1a2b4d;margin-bottom:6px;font-weight:600}
-    input,select,textarea{
-      width:100%;padding:10px 12px;border-radius:12px;
-      border:1px solid rgba(0,0,0,0.12);background:#fff;font-size:14px;
-    }
+    input,select,textarea{width:100%;padding:10px 12px;border-radius:12px;border:1px solid rgba(0,0,0,0.12);background:#fff;font-size:14px}
     textarea{min-height:70px;resize:vertical}
     .actions{display:flex;gap:12px;align-items:center}
-    button{
-      cursor:pointer;border:1px solid rgba(0,0,0,0.08);
-      border-radius:12px;padding:10px 14px;font-weight:700;
-      background:linear-gradient(135deg,#3b82f6,#60a5fa);
-      color:#fff;
-      box-shadow:0 10px 22px rgba(59,130,246,0.28);
-    }
+    button{cursor:pointer;border:1px solid rgba(0,0,0,0.08);border-radius:12px;padding:10px 14px;font-weight:700;
+      background:linear-gradient(135deg,#3b82f6,#60a5fa);color:#fff;box-shadow:0 10px 22px rgba(59,130,246,0.28)}
     .ghost{background:#fff;color:#0a2a66;font-weight:600}
+
+    /* Results */
     .result-wrap{display:grid;gap:10px}
-    pre{
-      background:#111827;color:#e5e7eb;border-radius:12px;
-      padding:12px;font-size:12px;overflow:auto;margin:0;
-    }
+    pre{background:#111827;color:#e5e7eb;border-radius:12px;padding:12px;font-size:12px;overflow:auto;margin:0}
   </style>
 </head>
 <body>
-  <!-- Header with clickable brand link -->
+  <!-- Header (brand links to landing page) -->
   <header class="topbar">
     <div class="topwrap">
       <div class="logo" aria-hidden="true"></div>
       <div>
-        <a href="/index.html" style="text-decoration:none;color:inherit;">
+        <a href="/index.html" style="text-decoration:none;color:inherit">
           <div class="brand">PredictWell Health.ai</div>
         </a>
         <div class="tagline">Proactive health insights for seniors &amp; athletes</div>
@@ -127,6 +89,7 @@
     </div>
   </header>
 
+  <!-- Page header -->
   <section class="hero">
     <div class="titlecard">
       <h1 class="title">Eldercare Sentinel — Doctor Intake</h1>
@@ -139,18 +102,51 @@
     </div>
   </section>
 
+  <!-- Main -->
   <main class="grid">
+    <!-- LEFT: FULL, LONG INTAKE -->
     <section class="card pad">
       <form id="doctorIntake" class="doctor-intake">
-        <!-- FULL INTAKE (unchanged) -->
-        <!-- Patient Info -->
+        <!-- Patient & Visit -->
         <div class="section">
           <h4>Patient &amp; Visit</h4>
           <div class="row">
-            <div class="col-6"><label>Patient Name</label><input name="patient_name" required></div>
-            <div class="col-3"><label>DOB</label><input name="dob" type="date" required></div>
-            <div class="col-3"><label>Sex</label>
-              <select name="sex"><option disabled selected>Select</option><option>Female</option><option>Male</option></select>
+            <div class="col-6">
+              <label>Patient Name</label>
+              <input name="patient_name" placeholder="First Last" required>
+            </div>
+            <div class="col-3">
+              <label>DOB</label>
+              <input name="dob" type="date" required>
+            </div>
+            <div class="col-3">
+              <label>Biological Sex</label>
+              <select name="sex" required>
+                <option disabled selected>Select</option>
+                <option>Female</option><option>Male</option><option>Intersex</option><option>Prefer not to say</option>
+              </select>
+            </div>
+            <div class="col-4">
+              <label>Visit Type</label>
+              <select name="visit_type" required>
+                <option disabled selected>Select</option>
+                <option>New patient</option><option>Follow-up</option><option>Post-discharge</option><option>Telehealth</option>
+              </select>
+            </div>
+            <div class="col-4">
+              <label>Primary Concern</label>
+              <select name="chief" required>
+                <option disabled selected>Select</option>
+                <option>General check-in</option><option>Medication review</option><option>Falls / balance</option>
+                <option>Memory / cognition</option><option>Pain / mobility</option><option>Sleep / fatigue</option>
+              </select>
+            </div>
+            <div class="col-4">
+              <label>Care Setting</label>
+              <select name="setting">
+                <option disabled selected>Select</option>
+                <option>Home</option><option>Clinic</option><option>Assisted living</option><option>Skilled nursing</option>
+              </select>
             </div>
           </div>
         </div>
@@ -159,63 +155,151 @@
         <div class="section">
           <h4>Vitals</h4>
           <div class="row">
-            <div class="col-3"><label>SBP</label><input name="sbp" type="number"></div>
-            <div class="col-3"><label>DBP</label><input name="dbp" type="number"></div>
-            <div class="col-3"><label>HR</label><input name="hr" type="number"></div>
-            <div class="col-3"><label>SpO₂</label><input name="spo2" type="number"></div>
+            <div class="col-3"><label>SBP (mmHg)</label><input name="sbp" type="number" step="1"></div>
+            <div class="col-3"><label>DBP (mmHg)</label><input name="dbp" type="number" step="1"></div>
+            <div class="col-3"><label>HR (bpm)</label><input name="hr" type="number" step="1"></div>
+            <div class="col-3"><label>Temp (°F)</label><input name="temp_f" type="number" step="0.1"></div>
+            <div class="col-3"><label>SpO₂ (%)</label><input name="spo2" type="number" step="1"></div>
+            <div class="col-3"><label>Resp Rate</label><input name="rr" type="number" step="1"></div>
+            <div class="col-3"><label>Height (cm)</label><input name="height_cm" type="number" step="0.1"></div>
+            <div class="col-3"><label>Weight (kg)</label><input name="weight_kg" type="number" step="0.1"></div>
           </div>
         </div>
 
         <!-- Labs -->
         <div class="section">
-          <h4>Labs</h4>
+          <h4>Key Labs</h4>
           <div class="row">
-            <div class="col-3"><label>HbA1c</label><input name="hba1c" type="number" step="0.1"></div>
-            <div class="col-3"><label>LDL</label><input name="ldl" type="number"></div>
-            <div class="col-3"><label>eGFR</label><input name="egfr" type="number"></div>
-            <div class="col-3"><label>CRP</label><input name="crp" type="number" step="0.1"></div>
+            <div class="col-3"><label>HbA1c (%)</label><input name="hba1c" type="number" step="0.1"></div>
+            <div class="col-3"><label>LDL (mg/dL)</label><input name="ldl" type="number" step="1"></div>
+            <div class="col-3"><label>eGFR (mL/min)</label><input name="egfr" type="number" step="1"></div>
+            <div class="col-3"><label>Creatinine (mg/dL)</label><input name="creatinine" type="number" step="0.01"></div>
+            <div class="col-3"><label>Hemoglobin (g/dL)</label><input name="hgb" type="number" step="0.1"></div>
+            <div class="col-3"><label>TSH (µIU/mL)</label><input name="tsh" type="number" step="0.01"></div>
+            <div class="col-3"><label>CRP (mg/L)</label><input name="crp" type="number" step="0.1"></div>
+            <div class="col-3"><label>Vitamin D (ng/mL)</label><input name="vitd" type="number" step="0.1"></div>
           </div>
         </div>
 
-        <!-- Cognition -->
+        <!-- Cognition & Function -->
         <div class="section">
           <h4>Cognition &amp; Function</h4>
           <div class="row">
-            <div class="col-3"><label>MMSE</label><input name="mmse" type="number"></div>
-            <div class="col-3"><label>MoCA</label><input name="moca" type="number"></div>
-            <div class="col-3"><label>Falls (12 mo)</label><input name="falls_12m" type="number"></div>
-            <div class="col-3"><label>Gait Speed</label><input name="gait_speed" type="number" step="0.01"></div>
+            <div class="col-3"><label>MMSE</label><input name="mmse" type="number" min="0" max="30" step="1"></div>
+            <div class="col-3"><label>MoCA</label><input name="moca" type="number" min="0" max="30" step="1"></div>
+            <div class="col-3"><label>ADL Status</label>
+              <select name="adl">
+                <option disabled selected>Select</option>
+                <option>Independent</option><option>Needs some help</option><option>Dependent</option>
+              </select>
+            </div>
+            <div class="col-3"><label>IADL Status</label>
+              <select name="iadl">
+                <option disabled selected>Select</option>
+                <option>Independent</option><option>Needs some help</option><option>Dependent</option>
+              </select>
+            </div>
+            <div class="col-3"><label>Gait speed (m/s)</label><input name="gait_speed" type="number" step="0.01"></div>
+            <div class="col-3"><label>Timed Up &amp; Go (s)</label><input name="tug" type="number" step="0.1"></div>
+            <div class="col-3"><label>Falls (last 12 mo)</label>
+              <select name="falls_12m">
+                <option disabled selected>Select</option>
+                <option>0</option><option>1</option><option>2+</option>
+              </select>
+            </div>
+            <div class="col-3"><label>Frailty (CFS)</label>
+              <select name="cfs">
+                <option disabled selected>Select</option>
+                <option>1 Very Fit</option><option>2 Well</option><option>3 Managing well</option>
+                <option>4 Vulnerable</option><option>5 Mildly frail</option><option>6 Moderately frail</option>
+                <option>7 Severely frail</option><option>8 Very severely frail</option><option>9 Terminally ill</option>
+              </select>
+            </div>
           </div>
         </div>
 
-        <!-- Lifestyle -->
+        <!-- Lifestyle & Symptoms -->
         <div class="section">
-          <h4>Lifestyle</h4>
+          <h4>Lifestyle &amp; Symptoms</h4>
           <div class="row">
-            <div class="col-3"><label>Sleep hrs</label><input name="sleep_hrs" type="number"></div>
-            <div class="col-3"><label>Activity</label><select name="activity"><option>Light</option><option>Moderate</option></select></div>
-            <div class="col-3"><label>PHQ-2</label><input name="phq2" type="number"></div>
-            <div class="col-3"><label>Pain (0–10)</label><input name="pain" type="number"></div>
+            <div class="col-3"><label>Sleep hours (avg)</label><input name="sleep_hrs" type="number" step="0.1"></div>
+            <div class="col-3"><label>Daytime sleepiness</label>
+              <select name="sleepiness">
+                <option disabled selected>Select</option>
+                <option>None</option><option>Mild</option><option>Moderate</option><option>Severe</option>
+              </select>
+            </div>
+            <div class="col-3"><label>Activity level</label>
+              <select name="activity">
+                <option disabled selected>Select</option>
+                <option>Mostly sedentary</option><option>Light</option><option>Moderate</option><option>Vigorous</option>
+              </select>
+            </div>
+            <div class="col-3"><label>Smoking</label>
+              <select name="smoking">
+                <option disabled selected>Select</option>
+                <option>Never</option><option>Former</option><option>Current</option>
+              </select>
+            </div>
+            <div class="col-3"><label>Alcohol</label>
+              <select name="alcohol">
+                <option disabled selected>Select</option>
+                <option>None</option><option>Light</option><option>Moderate</option><option>Heavy</option>
+              </select>
+            </div>
+            <div class="col-3"><label>PHQ-2</label><input name="phq2" type="number" min="0" max="6" step="1"></div>
+            <div class="col-3"><label>GAD-2</label><input name="gad2" type="number" min="0" max="6" step="1"></div>
+            <div class="col-3"><label>Pain (0–10)</label><input name="pain" type="number" min="0" max="10" step="1"></div>
           </div>
         </div>
 
-        <!-- Conditions -->
+        <!-- Conditions, Meds, Allergies -->
         <div class="section">
-          <h4>Conditions / Medications</h4>
+          <h4>Conditions, Medications &amp; Allergies</h4>
           <div class="row">
-            <div class="col-12"><label>Conditions</label><input name="conditions"></div>
-            <div class="col-12"><label>Medications</label><textarea name="meds"></textarea></div>
+            <div class="col-12">
+              <label>Chronic Conditions (comma-separated)</label>
+              <input name="conditions" placeholder="HTN, T2DM, CKD3, CAD, A-fib, COPD …">
+            </div>
+            <div class="col-9">
+              <label>Active Medications (comma-separated)</label>
+              <textarea name="meds" placeholder="metformin 1000 bid, lisinopril 10 qd, apixaban 5 bid, atorvastatin 40 qhs …"></textarea>
+            </div>
+            <div class="col-3">
+              <label>Medication Count</label>
+              <input name="polypharmacy_count" type="number" min="0" step="1">
+            </div>
+            <div class="col-6">
+              <label>Allergies</label>
+              <input name="allergies" placeholder="NKDA or list allergens">
+            </div>
+            <div class="col-6">
+              <label>Devices / Wearables</label>
+              <input name="devices" placeholder="Apple Watch, Fitbit, BP cuff, CGM …">
+            </div>
+          </div>
+        </div>
+
+        <!-- Notes -->
+        <div class="section">
+          <h4>Clinical Notes</h4>
+          <div class="row">
+            <div class="col-12">
+              <label>HPI / Assessment / Plan (optional)</label>
+              <textarea name="notes" placeholder="Key context you want the AI to consider…"></textarea>
+            </div>
           </div>
         </div>
 
         <div class="actions">
-          <button type="submit">Compute Risk</button>
+          <button type="submit">Compute Risk &amp; Micro-actions</button>
           <button type="button" class="ghost" id="clearForm">Clear</button>
           <span class="muted" id="statusNote"></span>
         </div>
       </form>
     </section>
 
+    <!-- RIGHT: Results -->
     <aside class="card pad">
       <div class="result-wrap">
         <h3>Results</h3>
@@ -225,37 +309,50 @@
     </aside>
   </main>
 
+  <!-- Wiring -->
   <script>
     const BASE_API = 'https://predictwell-backend-ai.onrender.com';
-    const form=document.getElementById('doctorIntake');
-    const resultBox=document.getElementById('resultBox');
-    const statusNote=document.getElementById('statusNote');
-    const clearBtn=document.getElementById('clearForm');
+    const form = document.getElementById('doctorIntake');
+    const resultBox = document.getElementById('resultBox');
+    const statusNote = document.getElementById('statusNote');
+    const clearBtn = document.getElementById('clearForm');
 
-    form.addEventListener('submit',async(e)=>{
+    function formToJSON(fd){
+      const o = {};
+      fd.forEach((v,k)=>{
+        if (o[k] !== undefined){
+          if (!Array.isArray(o[k])) o[k] = [o[k]];
+          o[k].push(v);
+        } else {
+          o[k] = v;
+        }
+      });
+      return o;
+    }
+
+    form.addEventListener('submit', async (e)=>{
       e.preventDefault();
-      statusNote.textContent='Submitting…';
-      const fd=new FormData(form); const obj={};
-      fd.forEach((v,k)=>obj[k]=v);
+      statusNote.textContent = 'Submitting…';
+      const payload = formToJSON(new FormData(form));
       try{
-        const res=await fetch(`${BASE_API}/eldercare/checkin`,{
+        const res = await fetch(`${BASE_API}/eldercare/checkin`,{
           method:'POST',
           headers:{'Content-Type':'application/json'},
-          body:JSON.stringify(obj)
+          body: JSON.stringify(payload)
         });
-        const data=await res.json();
-        resultBox.textContent=JSON.stringify(data,null,2);
-        statusNote.textContent='Done';
+        const data = await res.json().catch(()=>({raw:'No JSON'}));
+        resultBox.textContent = JSON.stringify(data, null, 2);
+        statusNote.textContent = res.ok ? 'Done' : 'Check inputs';
       }catch(err){
-        resultBox.textContent=JSON.stringify({error:String(err)},null,2);
-        statusNote.textContent='Error';
+        resultBox.textContent = JSON.stringify({error:String(err)}, null, 2);
+        statusNote.textContent = 'Network error';
       }
     });
 
-    clearBtn.addEventListener('click',()=>{
+    clearBtn.addEventListener('click', ()=>{
       form.reset();
-      resultBox.textContent='{ "status": "ok" }';
-      statusNote.textContent='';
+      resultBox.textContent = '{ "status": "ok" }';
+      statusNote.textContent = '';
     });
   </script>
 </body>
