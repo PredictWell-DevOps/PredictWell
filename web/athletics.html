@@ -1,27 +1,33 @@
-<!-- ====== athletics.html — PredictWell Athletics (Pitching Risk) ====== -->
+<!-- ====== athletics.html (Doctor Portal - styled to match landing page) ====== -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>PredictWell Health.ai — Athletics (Pitching Risk)</title>
-  <meta name="description" content="PredictWell Athletics: pitcher workload, pain, and biomechanics flags into a single risk score." />
-  <link rel="icon" href="data:," />
+  <title>PredictWell Health.ai — Athletics Doctor Portal</title>
+  <meta name="description" content="Pitching workload and risk inputs with clear flags and recommendations." />
+  <link rel="icon" href="data:,">
 
+  <!-- Base styles to match index look/feel -->
   <style>
-    :root {
-      --brand-navy: #0b2545;
-      --brand-orange: #ff7a18;
-      --muted: #64748b;
-      --card: #ffffff;
-      --ok: #16a34a;
-      --err: #dc2626;
+    :root{
+      --glass-bg: rgba(255,255,255,0.78);
+      --glass-dark: rgba(0,0,0,0.55);
+      --radius: 18px;
+      --shadow: 0 10px 30px rgba(0,0,0,0.18);
+      --blu: #2563eb;
+      --org: #f59e0b;
+      --ink: #0b1020;
     }
 
+    /* Background (same as landing page) */
+    html, body {
+      height: 100%;
+    }
     body {
       margin: 0;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
-      color: #0f172a;
+      color: #111827;
       background-image: url("/static/images/predictwell_background.png");
       background-size: cover;
       background-position: center;
@@ -29,261 +35,416 @@
       background-attachment: fixed;
       min-height: 100vh;
     }
-    .overlay {
-      min-height: 100vh;
-      background: linear-gradient(180deg, rgba(255,255,255,0.88), rgba(255,255,255,0.94));
-      padding: 32px 16px 48px;
-    }
-    .container { max-width: 1000px; margin: 0 auto; }
 
-    header {
+    /* Header */
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: saturate(1.2) blur(6px);
+      background: rgba(255,255,255,0.75);
+      border-bottom: 1px solid rgba(255,255,255,0.4);
+    }
+    .header-inner {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 14px 18px;
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 20px;
+      gap: 14px;
     }
-    .brand { display: flex; align-items: baseline; gap: 10px; color: var(--brand-navy); }
-    .brand h1 { margin: 0; font-size: clamp(20px, 4vw, 28px); }
-    .brand span { color: var(--brand-orange); font-weight: 700; }
-
-    nav a {
-      color: var(--brand-navy);
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
       text-decoration: none;
-      font-weight: 700;
-      padding: 8px 12px;
+      color: #0b1020;
+    }
+    .brand-logo {
+      width: 34px;
+      height: 34px;
       border-radius: 10px;
-      background: rgba(255,255,255,0.6);
-      border: 1px solid rgba(2,6,23,0.06);
+      background: linear-gradient(135deg, var(--blu), #60a5fa);
+      box-shadow: var(--shadow);
+    }
+    .brand-title {
+      font-weight: 800;
+      letter-spacing: 0.2px;
+      font-size: 20px;
+      line-height: 1;
+    }
+    .brand-title .hi { color: #111827; }
+    .brand-title .ai { color: #fb923c; }
+
+    .brand-tagline {
+      font-size: 12px;
+      color: #4b5563;
+      line-height: 1.1;
     }
 
+    .spacer { flex: 1; }
+    .hamburger {
+      border: none;
+      background: #fff;
+      border-radius: 999px;
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      box-shadow: var(--shadow);
+      cursor: pointer;
+    }
+    .hamburger:after{
+      content: "≡";
+      font-size: 20px;
+      color: #111827;
+      position: relative;
+      top: -1px;
+    }
+    .menu {
+      position: absolute;
+      right: 18px;
+      top: 58px;
+      background: var(--glass-bg);
+      backdrop-filter: blur(10px);
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+      padding: 8px;
+      display: none;
+    }
+    .menu a {
+      display: block;
+      padding: 10px 12px;
+      border-radius: 10px;
+      text-decoration: none;
+      color: #111827;
+      min-width: 220px;
+    }
+    .menu a:hover { background: rgba(17,24,39,0.06); }
+
+    /* Page container + intro banner (match landing) */
+    .hero-wrap {
+      max-width: 1080px;
+      margin: 28px auto 0;
+      padding: 0 18px 24px;
+    }
     .hero {
-      background: rgba(255,255,255,0.75);
-      border: 1px solid rgba(2,6,23,0.06);
-      border-radius: 18px;
-      padding: 20px;
-      margin-bottom: 16px;
-      box-shadow: 0 8px 20px rgba(2,6,23,0.08);
+      background: var(--glass-bg);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 22px 24px;
     }
-    .hero h2 { margin: 0 0 8px; color: var(--brand-navy); }
-    .hero p { margin: 0; color: var(--muted); }
+    .hero h1 {
+      margin: 0 0 8px 0;
+      font-size: 26px;
+      letter-spacing: 0.2px;
+    }
+    .hero p {
+      margin: 0;
+      color: #374151;
+      line-height: 1.55;
+    }
 
-    .grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
-    @media (min-width: 900px) { .grid { grid-template-columns: 1.1fr 0.9fr; } }
-
+    /* Two-column card (inputs + results) */
+    .card-row {
+      display: grid;
+      grid-template-columns: 1.08fr 0.92fr;
+      gap: 18px;
+      margin-top: 18px;
+    }
     .card {
-      background: var(--card);
-      border: 1px solid rgba(2,6,23,0.06);
-      border-radius: 18px;
-      padding: 20px;
-      box-shadow: 0 8px 20px rgba(2,6,23,0.08);
+      background: var(--glass-bg);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 18px;
     }
-    .card h3 { margin-top: 0; color: var(--brand-navy); }
-
-    .row { display: grid; grid-template-columns: 1fr; gap: 12px; margin-bottom: 12px; }
-    @media (min-width: 720px) {
-      .row.two { grid-template-columns: 1fr 1fr; }
-      .row.three { grid-template-columns: 1fr 1fr 1fr; }
+    .card h2 {
+      margin: 0 0 14px 0;
+      font-size: 18px;
+      letter-spacing: 0.2px;
     }
 
-    label { font-size: 14px; color: var(--muted); margin-bottom: 6px; display: block; }
-    input[type="text"], input[type="number"], textarea {
-      width: 100%; padding: 10px 12px; border-radius: 12px;
-      border: 1px solid rgba(2,6,23,0.12); background: #fff; font-size: 16px; box-sizing: border-box;
+    /* Form layout (keep same field structure/IDs) */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
     }
-    textarea { min-height: 92px; resize: vertical; }
-
-    .checkbox { display: flex; align-items: center; gap: 10px; color: var(--muted); }
-
-    .btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px; }
-    button { padding: 10px 14px; font-weight: 700; border-radius: 12px; border: 1px solid transparent; cursor: pointer; }
-    .primary { background: var(--brand-orange); color: #fff; }
-    .ghost { background: #fff; color: var(--brand-navy); border-color: rgba(2,6,23,0.12); }
-
-    pre.output {
-      background: #0b1220; color: #e2e8f0; padding: 14px; border-radius: 12px;
-      overflow: auto; font-size: 13px; line-height: 1.45; max-height: 420px;
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    label {
+      font-size: 12px;
+      color: #374151;
+    }
+    input[type="text"],
+    input[type="number"],
+    textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid rgba(17,24,39,0.1);
+      border-radius: 12px;
+      background: #ffffff;
+      outline: none;
+      font-size: 14px;
+    }
+    textarea { min-height: 90px; resize: vertical; }
+    .checkbox {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 4px;
+      font-size: 13px;
+      color: #374151;
     }
 
-    .status-pill {
-      display: inline-flex; align-items: center; gap: 8px; padding: 6px 10px;
-      border-radius: 999px; background: #f1f5f9; color: var(--muted); font-weight: 600; font-size: 12px;
+    /* Buttons (gradient like landing) */
+    .actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 12px;
+      flex-wrap: wrap;
     }
-    .ok { color: var(--ok); }
-    .err { color: var(--err); }
+    .btn {
+      appearance: none;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 999px;
+      color: #fff;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+    }
+    .btn-blue {
+      background: linear-gradient(135deg, var(--blu), #60a5fa);
+    }
+    .btn-gray {
+      background: linear-gradient(135deg, #6b7280, #9ca3af);
+      color: #0b1020;
+      font-weight: 700;
+    }
+
+    .badge {
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: #e5f8ec;
+      color: #065f46;
+      font-weight: 700;
+      font-size: 12px;
+    }
+
+    /* Results area */
+    pre {
+      margin: 0;
+      padding: 14px;
+      background: #0b1020;
+      color: #c7d2fe;
+      border-radius: 14px;
+      min-height: 220px;
+      overflow: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    /* Footer (match landing minimal) */
+    .footer {
+      max-width: 1080px;
+      margin: 20px auto 40px;
+      padding: 0 18px;
+      color: #374151;
+      font-size: 12px;
+      text-align: center;
+      text-shadow: 0 1px 0 rgba(255,255,255,0.75);
+    }
+
+    /* Mobile */
+    @media (max-width: 900px) {
+      .card-row { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
-  <div class="overlay">
-    <div class="container">
-      <header>
-        <div class="brand">
-          <h1>PredictWell <span>Health.ai</span></h1>
+  <!-- Header (logo & tagline link back to landing page) -->
+  <header class="header">
+    <div class="header-inner">
+      <a class="brand" href="/index.html" aria-label="Back to PredictWell Health.ai home">
+        <div class="brand-logo" aria-hidden="true"></div>
+        <div>
+          <div class="brand-title">
+            <span class="hi">PredictWell Health</span><span class="ai">.ai</span>
+          </div>
+          <div class="brand-tagline">Proactive health insights for seniors & athletes</div>
         </div>
-        <nav>
-          <a href="/eldercare.html">Eldercare</a>
-          <a href="/athletics.html">Athletics</a>
-        </nav>
-      </header>
+      </a>
+      <div class="spacer"></div>
+      <button class="hamburger" id="menuBtn" aria-label="Open menu"></button>
+      <nav class="menu" id="menu">
+        <a href="/eldercare.html">Eldercare — Doctors</a>
+        <a href="/eldercare-patient.html">Eldercare — Patients</a>
+        <a href="/athletics.html"><strong>Athletics — Doctors</strong></a>
+        <a href="/athletics-patient.html">Athletics — Patients</a>
+      </nav>
+    </div>
+  </header>
 
-      <section class="hero">
-        <h2>Pitching Risk — Daily/Weekly Input</h2>
-        <p>Enter workload, pain, rest, and flags. We’ll compute a risk score and recommendations.</p>
+  <!-- Intro panel (same tone as landing) -->
+  <div class="hero-wrap">
+    <section class="hero">
+      <h1>Pitching Risk — Daily/Weekly Input</h1>
+      <p>Enter workload, pain, rest, and flags. We’ll compute a risk score and recommendations.</p>
+    </section>
+
+    <!-- Two-column cards: Inputs | Results -->
+    <div class="card-row">
+      <!-- Left: Inputs (unchanged IDs/fields) -->
+      <section class="card">
+        <h2>Pitcher Inputs</h2>
+
+        <div class="grid">
+          <div class="field">
+            <label for="pitcherName">Pitcher Name</label>
+            <input id="pitcherName" type="text" placeholder="e.g., A. Miller" />
+          </div>
+
+          <div class="field">
+            <label for="age">Age</label>
+            <input id="age" type="number" min="8" max="60" value="17" />
+          </div>
+
+          <div class="field">
+            <label for="pitchCount7d">Pitch count (last 7 days)</label>
+            <input id="pitchCount7d" type="number" min="0" value="92" />
+          </div>
+
+          <div class="field">
+            <label for="innings7d">Innings (last 7 days)</label>
+            <input id="innings7d" type="number" min="0" step="0.1" value="6.2" />
+          </div>
+
+          <div class="field">
+            <label for="restDays">Rest days since last outing</label>
+            <input id="restDays" type="number" min="0" value="2" />
+          </div>
+
+          <div class="field">
+            <label for="avgVelo">Avg Velo (mph)</label>
+            <input id="avgVelo" type="number" min="0" step="0.1" value="84.7" />
+          </div>
+
+          <div class="field">
+            <label for="painToday">Pain today (0–10)</label>
+            <input id="painToday" type="number" min="0" max="10" value="2" />
+          </div>
+
+          <div class="field">
+            <label for="throwsToday">Throws today</label>
+            <input id="throwsToday" type="number" min="0" value="35" />
+          </div>
+        </div>
+
+        <label class="checkbox" for="priorInjury">
+          <input id="priorInjury" type="checkbox" />
+          Prior elbow/shoulder injury or surgery?
+        </label>
+
+        <div class="field" style="margin-top:8px;">
+          <label for="mechanicsFlags">Mechanics flags (optional)</label>
+          <textarea id="mechanicsFlags" placeholder="e.g., late arm, inconsistent stride, drag line anomalies..."></textarea>
+        </div>
+
+        <div class="actions">
+          <button id="computeBtn" class="btn btn-blue">Compute Risk</button>
+          <button id="pingBtn" class="btn btn-gray">Ping Backend</button>
+          <span id="backendStatus" class="badge" title="Backend health status">Backend: ok</span>
+        </div>
       </section>
 
-      <div class="grid">
-        <!-- FORM CARD -->
-        <div class="card">
-          <h3>Pitcher Inputs</h3>
-
-          <div class="row two">
-            <div>
-              <label for="p_name">Pitcher Name</label>
-              <input id="p_name" type="text" placeholder="e.g., A. Miller" />
-            </div>
-            <div>
-              <label for="p_age">Age</label>
-              <input id="p_age" type="number" min="8" max="60" placeholder="17" />
-            </div>
-          </div>
-
-          <div class="row three">
-            <div>
-              <label for="pitch_count_7d">Pitch count (last 7 days)</label>
-              <input id="pitch_count_7d" type="number" min="0" step="1" placeholder="92" />
-            </div>
-            <div>
-              <label for="innings_7d">Innings (last 7 days)</label>
-              <input id="innings_7d" type="number" min="0" step="0.1" placeholder="6.2" />
-            </div>
-            <div>
-              <label for="rest_days">Rest days since last outing</label>
-              <input id="rest_days" type="number" min="0" max="10" step="1" placeholder="2" />
-            </div>
-          </div>
-
-          <div class="row three">
-            <div>
-              <label for="velo_avg">Avg Velo (mph)</label>
-              <input id="velo_avg" type="number" step="0.1" min="40" max="110" placeholder="84.7" />
-            </div>
-            <div>
-              <label for="pain_level">Pain today (0–10)</label>
-              <input id="pain_level" type="number" step="1" min="0" max="10" placeholder="2" />
-            </div>
-            <div>
-              <label for="workload_today">Throws today</label>
-              <input id="workload_today" type="number" step="1" min="0" placeholder="35" />
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="checkbox">
-              <input id="elbow_history" type="checkbox" />
-              <label for="elbow_history">Prior elbow/shoulder injury or surgery?</label>
-            </div>
-          </div>
-
-          <div class="row">
-            <div>
-              <label for="mech_flags">Mechanics flags (optional)</label>
-              <textarea id="mech_flags" placeholder="e.g., late arm, inconsistent stride, drag line anomalies..."></textarea>
-            </div>
-          </div>
-
-          <div class="btn-row">
-            <button class="primary" id="riskBtn">Compute Risk</button>
-            <button class="ghost" id="pingBtn">Ping Backend</button>
-            <span class="status-pill" id="statusPill">Backend: <strong>unknown</strong></span>
-          </div>
-        </div>
-
-        <!-- OUTPUT CARD -->
-        <div class="card">
-          <h3>Risk Score & Recommendations</h3>
-          <pre class="output" id="output">{ Submit to see results... }</pre>
-        </div>
-      </div>
-
-      <footer style="margin-top:20px; text-align:center; color:var(--muted); font-size:12px;">
-        © <span id="year"></span> PredictWell Health.ai — Athletics
-      </footer>
+      <!-- Right: Results (unchanged container) -->
+      <section class="card">
+        <h2>Risk Score &amp; Recommendations</h2>
+        <pre id="resultBox">{\n  "status": "ok"\n}</pre>
+      </section>
     </div>
   </div>
 
+  <div class="footer">© 2025 PredictWell Health.ai — Athletics</div>
+
+  <!-- Behavior (kept intact; only cosmetic around it) -->
   <script>
-    // ====== IMPORTANT: Production backend URL ======
     const BASE_API = 'https://predictwell-backend-ai.onrender.com';
 
-    const out = (obj) => {
-      const el = document.getElementById('output');
-      el.textContent = (typeof obj === 'string') ? obj : JSON.stringify(obj, null, 2);
-    };
+    // Simple menu toggle (matches landing UX)
+    const menuBtn = document.getElementById('menuBtn');
+    const menu = document.getElementById('menu');
+    document.addEventListener('click', (e) => {
+      if (menuBtn.contains(e.target)) {
+        menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+      } else if (!menu.contains(e.target)) {
+        menu.style.display = 'none';
+      }
+    });
 
-    const pill = document.getElementById('statusPill');
-    function setPill(text, cls) {
-      pill.innerHTML = `Backend: <strong class="${cls || ''}">${text}</strong>`;
+    const resultBox = document.getElementById('resultBox');
+    const backendStatus = document.getElementById('backendStatus');
+
+    function readNumber(id) {
+      const v = document.getElementById(id).value;
+      const n = Number(v);
+      return Number.isFinite(n) ? n : 0;
     }
 
-    async function ping() {
+    async function pingBackend() {
       try {
-        const r = await fetch(`${BASE_API}/healthz`, { cache: 'no-store' });
-        if (!r.ok) throw new Error(`HTTP ${r.status}`);
-        const d = await r.json();
-        setPill('ok', 'ok');
-        out(d);
+        const r = await fetch(`${BASE_API}/healthz`);
+        const j = await r.json();
+        backendStatus.textContent = 'Backend: ok';
+        backendStatus.style.background = '#e5f8ec';
+        backendStatus.style.color = '#065f46';
+        resultBox.textContent = JSON.stringify(j, null, 2);
       } catch (e) {
-        setPill('error', 'err');
-        out({ error: String(e) });
+        backendStatus.textContent = 'Backend: down';
+        backendStatus.style.background = '#fee2e2';
+        backendStatus.style.color = '#991b1b';
+        resultBox.textContent = JSON.stringify({ error: 'Backend unreachable' }, null, 2);
       }
     }
 
     async function computeRisk() {
       const payload = {
-        name: document.getElementById('p_name').value.trim() || null,
-        age: Number(document.getElementById('p_age').value) || null,
-        workload: {
-          pitch_count_7d: Number(document.getElementById('pitch_count_7d').value) || 0,
-          innings_7d: Number(document.getElementById('innings_7d').value) || 0,
-          rest_days: Number(document.getElementById('rest_days').value) || 0,
-          workload_today: Number(document.getElementById('workload_today').value) || 0,
-          velo_avg: Number(document.getElementById('velo_avg').value) || null,
-          pain_level: Number(document.getElementById('pain_level').value) || 0
-        },
-        flags: {
-          elbow_history: document.getElementById('elbow_history').checked,
-          mechanics_notes: document.getElementById('mech_flags').value.trim() || null
-        },
-        timestamp: new Date().toISOString()
+        name: document.getElementById('pitcherName').value || '',
+        age: readNumber('age'),
+        pitch_count_7d: readNumber('pitchCount7d'),
+        innings_7d: readNumber('innings7d'),
+        rest_days: readNumber('restDays'),
+        avg_velo: readNumber('avgVelo'),
+        pain_today: readNumber('painToday'),
+        throws_today: readNumber('throwsToday'),
+        prior_injury: document.getElementById('priorInjury').checked,
+        mechanics_flags: document.getElementById('mechanicsFlags').value || ''
       };
 
+      resultBox.textContent = 'Scoring...';
       try {
-        out('Computing risk...');
         const res = await fetch(`${BASE_API}/risk`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
         });
-
-        if (!res.ok) {
-          const txt = await res.text();
-          throw new Error(`HTTP ${res.status} — ${txt}`);
-        }
-
-        const data = await res.json();
-        out(data);
-      } catch (err) {
-        out({ error: String(err) });
+        const json = await res.json();
+        resultBox.textContent = JSON.stringify(json, null, 2);
+      } catch (e) {
+        resultBox.textContent = JSON.stringify({ error: 'Request failed' }, null, 2);
       }
     }
 
-    // Events
-    document.getElementById('riskBtn').addEventListener('click', computeRisk);
-    document.getElementById('pingBtn').addEventListener('click', ping);
-    document.getElementById('year').textContent = new Date().getFullYear();
+    document.getElementById('pingBtn').addEventListener('click', pingBackend);
+    document.getElementById('computeBtn').addEventListener('click', computeRisk);
 
-    // Auto-ping on load
-    ping();
+    // Initial quick ping to reflect status badge
+    pingBackend();
   </script>
 </body>
 </html>
