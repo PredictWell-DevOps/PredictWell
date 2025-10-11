@@ -1,123 +1,115 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>PredictWell — Eldercare Patient Portal</title>
-  <meta name="description" content="Eldercare Patient Portal — daily health check-ins." />
-  <link rel="icon" href="data:," />
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>PredictWell — Eldercare Patient Portal</title>
+<link rel="icon" href="data:," />
+<meta name="description" content="Eldercare Patient Portal — daily health check-ins.">
 
-  <style>
-    :root{
-      --brand-bg:#0a3d35;          /* deep teal */
-      --brand-grad:#0f6f62;        /* lighter teal */
-      --card:#13564d;
-      --text:#e9fff8;
-      --muted:#cfe9e3;
-      --accent:#f4b000;
-      --accent-press:#d99a00;
-      --ok:#47c17e;
-      --error:#ff6767;
-      --shadow: 0 10px 30px rgba(0,0,0,.35);
-      --radius: 18px;
-      --pad: 22px;
-      --field-h: 44px;
-      --max-w: 760px;
-    }
+<style>
+  :root{
+    --bg-a:#0a3d35;        /* deep teal */
+    --bg-b:#0f6f62;        /* lighter teal */
+    --card:#0d4a41;
+    --text:#e9fff8;
+    --muted:#cfe9e3;
+    --accent:#f4b000;
+    --accent-press:#d99a00;
+    --shadow:0 14px 40px rgba(0,0,0,.45);
+    --radius:16px;
+    --max:980px;
+    --fieldh:46px;
+  }
 
-    /* Background + overlay (same structure as Doctor Portal) */
-    body{
-      margin:0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      color: var(--text);
-      background-image: url("/static/images/predictwell_background.png");
-      background-size: cover;
-      background-position: center;
-      background-attachment: fixed;
-      min-height: 100vh;
-      position: relative;
-    }
-    body::before{
-      content:"";
-      position:fixed; inset:0;
-      background: linear-gradient(180deg, rgba(10,61,53,.95), rgba(15,111,98,.92));
-      z-index:-1;
-    }
+  html,body{height:100%}
+  body{
+    margin:0;
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+    color:var(--text);
+    background-image:url("/static/images/predictwell_background.png");
+    background-size:cover; background-position:center; background-attachment:fixed;
+  }
+  body::before{
+    content:"";
+    position:fixed; inset:0; z-index:-1;
+    background:linear-gradient(180deg, rgba(10,61,53,.92), rgba(15,111,98,.92));
+  }
 
-    /* Header */
-    .header{
-      position:sticky; top:0;
-      display:flex; align-items:center; justify-content:space-between;
-      padding:14px 22px;
-      background: linear-gradient(90deg, rgba(10,61,53,.85), rgba(15,111,98,.85));
-      backdrop-filter: blur(6px);
-      border-bottom: 1px solid rgba(255,255,255,.08);
-    }
-    .brand{ display:flex; align-items:center; gap:10px; text-decoration:none; color:var(--text) }
-    .brand .logo{ width:28px; height:28px; border-radius:8px; background:#fff1; display:inline-block }
-    .brand span{ font-weight:700; letter-spacing:.2px }
-    .nav a{ color:var(--text); text-decoration:none; opacity:.85; margin-left:16px; font-size:14px }
-    .nav a:hover{ opacity:1 }
+  /* sticky header like Doctor Portal */
+  .top{
+    position:sticky; top:0; z-index:10;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 22px;
+    background:linear-gradient(90deg, rgba(10,61,53,.85), rgba(15,111,98,.85));
+    border-bottom:1px solid rgba(255,255,255,.08);
+    backdrop-filter:blur(6px);
+  }
+  .brand{display:flex; align-items:center; gap:10px; color:var(--text); text-decoration:none;}
+  .brand .dot{width:28px;height:28px;border-radius:8px;background:#ffffff1a}
+  .brand b{letter-spacing:.2px}
+  .nav a{color:var(--text); text-decoration:none; margin-left:20px; opacity:.85}
+  .nav a:hover{opacity:1}
+  .nav a.active{font-weight:700; text-decoration:underline}
 
-    .hero{ text-align:center; margin:36px 16px 14px }
-    .hero h1{ margin:0; font-size:32px; font-weight:800 }
-    .hero p{ margin:8px 0 0; opacity:.92 }
+  .hero{ text-align:center; padding:34px 16px 16px }
+  .hero h1{ margin:0; font-size:34px; font-weight:800 }
+  .hero p{ margin:8px 0 0; opacity:.92 }
 
-    .card{
-      width: min(100% - 32px, var(--max-w));
-      margin: 14px auto 60px;
-      background: linear-gradient(180deg, rgba(19,86,77,.86), rgba(19,86,77,.92));
-      border: 1px solid rgba(255,255,255,.06);
-      border-radius: var(--radius);
-      padding: calc(var(--pad) + 2px);
-      box-shadow: var(--shadow);
-    }
+  .card{
+    width:min(100% - 40px, var(--max));
+    margin: 16px auto 64px;
+    background: linear-gradient(180deg, rgba(13,74,65,.86), rgba(13,74,65,.94));
+    box-shadow:var(--shadow);
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:20px;
+    padding:28px;
+  }
 
-    .row{ display:flex; gap:14px }
-    .row > *{ flex:1 }
-    label{ display:block; font-size:13px; margin:8px 2px; opacity:.9 }
-    input, select, textarea, button{
-      width:100%; box-sizing:border-box;
-      height: var(--field-h);
-      border-radius: 12px; border:1px solid rgba(255,255,255,.12);
-      background:#0d4a41; color:var(--text); padding:0 12px; outline:none;
-    }
-    input::placeholder, textarea::placeholder{ color: var(--muted) }
-    textarea{ height: 100px; padding:12px; resize:vertical }
-    button{
-      height:46px; font-weight:700; letter-spacing:.2px; cursor:pointer;
-      background: var(--accent); color:#111; border:none; margin-top:6px;
-    }
-    button:hover{ background: var(--accent-press) }
+  .grid{ display:grid; grid-template-columns: 1fr 1fr; gap:16px }
+  .grid-1{ display:grid; grid-template-columns: 1fr; gap:16px }
+  label{ display:block; font-size:13px; margin:2px 2px 8px; opacity:.9 }
+  input,select,textarea,button{
+    width:100%; box-sizing:border-box;
+    height:var(--fieldh);
+    border-radius:12px; border:1px solid rgba(255,255,255,.12);
+    background:#0b3e37; color:var(--text); padding:0 12px; outline:none;
+  }
+  input::placeholder, textarea::placeholder{ color:var(--muted) }
+  textarea{ height:120px; padding:12px; resize:vertical }
+  button{
+    height:48px; font-weight:700; letter-spacing:.2px; cursor:pointer;
+    background:var(--accent); color:#111; border:none;
+  }
+  button:hover{ background:var(--accent-press) }
 
-    .note{ font-size:13px; opacity:.85; margin-top:8px }
-    .status{ margin-top:12px; font-size:14px }
-    .status.ok{ color:var(--ok) }
-    .status.err{ color:var(--error) }
+  .help{font-size:12.5px; opacity:.85; margin-top:8px}
+  .status{margin-top:10px; font-size:14px}
+  .ok{color:#47c17e} .err{color:#ff6b6b}
 
-    .footer{
-      text-align:center; color:#e3fff8cc; font-size:12px; padding:22px 10px 40px;
-      border-top:1px solid rgba(255,255,255,.08);
-      background: linear-gradient(180deg, rgba(10,61,53,.82), rgba(10,61,53,.92));
-    }
+  footer{
+    text-align:center; color:#e3fff8cc; font-size:12px; padding:22px 10px 40px;
+    background:linear-gradient(180deg, rgba(10,61,53,.82), rgba(10,61,53,.92));
+    border-top:1px solid rgba(255,255,255,.08);
+  }
 
-    @media (max-width:640px){
-      .row{ flex-direction:column }
-      .hero h1{ font-size:26px }
-    }
-  </style>
+  @media (max-width:780px){
+    .grid{ grid-template-columns:1fr }
+    .hero h1{ font-size:28px }
+  }
+</style>
 </head>
 <body>
-  <header class="header">
-    <a class="brand" href="/index.html" aria-label="Home">
-      <span class="logo"></span><span>PredictWell Health.ai</span>
+  <div class="top">
+    <a class="brand" href="/index.html" aria-label="PredictWell Home">
+      <span class="dot"></span><b>PredictWell Health.ai</b>
     </a>
     <nav class="nav">
       <a href="/eldercare.html">Doctors</a>
-      <a href="/eldercare-patient.html" style="font-weight:700; text-decoration:underline;">Patients</a>
+      <a href="/eldercare-patient.html" class="active">Patients</a>
       <a href="/athletics.html">Athletics</a>
     </nav>
-  </header>
+  </div>
 
   <section class="hero">
     <h1>Eldercare Patient Portal</h1>
@@ -125,9 +117,9 @@
   </section>
 
   <main class="card">
-    <form id="eldPatientForm" novalidate>
-      <div class="row">
-        <div style="flex:2">
+    <form id="eldPatientForm" autocomplete="on" novalidate>
+      <div class="grid">
+        <div>
           <label for="name">Full Name</label>
           <input id="name" name="name" placeholder="John Smith" required />
         </div>
@@ -137,15 +129,13 @@
         </div>
       </div>
 
-      <div class="row">
+      <div class="grid">
         <div>
           <label for="status">Health Status</label>
           <select id="status" name="status">
             <option value="">Select Health Status</option>
-            <option>Excellent</option>
-            <option>Good</option>
-            <option>Fair</option>
-            <option>Poor</option>
+            <option>Excellent</option><option>Good</option>
+            <option>Fair</option><option>Poor</option>
           </select>
         </div>
         <div>
@@ -160,69 +150,56 @@
         </div>
       </div>
 
-      <div>
-        <label for="notes">Notes or symptoms</label>
-        <textarea id="notes" name="notes" placeholder="Dizziness, falls, swelling, medication changes, etc."></textarea>
+      <div class="grid-1">
+        <div>
+          <label for="notes">Notes or symptoms</label>
+          <textarea id="notes" name="notes" placeholder="Dizziness, falls, swelling, medication changes, etc."></textarea>
+        </div>
+        <button type="submit">Submit</button>
+        <div class="help">Submission mirrors the Doctor Portal flow and records your check-in.</div>
+        <div id="statusMsg" class="status" role="status" aria-live="polite"></div>
       </div>
-
-      <button type="submit">Submit</button>
-      <div class="note">Submission mirrors the Doctor Portal flow and records your check-in.</div>
-      <div id="statusMsg" class="status" role="status" aria-live="polite"></div>
     </form>
   </main>
 
-  <footer class="footer">
-    © <span id="y"></span> PredictWell Health.ai — Eldercare
-  </footer>
+  <footer>© <span id="yr"></span> PredictWell Health.ai — Eldercare</footer>
 
-  <script>
-    const YEAR = new Date().getFullYear();
-    document.getElementById('y').textContent = YEAR;
+<script>
+  document.getElementById('yr').textContent = new Date().getFullYear();
 
-    // BACKEND: same endpoint the doctor page uses for eldercare check-ins
-    const BASE_API = 'https://predictwell-backend-ai.onrender.com';
+  const BASE_API = 'https://predictwell-backend-ai.onrender.com'; // same as Doctor
+  const form = document.getElementById('eldPatientForm');
+  const statusEl = document.getElementById('statusMsg');
 
-    const form = document.getElementById('eldPatientForm');
-    const statusEl = document.getElementById('statusMsg');
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    statusEl.textContent = 'Submitting...'; statusEl.className='status';
 
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      statusEl.textContent = 'Submitting...';
-      statusEl.className = 'status';
+    const payload = {
+      name: form.name.value.trim(),
+      age: form.age.value ? parseInt(form.age.value, 10) : null,
+      health_status: form.status.value || null,
+      symptoms: form.symptoms.value || null,
+      notes: form.notes.value.trim() || null
+    };
 
-      const payload = {
-        name: form.name.value.trim(),
-        age: form.age.value ? parseInt(form.age.value, 10) : null,
-        health_status: form.status.value || null,
-        symptoms: form.symptoms.value || null,
-        notes: form.notes.value.trim() || null
-      };
-
-      try {
-        const res = await fetch(`${BASE_API}/eldercare/checkin`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const data = await res.json();
-
-        statusEl.textContent = 'Thank you! Your check-in was received.';
-        statusEl.className = 'status ok';
-
-        // Optional: if backend returns risk/flags, show a quick note
-        if (data && (data.risk || data.flags)) {
-          statusEl.textContent += ' Review: ' + JSON.stringify({risk: data.risk, flags: data.flags});
-        }
-
-        form.reset();
-      } catch (err) {
-        statusEl.textContent = 'Submission failed. Please try again.';
-        statusEl.className = 'status err';
-        console.error(err);
-      }
-    });
-  </script>
+    try{
+      const res = await fetch(`${BASE_API}/eldercare/checkin`, {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify(payload)
+      });
+      if(!res.ok) throw new Error('HTTP '+res.status);
+      const data = await res.json();
+      statusEl.textContent = 'Thank you! Your check-in was received.' + (data?.risk ? ` Risk: ${data.risk}` : '');
+      statusEl.className='status ok';
+      form.reset();
+    }catch(err){
+      console.error(err);
+      statusEl.textContent = 'Submission failed. Please try again.';
+      statusEl.className='status err';
+    }
+  });
+</script>
 </body>
 </html>
