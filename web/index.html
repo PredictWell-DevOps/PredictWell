@@ -24,7 +24,7 @@
       background-image: url("/static/images/predictwell_background.png");
       background-size: cover;
       background-position: center;
-      background-attachment: fixed; /* remove if iOS feels janky */
+      background-attachment: fixed;
       min-height: 100vh;
       color: #0b1b2b;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
@@ -37,7 +37,7 @@
     /* ===== Header + Mobile Menu ===== */
     .header, .brand, .nav, .menu-panel { min-width: 0; }
     .header{
-      position: relative; /* <<< critical: anchors the absolute menu panel */
+      position: relative;
       display:flex; align-items:center; justify-content:space-between; gap:12px;
       flex-wrap: wrap;
       padding:8px 0;
@@ -135,14 +135,13 @@
     .option p{ margin:0 0 14px 0; font-size: clamp(13px, 3vw, 16px); opacity:.9; }
 
     .btn{
-      display:inline-block; text-decoration:none; text-align:center; font-weight:600; user-select:none;
+      display:inline-block; text-decoration:none; text-align:center; font-weight:600;
       border:1px solid transparent; border-radius:999px; transition: transform .05s ease, box-shadow .2s ease, background .2s ease;
       min-height:44px; line-height:44px; padding:0 18px;
     }
     .btn:active{ transform: translateY(1px); }
     .btn-primary{ background: linear-gradient(135deg, var(--brand), #0f6cbc); color:#fff; box-shadow: 0 8px 18px rgba(11,76,140,.28); }
     .btn-accent{ background: linear-gradient(135deg, var(--accent), #ff9a3d); color:#1c1c1c; box-shadow: 0 8px 18px rgba(255,122,0,.28); }
-    .btn-outline{ background:#fff; color: var(--brand); border-color: rgba(11,76,140,.25); }
 
     footer{ text-align:center; margin:24px 0 8px; font-size: clamp(12px, 2.6vw, 14px); color: rgba(0,0,0,.7); }
 
@@ -198,17 +197,17 @@
       <div class="option">
         <h3>Eldercare — Patients</h3>
         <p>Fast weekly check-in and an easy-to-read summary.</p>
-        <a class="btn btn-outline" href="/eldercare-patient.html">Open Patient Check-In</a>
+        <a class="btn btn-accent" href="/eldercare-patient.html">Open Patient Check-In</a>
       </div>
       <div class="option">
         <h3>Athletics — Doctors</h3>
         <p>Pitching workload & risk inputs with clear flags and recommendations.</p>
-        <a class="btn btn-accent" href="/athletics.html">Open Doctor Portal</a>
+        <a class="btn btn-primary" href="/athletics.html">Open Doctor Portal</a>
       </div>
       <div class="option">
         <h3>Athletics — Patients</h3>
         <p>Quick athlete self-report to generate a personalized risk snapshot.</p>
-        <a class="btn btn-outline" href="/athletics-patient.html">Open Patient Check-In</a>
+        <a class="btn btn-accent" href="/athletics-patient.html">Open Patient Check-In</a>
       </div>
     </section>
 
