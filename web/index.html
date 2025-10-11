@@ -3,156 +3,187 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>PredictWell Health.ai — Early insight. Safer care.</title>
-  <meta name="description" content="PredictWell blends quick check-ins and wearable data to surface early, actionable risk signals for older adults and athletes." />
-  <link rel="icon" href="data:,">
+  <title>PredictWell Health.ai</title>
+  <meta name="description" content="Proactive health insights for seniors & athletes—multi-signal wearables plus simple check-ins." />
+  <link rel="icon" href="data:," />
+
+  <!-- ===== Mobile + Layout Helpers (safe, additive) ===== -->
   <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; overflow-x: hidden; }
+    img, video { max-width: 100%; height: auto; display: block; }
+
     :root{
-      --brand:#12e3b4;         /* mint */
-      --brand2:#5aa6ff;        /* blue */
-      --ink:#0b1322;           /* dark text */
-      --muted:#576779;
-      --card: rgba(255,255,255,.78);   /* MORE see-through white bubble */
-      --line:#e6eef6;
-      --radius:18px;
-      --shadow:0 14px 38px rgba(0,0,0,.18);
-    }
-    *{box-sizing:border-box}
-    html,body{margin:0;height:100%}
-    body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--ink)}
-    a{color:inherit;text-decoration:none}
-
-    /* Background image */
-    body::before{
-      content:""; position:fixed; inset:0;
-      background-image:url("/static/images/predictwell_background.png");
-      background-size:cover; background-position:center; background-repeat:no-repeat;
-      filter:brightness(.92) saturate(.98);
-      z-index:-2;
-    }
-    /* very light veil for readability */
-    body::after{
-      content:""; position:fixed; inset:0; z-index:-1;
-      background:linear-gradient(180deg,rgba(255,255,255,.28)0%,rgba(255,255,255,.40)40%,rgba(255,255,255,.48)100%);
+      --card-bg: rgba(255,255,255,0.92);
+      --card-border: rgba(0,0,0,0.06);
+      --brand: #0b4c8c;   /* navy */
+      --accent: #ff7a00;  /* orange */
+      --radius: 18px;
+      --shadow: 0 8px 28px rgba(0,0,0,0.12);
     }
 
-    .wrap{max-width:1180px;margin:0 auto;padding:0 20px}
-
-    /* ===== SOLID WHITE HEADER ===== */
-    header{
-      position:sticky; top:0; z-index:10;
-      background:#fff;                          /* solid, not transparent */
-      color:#0a1726;
-      box-shadow:0 6px 20px rgba(0,0,0,.12);
-      border-bottom:1px solid #e6eef6;
+    /* Background image served from /static on Render */
+    body{
+      background-image: url("/static/images/predictwell_background.png");
+      background-size: cover;
+      background-position: center;
+      /* Remove if iOS scroll gets choppy: background-attachment: fixed; */
+      background-attachment: fixed;
+      min-height: 100vh;
+      color: #0b1b2b;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      font-size: clamp(14px, 2vw, 16px);
     }
-    .nav{display:flex;align-items:center;gap:22px;padding:12px 0}
-    .brand{display:flex;align-items:center;gap:10px;font-weight:800;cursor:pointer}
-    .logo{height:22px;width:22px;border-radius:8px;background:linear-gradient(135deg,var(--brand),var(--brand2));box-shadow:0 6px 18px rgba(18,227,180,.35)}
-    .nav ul{display:flex;gap:20px;list-style:none;margin:0;padding:0}
-    .nav a{color:#0a1726;font-weight:600}
-    .spacer{flex:1}
-    .email a{font-weight:800}
 
-    /* ===== Cards / Buttons ===== */
-    main{padding:32px 0 60px}
+    .overlay { position: fixed; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,.10), rgba(0,0,0,.08)); pointer-events:none; }
+
+    .container { width: min(1100px, 100%); margin: 0 auto; padding: clamp(16px, 3vw, 28px); }
+
+    /* ===== Header + Overflow Fix ===== */
+    .header, .brand, .nav { min-width: 0; }
+    .header{
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+      flex-wrap: wrap; /* key to avoid horizontal scroll */
+      padding:8px 0;
+    }
+    .brand{
+      display:inline-flex; align-items:center; gap:10px; color:inherit; text-decoration:none;
+      flex:1 1 auto; min-width:200px;
+    }
+    .brand .logo{
+      width: clamp(32px, 7vw, 44px);
+      height: clamp(32px, 7vw, 44px);
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--brand), #143e66);
+      box-shadow: var(--shadow);
+      flex: 0 0 auto;
+    }
+    .brand h1{
+      margin:0; line-height:1.1; font-size: clamp(18px, 5.5vw, 26px);
+      white-space: nowrap;
+    }
+    .tagline{ margin:2px 0 0 0; font-size: clamp(12px, 3.2vw, 14px); opacity:.9; }
+    @media (max-width: 420px){ .tagline{ display:none; } }
+
+    .nav{
+      display:flex; gap:10px; flex-wrap:wrap; justify-content:center;
+      flex:1 1 260px; min-width:0;
+    }
+    .nav a, .btn{ font-size: clamp(13px, 3.5vw, 15px); padding: 0 14px; min-height: 40px; line-height: 40px; }
+
+    @media (max-width: 700px){
+      .header{ flex-direction: column; align-items: stretch; }
+      .brand{ justify-content: center; }
+      .nav{ justify-content: center; }
+    }
+    .header * { max-width: 100%; } /* absolute safety */
+
+    /* ===== Cards / Hero ===== */
     .card{
-      background:var(--card);
-      border:1px solid var(--line);
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
-      padding:30px;
-      margin-bottom:26px;
-      backdrop-filter:saturate(1.1) blur(1px);
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: clamp(18px, 3.5vw, 28px);
+      backdrop-filter: blur(6px);
     }
-    h1{margin:6px 0 10px;font-size:2rem}
-    h2{margin:6px 0 12px;font-size:1.4rem}
-    .muted{color:var(--muted)}
-    .row{display:flex;gap:10px;flex-wrap:wrap}
+    .hero{ margin: clamp(12px, 2vw, 18px) 0; text-align:center; }
+    .hero h2{ font-size: clamp(22px, 5.5vw, 36px); line-height:1.15; margin:0 0 10px 0; color:#0b1b2b; }
+    .hero p{ font-size: clamp(14px, 3.2vw, 18px); margin:0 auto; max-width:800px; opacity:.95; }
 
-    .btn{display:inline-flex;align-items:center;justify-content:center;padding:12px 18px;border-radius:14px;border:1px solid transparent;
-         font-weight:800;cursor:pointer;text-decoration:none;transition:transform .04s ease, box-shadow .2s ease}
-    .btn:active{transform:translateY(1px)}
-    .btn-primary{background:linear-gradient(135deg,var(--brand),var(--brand2));color:#07111f;box-shadow:0 10px 24px rgba(90,166,255,.25)}
-    /* NEW: colored Patient Portal button (NOT red; cooler tone) */
-    .btn-alt{background:linear-gradient(135deg,#99e7ff,#bfc8ff); color:#07111f; box-shadow:0 10px 24px rgba(95,150,255,.22)}
-    .btn-ghost{background:#f7fafc;border:1px solid #e1e7ef;color:#0f1b2b}
+    /* ===== Options Grid ===== */
+    .grid{ display:grid; gap:16px; }
+    .grid-2{ grid-template-columns: repeat(2, 1fr); }
+    @media (max-width: 900px){ .grid-2{ grid-template-columns: 1fr; } }
 
-    footer{color:#2b3a48;padding:18px 0 40px;text-align:center}
+    .option{
+      border-radius: var(--radius);
+      padding: clamp(16px, 3vw, 24px);
+      border: 1px solid var(--card-border);
+      background: #fff;
+    }
+    .option h3{ margin:0 0 8px 0; font-size: clamp(18px, 4.4vw, 22px); color: var(--brand); }
+    .option p{ margin:0 0 14px 0; font-size: clamp(13px, 3vw, 16px); opacity:.9; }
+
+    /* ===== Buttons ===== */
+    .btn{
+      display:inline-block; text-decoration:none; text-align:center; font-weight:600; user-select:none;
+      border:1px solid transparent; border-radius:999px; transition: transform .05s ease, box-shadow .2s ease, background .2s ease;
+      min-height:44px; line-height:44px; padding:0 18px;
+    }
+    .btn:active{ transform: translateY(1px); }
+    .btn-primary{ background: linear-gradient(135deg, var(--brand), #0f6cbc); color:#fff; box-shadow: 0 8px 18px rgba(11,76,140,.28); }
+    .btn-accent{ background: linear-gradient(135deg, var(--accent), #ff9a3d); color:#1c1c1c; box-shadow: 0 8px 18px rgba(255,122,0,.28); }
+    .btn-outline{ background:#fff; color: var(--brand); border-color: rgba(11,76,140,.25); }
+
+    /* Footer */
+    footer{ text-align:center; margin:24px 0 8px; font-size: clamp(12px, 2.6vw, 14px); color: rgba(0,0,0,.7); }
+
+    /* Respect reduced motion */
+    @media (prefers-reduced-motion: reduce){
+      * { animation: none !important; transition: none !important; }
+    }
   </style>
 </head>
+
 <body>
-  <!-- HEADER -->
-  <header>
-    <div class="wrap">
-      <nav class="nav" aria-label="Primary">
-        <a class="brand" href="/" aria-label="Go to PredictWell Health home">
-          <div class="logo" aria-hidden="true"></div><span>PredictWell Health.ai</span>
-        </a>
-        <ul>
-          <li><a href="#about">About</a></li>
-          <li><a href="#services">Services</a></li>
-          <li><a href="#contact">Contact</a></li>
-          <li><a href="/eldercare.html">Eldercare (Doctors)</a></li>
-          <li><a href="/athletics.html">Athletics (Doctors)</a></li>
-        </ul>
-        <div class="spacer"></div>
-        <div class="email">Email: <a href="mailto:hello@predictwellhealth.ai">hello@predictwellhealth.ai</a></div>
-      </nav>
-    </div>
-  </header>
+  <div class="overlay" aria-hidden="true"></div>
 
-  <main class="wrap">
-    <!-- ABOUT -->
-    <section id="about" class="card">
-      <h1>Early insight. Safer care.</h1>
-      <p>PredictWell turns quick check-ins into clear, actionable risk signals for older adults and athletes.
-      Our mission is to catch small changes before they become big problems — supporting proactive, personalized care.</p>
-      <p>With our two core products, <strong>Eldercare Sentinel</strong> and <strong>Athletics Sentinel</strong>,
-      we blend wearable data and simple weekly inputs to surface what matters, when it matters.</p>
-    </section>
-
-    <!-- PRODUCTS -->
-    <section id="products" class="row">
-      <div class="card" style="flex:1;min-width:340px;">
-        <h2>Eldercare Sentinel</h2>
-        <p class="muted">Vitals, sleep, steps, cognition, and medication risk with a live summary and explain-why insights.</p>
-        <div class="row">
-          <a class="btn btn-primary" href="/eldercare.html">Doctor Portal</a>
-          <a class="btn btn-alt" href="/eldercare-patient.html" title="Patient Portal">Patient Portal</a>
+  <div class="container">
+    <!-- ===== Header / Brand ===== -->
+    <header class="header">
+      <a class="brand" href="/">
+        <div class="logo" aria-hidden="true"></div>
+        <div>
+          <h1>PredictWell Health.ai</h1>
+          <div class="tagline">Proactive health insights for seniors & athletes</div>
         </div>
+      </a>
+      <!-- Optional future nav -->
+      <nav class="nav" aria-label="Primary"></nav>
+    </header>
+
+    <!-- ===== Intro Card ===== -->
+    <section class="card hero" role="region" aria-label="Introduction">
+      <h2>Choose your portal</h2>
+      <p>Mobile-friendly tools for monitoring risk and guiding care. Doctors see structured inputs and results; patients get a simplified check-in.</p>
+    </section>
+
+    <!-- ===== Options ===== -->
+    <section class="grid grid-2" aria-label="Portals">
+      <div class="option">
+        <h3>Eldercare — Doctors</h3>
+        <p>Clinician form & results for falls, frailty, cognition, and hospitalization risk.</p>
+        <a class="btn btn-primary" href="/eldercare.html">Open Doctor Portal</a>
       </div>
-      <div class="card" style="flex:1;min-width:340px;">
-        <h2>Athletics Sentinel</h2>
-        <p class="muted">Workload, wellness, and mechanics signals to estimate short-term injury or under-performance risk.</p>
-        <div class="row">
-          <a class="btn btn-primary" href="/athletics.html">Doctor Portal</a>
-          <a class="btn btn-alt" href="/athletics-patient.html" title="Patient Portal">Patient Portal</a>
-        </div>
+
+      <div class="option">
+        <h3>Eldercare — Patients</h3>
+        <p>Fast weekly check-in and an easy-to-read summary.</p>
+        <a class="btn btn-outline" href="/eldercare-patient.html">Open Patient Check-In</a>
+      </div>
+
+      <div class="option">
+        <h3>Athletics — Doctors</h3>
+        <p>Pitching workload & risk inputs with clear flags and recommendations.</p>
+        <a class="btn btn-accent" href="/athletics.html">Open Doctor Portal</a>
+      </div>
+
+      <div class="option">
+        <h3>Athletics — Patients</h3>
+        <p>Quick athlete self-report to generate a personalized risk snapshot.</p>
+        <a class="btn btn-outline" href="/athletics-patient.html">Open Patient Check-In</a>
       </div>
     </section>
 
-    <!-- SERVICES -->
-    <section id="services" class="card">
-      <h2>Services</h2>
-      <ul>
-        <li><strong>Eldercare Risk & Trends:</strong> Falls, frailty, hospitalization, medication, cognition & daily function.</li>
-        <li><strong>Athlete Risk & Readiness:</strong> Workload balance, pain flags, recovery, under-performance signals.</li>
-        <li><strong>Clinician & Facility Dashboards:</strong> Shareable RPM/RTM-friendly reports.</li>
-      </ul>
-    </section>
+    <footer>
+      © <span id="y"></span> PredictWell Health.ai — All rights reserved.
+    </footer>
+  </div>
 
-    <!-- CONTACT -->
-    <section id="contact" class="card">
-      <h2>Contact</h2>
-      <p>Questions, pilots, partnerships, or press — we’d love to hear from you.</p>
-      <p><strong>Email:</strong> <a href="mailto:hello@predictwellhealth.ai">hello@predictwellhealth.ai</a></p>
-    </section>
-  </main>
-
-  <footer class="wrap">© <span id="yr"></span> PredictWell Health — All rights reserved.</footer>
   <script>
-    document.getElementById('yr').textContent = new Date().getFullYear();
+    // keep the footer year current
+    document.getElementById('y').textContent = new Date().getFullYear();
   </script>
 </body>
 </html>
