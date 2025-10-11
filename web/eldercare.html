@@ -1,11 +1,11 @@
-<!-- ====== eldercare.html (Doctor Portal - Header unified with Athletics style) ====== -->
+<!-- ====== eldercare.html (Doctor Portal — Header unified + FULL INTAKE RESTORED) ====== -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>PredictWell Health.ai — Eldercare Doctor Portal</title>
-  <meta name="description" content="Modernized clinical intake for seniors. Submit vitals, meds, labs, cognition, and activity; compute risk signals and suggested micro-actions." />
+  <meta name="description" content="Modernized clinical intake for seniors. Submit vitals, meds, labs, cognition, and activity; we’ll compute risk signals and suggested micro-actions." />
   <link rel="icon" href="data:,">
 
   <style>
@@ -15,6 +15,8 @@
       --shadow: 0 10px 30px rgba(0,0,0,0.18);
       --blu: #2563eb;
       --ink: #0b1020;
+      --muted: #374151;
+      --line: rgba(17,24,39,0.08);
     }
 
     html, body {
@@ -67,7 +69,7 @@
       line-height: 1;
     }
     .brand-title .hi { color: #111827; }
-    .brand-title .ai { color: #000000; } /* black .ai like Athletics */
+    .brand-title .ai { color: #000000; } /* .ai is black */
 
     .brand-tagline {
       font-size: 12px;
@@ -115,20 +117,68 @@
     }
     .menu a:hover { background: rgba(17,24,39,0.06); }
 
-    /* ----- Everything else (unchanged) ----- */
-    .hero {
+    /* ----- Page layout ----- */
+    .wrap {
       max-width: 1080px;
-      margin: 30px auto;
-      padding: 22px 24px;
+      margin: 28px auto 36px;
+      padding: 0 18px;
+    }
+    .hero {
       background: var(--glass-bg);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
+      padding: 22px 24px;
+      margin-bottom: 18px;
     }
-    h1 { margin-top: 0; }
+    .hero h1 { margin: 0 0 8px 0; font-size: 32px; }
+    .hero p { margin: 0; color: var(--muted); }
+
+    .section {
+      background: var(--glass-bg);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 18px;
+      margin-top: 16px;
+    }
+    .section h2 {
+      margin: 0 0 14px 0;
+      font-size: 18px;
+      letter-spacing: 0.2px;
+    }
+
+    .grid-2 { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 12px; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 12px; }
+    @media (max-width: 900px){
+      .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+    }
+
+    .field { display: flex; flex-direction: column; gap: 6px; }
+    label { font-size: 12px; color: var(--muted); }
+    input[type="text"], input[type="number"], input[type="date"], input[type="time"], select, textarea {
+      width: 100%; padding: 10px 12px; border: 1px solid var(--line); border-radius: 12px; background: #fff; font-size: 14px; outline: none;
+    }
+    textarea { min-height: 90px; resize: vertical; }
+
+    .inline { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    .chip {
+      display: inline-block; padding: 6px 10px; border-radius: 999px;
+      background: linear-gradient(135deg,#9ca3af,#e5e7eb); color: #000; font-weight: 700; font-size: 12px;
+    }
+    .btn {
+      appearance: none; border: none; padding: 10px 16px; border-radius: 999px; color: #fff; font-weight: 700; cursor: pointer; box-shadow: var(--shadow);
+    }
+    .btn-blue { background: linear-gradient(135deg,#2563eb,#60a5fa); }
+    .btn-gray { background: linear-gradient(135deg,#6b7280,#9ca3af); color:#0b1020; }
+    .actions { display:flex; gap:10px; flex-wrap: wrap; margin-top: 12px; }
+    .muted { color: var(--muted); font-size: 12px; }
+
+    .footer { text-align:center; color:#374151; font-size:12px; margin-top:28px; text-shadow:0 1px 0 rgba(255,255,255,0.75); }
+    hr.div { border:0; border-top:1px dashed var(--line); margin: 12px 0; }
   </style>
 </head>
 <body>
-  <!-- Unified header -->
+  <!-- Header (unchanged from Athletics) -->
   <header class="header">
     <div class="header-inner">
       <a class="brand" href="/index.html" aria-label="Back to PredictWell Health.ai home">
@@ -151,19 +201,343 @@
     </div>
   </header>
 
-  <!-- existing intake content (unchanged) -->
-  <section class="hero">
-    <h1>Eldercare Sentinel — Doctor Intake</h1>
-    <p>Modernized clinical intake for seniors. Submit vitals, meds, labs, cognition, and activity; we’ll compute risk signals and suggested micro-actions.</p>
+  <div class="wrap">
+    <!-- Banner -->
+    <section class="hero">
+      <h1>Eldercare Sentinel — Doctor Intake</h1>
+      <p>Modernized clinical intake for seniors. Submit vitals, meds, labs, cognition, and activity; we’ll compute risk signals and suggested micro-actions.</p>
+      <div class="inline" style="margin-top:10px;">
+        <span class="chip">Doctor Portal</span>
+        <span class="chip">AI Risk Engine</span>
+        <span class="chip">HIPAA-friendly design</span>
+      </div>
+    </section>
 
-    <div class="actions">
-      <button class="btn" style="background:linear-gradient(135deg,#2563eb,#60a5fa);color:#fff;border:none;border-radius:999px;padding:8px 16px;cursor:pointer;">Doctor Portal</button>
-      <button class="btn" style="background:linear-gradient(135deg,#9ca3af,#e5e7eb);color:#000;border:none;border-radius:999px;padding:8px 16px;cursor:pointer;">AI Risk Engine</button>
-      <button class="btn" style="background:linear-gradient(135deg,#eab308,#facc15);color:#000;border:none;border-radius:999px;padding:8px 16px;cursor:pointer;">HIPAA-friendly design</button>
-    </div>
-  </section>
+    <!-- ========= FULL DOCTOR INTAKE (RESTORED) ========= -->
+    <form id="doctorIntakeForm" class="intake" onsubmit="event.preventDefault(); saveIntake();">
+      <!-- Patient & Visit -->
+      <section class="section">
+        <h2>Patient &amp; Visit</h2>
+        <div class="grid-3">
+          <div class="field">
+            <label for="pt_name">Patient name</label>
+            <input id="pt_name" type="text" placeholder="e.g., J. Smith" />
+          </div>
+          <div class="field">
+            <label for="pt_dob">Date of birth</label>
+            <input id="pt_dob" type="date" />
+          </div>
+          <div class="field">
+            <label for="visit_date">Visit date</label>
+            <input id="visit_date" type="date" />
+          </div>
+        </div>
+        <div class="grid-3" style="margin-top:12px;">
+          <div class="field">
+            <label for="sex">Sex</label>
+            <select id="sex">
+              <option value="">Select…</option>
+              <option>Female</option>
+              <option>Male</option>
+              <option>Intersex / DSD</option>
+              <option>Prefer not to say</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="living">Living situation</label>
+            <select id="living">
+              <option value="">Select…</option>
+              <option>Lives alone</option>
+              <option>With spouse/partner</option>
+              <option>Family household</option>
+              <option>Assisted living</option>
+              <option>Skilled nursing</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="support">Primary support</label>
+            <select id="support">
+              <option value="">Select…</option>
+              <option>Self</option>
+              <option>Spouse/partner</option>
+              <option>Adult child</option>
+              <option>Professional caregiver</option>
+              <option>Other</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <!-- Vitals -->
+      <section class="section">
+        <h2>Vitals</h2>
+        <div class="grid-4">
+          <div class="field">
+            <label for="bp_syst">Blood pressure — systolic</label>
+            <input id="bp_syst" type="number" min="60" max="260" placeholder="e.g., 128" />
+          </div>
+          <div class="field">
+            <label for="bp_diast">Blood pressure — diastolic</label>
+            <input id="bp_diast" type="number" min="30" max="150" placeholder="e.g., 76" />
+          </div>
+          <div class="field">
+            <label for="hr">Heart rate (bpm)</label>
+            <input id="hr" type="number" min="30" max="200" placeholder="e.g., 72" />
+          </div>
+          <div class="field">
+            <label for="spo2">SpO₂ (%)</label>
+            <input id="spo2" type="number" min="50" max="100" placeholder="e.g., 96" />
+          </div>
+        </div>
+        <div class="grid-4" style="margin-top:12px;">
+          <div class="field">
+            <label for="temp">Temperature (°F)</label>
+            <input id="temp" type="number" step="0.1" placeholder="e.g., 98.4" />
+          </div>
+          <div class="field">
+            <label for="height">Height (in)</label>
+            <input id="height" type="number" step="0.1" placeholder="e.g., 66" />
+          </div>
+          <div class="field">
+            <label for="weight">Weight (lb)</label>
+            <input id="weight" type="number" step="0.1" placeholder="e.g., 168" />
+          </div>
+          <div class="field">
+            <label for="bmi">BMI</label>
+            <input id="bmi" type="number" step="0.1" placeholder="auto or enter" />
+          </div>
+        </div>
+      </section>
+
+      <!-- Medications & Allergies -->
+      <section class="section">
+        <h2>Medications &amp; Allergies</h2>
+        <div class="grid-2">
+          <div class="field">
+            <label for="med_list">Medication list (name — dose — frequency)</label>
+            <textarea id="med_list" placeholder="e.g., Metformin 500 mg — BID&#10;Lisinopril 10 mg — daily"></textarea>
+          </div>
+          <div class="field">
+            <label for="allergies">Allergies &amp; reactions</label>
+            <textarea id="allergies" placeholder="e.g., Penicillin — rash"></textarea>
+          </div>
+        </div>
+        <hr class="div" />
+        <div class="grid-3">
+          <div class="field">
+            <label for="adherence">Adherence issues</label>
+            <select id="adherence">
+              <option value="">Select…</option>
+              <option>No issues</option>
+              <option>Occasional misses</option>
+              <option>Frequent misses</option>
+              <option>Cannot afford meds</option>
+              <option>Side effects</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="high_risk_meds">High-risk meds (Beers, anticoagulants, sedatives)</label>
+            <select id="high_risk_meds">
+              <option value="">Select…</option>
+              <option>None</option>
+              <option>Yes — review needed</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="polypharm">Polypharmacy (≥5 meds)</label>
+            <select id="polypharm">
+              <option value="">Select…</option>
+              <option>No</option>
+              <option>Yes</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <!-- Conditions -->
+      <section class="section">
+        <h2>Conditions (check all that apply)</h2>
+        <div class="grid-4">
+          <label class="inline"><input type="checkbox" id="cond_dm" /> Diabetes</label>
+          <label class="inline"><input type="checkbox" id="cond_htn" /> Hypertension</label>
+          <label class="inline"><input type="checkbox" id="cond_ckd" /> CKD</label>
+          <label class="inline"><input type="checkbox" id="cond_cad" /> CAD</label>
+          <label class="inline"><input type="checkbox" id="cond_chf" /> CHF</label>
+          <label class="inline"><input type="checkbox" id="cond_copd" /> COPD</label>
+          <label class="inline"><input type="checkbox" id="cond_asthma" /> Asthma</label>
+          <label class="inline"><input type="checkbox" id="cond_afib" /> A-fib</label>
+          <label class="inline"><input type="checkbox" id="cond_dementia" /> Dementia/MCI</label>
+          <label class="inline"><input type="checkbox" id="cond_depr" /> Depression</label>
+          <label class="inline"><input type="checkbox" id="cond_osteop" /> Osteoporosis</label>
+          <label class="inline"><input type="checkbox" id="cond_other" /> Other</label>
+        </div>
+      </section>
+
+      <!-- Labs -->
+      <section class="section">
+        <h2>Key Labs</h2>
+        <div class="grid-4">
+          <div class="field"><label for="a1c">A1c (%)</label><input id="a1c" type="number" step="0.1" /></div>
+          <div class="field"><label for="ldl">LDL (mg/dL)</label><input id="ldl" type="number" /></div>
+          <div class="field"><label for="egfr">eGFR</label><input id="egfr" type="number" /></div>
+          <div class="field"><label for="creatinine">Creatinine</label><input id="creatinine" type="number" step="0.01" /></div>
+        </div>
+        <div class="grid-3" style="margin-top:12px;">
+          <div class="field"><label for="na">Na</label><input id="na" type="number" step="0.1" /></div>
+          <div class="field"><label for="k">K</label><input id="k" type="number" step="0.1" /></div>
+          <div class="field"><label for="hgb">Hgb</label><input id="hgb" type="number" step="0.1" /></div>
+        </div>
+      </section>
+
+      <!-- Cognition & Mood -->
+      <section class="section">
+        <h2>Cognition &amp; Mood</h2>
+        <div class="grid-3">
+          <div class="field">
+            <label for="moca">MoCA / MMSE score</label>
+            <input id="moca" type="number" min="0" max="30" placeholder="e.g., 24" />
+          </div>
+          <div class="field">
+            <label for="depr_screen">Depression screening</label>
+            <select id="depr_screen">
+              <option value="">Select…</option>
+              <option>Negative</option>
+              <option>Positive — mild</option>
+              <option>Positive — moderate/severe</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="anxiety">Anxiety</label>
+            <select id="anxiety">
+              <option value="">Select…</option>
+              <option>None/minimal</option>
+              <option>Mild</option>
+              <option>Moderate/severe</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <!-- Mobility, Falls & Function -->
+      <section class="section">
+        <h2>Mobility, Falls &amp; Function</h2>
+        <div class="grid-3">
+          <div class="field">
+            <label for="falls_12m">Falls in last 12 months</label>
+            <select id="falls_12m">
+              <option value="">Select…</option>
+              <option>0</option>
+              <option>1</option>
+              <option>2+</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="assist_device">Assistive device</label>
+            <select id="assist_device">
+              <option value="">Select…</option>
+              <option>None</option>
+              <option>Cane</option>
+              <option>Walker</option>
+              <option>Wheelchair</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="adls">ADL/iADL limitations</label>
+            <select id="adls">
+              <option value="">Select…</option>
+              <option>Independent</option>
+              <option>Needs some help</option>
+              <option>Needs significant help</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <!-- Sleep & Activity -->
+      <section class="section">
+        <h2>Sleep &amp; Activity</h2>
+        <div class="grid-3">
+          <div class="field">
+            <label for="sleep_hours">Avg sleep (hrs)</label>
+            <input id="sleep_hours" type="number" step="0.1" />
+          </div>
+          <div class="field">
+            <label for="sleep_quality">Sleep quality</label>
+            <select id="sleep_quality">
+              <option value="">Select…</option>
+              <option>Good</option>
+              <option>Fair</option>
+              <option>Poor</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="activity_level">Activity level</label>
+            <select id="activity_level">
+              <option value="">Select…</option>
+              <option>Sedentary</option>
+              <option>Light</option>
+              <option>Moderate</option>
+              <option>Vigorous</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <!-- Pain & Symptoms -->
+      <section class="section">
+        <h2>Pain &amp; Symptoms</h2>
+        <div class="grid-3">
+          <div class="field">
+            <label for="pain_today">Pain today (0–10)</label>
+            <input id="pain_today" type="number" min="0" max="10" />
+          </div>
+          <div class="field">
+            <label for="sob">Shortness of breath</label>
+            <select id="sob">
+              <option value="">Select…</option>
+              <option>No</option>
+              <option>With exertion</option>
+              <option>At rest</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="edema">Edema</label>
+            <select id="edema">
+              <option value="">Select…</option>
+              <option>None</option>
+              <option>Mild</option>
+              <option>Moderate</option>
+              <option>Severe</option>
+            </select>
+          </div>
+        </div>
+        <div class="field" style="margin-top:12px;">
+          <label for="symptoms_other">Other concerning symptoms</label>
+          <textarea id="symptoms_other" placeholder="Describe notable symptoms, onset, triggers, duration…"></textarea>
+        </div>
+      </section>
+
+      <!-- Notes & Plan -->
+      <section class="section">
+        <h2>Clinician Notes</h2>
+        <div class="field">
+          <label for="clinician_notes">Assessment &amp; plan</label>
+          <textarea id="clinician_notes" placeholder="Summarize key problems, risk flags, and next steps (micro-actions, referrals, med changes, labs, follow-up)."></textarea>
+        </div>
+        <div class="actions">
+          <button type="submit" class="btn btn-blue">Save Intake</button>
+          <button type="button" class="btn btn-gray" onclick="window.scrollTo({top:0,behavior:'smooth'})">Back to Top</button>
+          <span class="muted" id="saveStatus"></span>
+        </div>
+      </section>
+      <!-- ========= END FULL DOCTOR INTAKE ========= -->
+    </form>
+
+    <div class="footer">© 2025 PredictWell Health.ai — Eldercare</div>
+  </div>
 
   <script>
+    // Header menu toggle (same as Athletics)
     const menuBtn = document.getElementById('menuBtn');
     const menu = document.getElementById('menu');
     document.addEventListener('click', (e) => {
@@ -173,6 +547,40 @@
         menu.style.display = 'none';
       }
     });
+
+    // Save Intake (local only — preserves form content visually; adjust to your backend later if desired)
+    function saveIntake(){
+      const form = document.getElementById('doctorIntakeForm');
+      const data = {};
+      Array.from(form.elements).forEach(el => {
+        if (!el.id) return;
+        if (el.type === 'checkbox') data[el.id] = el.checked;
+        else data[el.id] = el.value;
+      });
+      try{
+        localStorage.setItem('eldercare_doctor_intake', JSON.stringify(data));
+        document.getElementById('saveStatus').textContent = 'Saved locally.';
+        setTimeout(()=>{ document.getElementById('saveStatus').textContent=''; }, 2500);
+      }catch(e){
+        document.getElementById('saveStatus').textContent = 'Could not save locally.';
+        setTimeout(()=>{ document.getElementById('saveStatus').textContent=''; }, 2500);
+      }
+    }
+
+    // Restore if present (keeps persistence across refreshes)
+    (function restore(){
+      try{
+        const raw = localStorage.getItem('eldercare_doctor_intake');
+        if(!raw) return;
+        const data = JSON.parse(raw);
+        for (const [id,val] of Object.entries(data)){
+          const el = document.getElementById(id);
+          if(!el) continue;
+          if (el.type === 'checkbox') el.checked = !!val;
+          else el.value = val;
+        }
+      }catch(e){}
+    })();
   </script>
 </body>
 </html>
