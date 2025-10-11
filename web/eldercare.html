@@ -1,4 +1,4 @@
-<!-- ====== eldercare.html (Doctor Portal — Header unified + FULL INTAKE RESTORED) ====== -->
+<!-- ====== eldercare.html (Doctor Portal — Header unified + FULL INTAKE with Analysis & Results) ====== -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -170,15 +170,29 @@
     }
     .btn-blue { background: linear-gradient(135deg,#2563eb,#60a5fa); }
     .btn-gray { background: linear-gradient(135deg,#6b7280,#9ca3af); color:#0b1020; }
-    .actions { display:flex; gap:10px; flex-wrap: wrap; margin-top: 12px; }
+    .btn-gold { background: linear-gradient(135deg,#eab308,#facc15); color:#0b1020; }
+    .actions { display:flex; gap:10px; flex-wrap: wrap; margin-top: 12px; align-items:center; }
     .muted { color: var(--muted); font-size: 12px; }
 
     .footer { text-align:center; color:#374151; font-size:12px; margin-top:28px; text-shadow:0 1px 0 rgba(255,255,255,0.75); }
     hr.div { border:0; border-top:1px dashed var(--line); margin: 12px 0; }
+
+    /* Results card */
+    pre.results {
+      margin: 0;
+      padding: 14px;
+      background: #0b1020;
+      color: #c7d2fe;
+      border-radius: 14px;
+      min-height: 220px;
+      overflow: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
   </style>
 </head>
 <body>
-  <!-- Header (unchanged from Athletics) -->
+  <!-- Header -->
   <header class="header">
     <div class="header-inner">
       <a class="brand" href="/index.html" aria-label="Back to PredictWell Health.ai home">
@@ -213,7 +227,7 @@
       </div>
     </section>
 
-    <!-- ========= FULL DOCTOR INTAKE (RESTORED) ========= -->
+    <!-- ========= FULL DOCTOR INTAKE ========= -->
     <form id="doctorIntakeForm" class="intake" onsubmit="event.preventDefault(); saveIntake();">
       <!-- Patient & Visit -->
       <section class="section">
@@ -266,6 +280,26 @@
             </select>
           </div>
         </div>
+        <!-- Added from prior forms -->
+        <div class="grid-3" style="margin-top:12px;">
+          <div class="field">
+            <label for="pcp_name">Primary care / clinician</label>
+            <input id="pcp_name" type="text" placeholder="Name" />
+          </div>
+          <div class="field">
+            <label for="recent_hosp">Hospital/ER visits (past 90 days)</label>
+            <select id="recent_hosp">
+              <option value="">Select…</option>
+              <option>None</option>
+              <option>1</option>
+              <option>2+</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="goals">Patient goals (optional)</label>
+            <input id="goals" type="text" placeholder="e.g., walk 20 min daily, avoid falls" />
+          </div>
+        </div>
       </section>
 
       <!-- Vitals -->
@@ -305,6 +339,30 @@
           <div class="field">
             <label for="bmi">BMI</label>
             <input id="bmi" type="number" step="0.1" placeholder="auto or enter" />
+          </div>
+        </div>
+        <!-- Added vitals -->
+        <div class="grid-4" style="margin-top:12px;">
+          <div class="field">
+            <label for="rr">Respiratory rate</label>
+            <input id="rr" type="number" min="6" max="40" placeholder="e.g., 16" />
+          </div>
+          <div class="field">
+            <label for="orthostatics">Orthostatic symptoms</label>
+            <select id="orthostatics">
+              <option value="">Select…</option>
+              <option>None</option>
+              <option>Dizziness on standing</option>
+              <option>Lightheaded / near-syncope</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="glucose_fasting">Glucose (fasting)</label>
+            <input id="glucose_fasting" type="number" step="1" placeholder="mg/dL" />
+          </div>
+          <div class="field">
+            <label for="bp_time">BP time taken</label>
+            <input id="bp_time" type="time" />
           </div>
         </div>
       </section>
@@ -350,6 +408,17 @@
               <option>No</option>
               <option>Yes</option>
             </select>
+          </div>
+        </div>
+        <!-- Added: med changes -->
+        <div class="grid-2" style="margin-top:12px;">
+          <div class="field">
+            <label for="med_changes">Medication changes since last visit</label>
+            <textarea id="med_changes" placeholder="New starts, dose changes, discontinuations…"></textarea>
+          </div>
+          <div class="field">
+            <label for="supplements">Supplements / OTC</label>
+            <textarea id="supplements" placeholder="Vitamins, herbals, OTC pain meds, sleep aids…"></textarea>
           </div>
         </div>
       </section>
@@ -416,6 +485,29 @@
             </select>
           </div>
         </div>
+        <!-- Added: delirium risk -->
+        <div class="grid-3" style="margin-top:12px;">
+          <div class="field">
+            <label for="delirium_risk">Delirium risk factors</label>
+            <select id="delirium_risk">
+              <option value="">Select…</option>
+              <option>None known</option>
+              <option>Recent infection / dehydration</option>
+              <option>Polypharmacy / sedatives</option>
+              <option>Hearing/vision impairment</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="hearing_vision">Hearing / vision issues</label>
+            <select id="hearing_vision">
+              <option value="">Select…</option>
+              <option>No issues</option>
+              <option>Hearing impaired</option>
+              <option>Vision impaired</option>
+              <option>Both</option>
+            </select>
+          </div>
+        </div>
       </section>
 
       <!-- Mobility, Falls & Function -->
@@ -451,6 +543,26 @@
             </select>
           </div>
         </div>
+        <!-- Added: gait tests -->
+        <div class="grid-3" style="margin-top:12px;">
+          <div class="field">
+            <label for="tug_time">Timed Up &amp; Go (sec)</label>
+            <input id="tug_time" type="number" step="0.1" placeholder="e.g., 11.5" />
+          </div>
+          <div class="field">
+            <label for="gait_speed">Gait speed (m/s)</label>
+            <input id="gait_speed" type="number" step="0.01" placeholder="e.g., 0.8" />
+          </div>
+          <div class="field">
+            <label for="balance_issues">Balance issues</label>
+            <select id="balance_issues">
+              <option value="">Select…</option>
+              <option>No</option>
+              <option>Occasional unsteadiness</option>
+              <option>Frequent unsteadiness</option>
+            </select>
+          </div>
+        </div>
       </section>
 
       <!-- Sleep & Activity -->
@@ -479,6 +591,29 @@
               <option>Moderate</option>
               <option>Vigorous</option>
             </select>
+          </div>
+        </div>
+        <!-- Added: wearable/steps -->
+        <div class="grid-3" style="margin-top:12px;">
+          <div class="field">
+            <label for="wearable">Wearable used</label>
+            <select id="wearable">
+              <option value="">Select…</option>
+              <option>None</option>
+              <option>Apple Watch</option>
+              <option>Fitbit</option>
+              <option>Garmin</option>
+              <option>Oura</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="steps_day">Avg steps/day</label>
+            <input id="steps_day" type="number" step="1" placeholder="e.g., 4500" />
+          </div>
+          <div class="field">
+            <label for="hrv_rmssd">HRV (RMSSD, ms)</label>
+            <input id="hrv_rmssd" type="number" step="1" placeholder="e.g., 20" />
           </div>
         </div>
       </section>
@@ -511,9 +646,87 @@
             </select>
           </div>
         </div>
+        <div class="grid-3" style="margin-top:12px;">
+          <div class="field">
+            <label for="dizziness">Dizziness</label>
+            <select id="dizziness">
+              <option value="">Select…</option>
+              <option>No</option>
+              <option>Occasional</option>
+              <option>Frequent</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="appetite">Appetite / weight change</label>
+            <select id="appetite">
+              <option value="">Select…</option>
+              <option>Stable</option>
+              <option>Decreased appetite / weight loss</option>
+              <option>Increased appetite / weight gain</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="hydration">Hydration (cups/day)</label>
+            <input id="hydration" type="number" step="1" placeholder="e.g., 6" />
+          </div>
+        </div>
         <div class="field" style="margin-top:12px;">
           <label for="symptoms_other">Other concerning symptoms</label>
           <textarea id="symptoms_other" placeholder="Describe notable symptoms, onset, triggers, duration…"></textarea>
+        </div>
+      </section>
+
+      <!-- Social & Preventive (added) -->
+      <section class="section">
+        <h2>Social &amp; Preventive</h2>
+        <div class="grid-3">
+          <div class="field">
+            <label for="tobacco_use">Tobacco use</label>
+            <select id="tobacco_use">
+              <option value="">Select…</option>
+              <option>Never</option>
+              <option>Former</option>
+              <option>Current</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="alcohol_use">Alcohol use</label>
+            <select id="alcohol_use">
+              <option value="">Select…</option>
+              <option>None</option>
+              <option>Light</option>
+              <option>Moderate</option>
+              <option>Heavy</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="vacc_status">Vaccinations</label>
+            <select id="vacc_status">
+              <option value="">Select…</option>
+              <option>Up to date</option>
+              <option>Needs review (flu/COVID/pneumonia)</option>
+            </select>
+          </div>
+        </div>
+        <div class="grid-2" style="margin-top:12px;">
+          <div class="field">
+            <label for="caregiver_stress">Caregiver stress</label>
+            <select id="caregiver_stress">
+              <option value="">Select…</option>
+              <option>None/minimal</option>
+              <option>Mild</option>
+              <option>Moderate/severe</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="food_security">Food security</label>
+            <select id="food_security">
+              <option value="">Select…</option>
+              <option>Secure</option>
+              <option>Sometimes insecure</option>
+              <option>Often insecure</option>
+            </select>
+          </div>
         </div>
       </section>
 
@@ -524,20 +737,32 @@
           <label for="clinician_notes">Assessment &amp; plan</label>
           <textarea id="clinician_notes" placeholder="Summarize key problems, risk flags, and next steps (micro-actions, referrals, med changes, labs, follow-up)."></textarea>
         </div>
+
         <div class="actions">
+          <button type="button" class="btn btn-gold" id="runAnalysisBtn">Run Analysis</button>
           <button type="submit" class="btn btn-blue">Save Intake</button>
           <button type="button" class="btn btn-gray" onclick="window.scrollTo({top:0,behavior:'smooth'})">Back to Top</button>
           <span class="muted" id="saveStatus"></span>
+          <span class="muted" id="backendStatus" style="margin-left:8px;"></span>
         </div>
       </section>
       <!-- ========= END FULL DOCTOR INTAKE ========= -->
     </form>
 
+    <!-- ========= RESULTS SECTION ========= -->
+    <section class="section" id="resultsCard">
+      <h2>RESULTS</h2>
+      <pre class="results" id="resultsBox">{ "status": "ready" }</pre>
+    </section>
+
     <div class="footer">© 2025 PredictWell Health.ai — Eldercare</div>
   </div>
 
   <script>
-    // Header menu toggle (same as Athletics)
+    // Config
+    const BASE_API = 'https://predictwell-backend-ai.onrender.com';
+
+    // Header menu toggle
     const menuBtn = document.getElementById('menuBtn');
     const menu = document.getElementById('menu');
     document.addEventListener('click', (e) => {
@@ -548,7 +773,7 @@
       }
     });
 
-    // Save Intake (local only — preserves form content visually; adjust to your backend later if desired)
+    // Save Intake (local only to preserve content)
     function saveIntake(){
       const form = document.getElementById('doctorIntakeForm');
       const data = {};
@@ -567,7 +792,7 @@
       }
     }
 
-    // Restore if present (keeps persistence across refreshes)
+    // Restore saved intake
     (function restore(){
       try{
         const raw = localStorage.getItem('eldercare_doctor_intake');
@@ -581,6 +806,89 @@
         }
       }catch(e){}
     })();
+
+    // Compose payload for analysis from current inputs
+    function collectPayload() {
+      const ids = [
+        // Patient & Visit
+        'pt_name','pt_dob','visit_date','sex','living','support','pcp_name','recent_hosp','goals',
+        // Vitals
+        'bp_syst','bp_diast','hr','spo2','temp','height','weight','bmi','rr','orthostatics','glucose_fasting','bp_time',
+        // Meds
+        'med_list','allergies','adherence','high_risk_meds','polypharm','med_changes','supplements',
+        // Conditions (booleans handled below)
+        'a1c','ldl','egfr','creatinine','na','k','hgb',
+        // Cognition/Mood
+        'moca','depr_screen','anxiety','delirium_risk','hearing_vision',
+        // Mobility
+        'falls_12m','assist_device','adls','tug_time','gait_speed','balance_issues',
+        // Sleep/Activity
+        'sleep_hours','sleep_quality','activity_level','wearable','steps_day','hrv_rmssd',
+        // Pain/Symptoms
+        'pain_today','sob','edema','dizziness','appetite','hydration','symptoms_other',
+        // Social/Preventive
+        'tobacco_use','alcohol_use','vacc_status','caregiver_stress','food_security',
+        // Notes
+        'clinician_notes'
+      ];
+      const out = {};
+      ids.forEach(id=>{
+        const el = document.getElementById(id);
+        if(!el) return;
+        out[id] = (el.type === 'number') ? Number(el.value || 0) : el.value;
+      });
+
+      // Conditions (checkboxes)
+      out.conditions = {
+        dm: document.getElementById('cond_dm')?.checked || false,
+        htn: document.getElementById('cond_htn')?.checked || false,
+        ckd: document.getElementById('cond_ckd')?.checked || false,
+        cad: document.getElementById('cond_cad')?.checked || false,
+        chf: document.getElementById('cond_chf')?.checked || false,
+        copd: document.getElementById('cond_copd')?.checked || false,
+        asthma: document.getElementById('cond_asthma')?.checked || false,
+        afib: document.getElementById('cond_afib')?.checked || false,
+        dementia: document.getElementById('cond_dementia')?.checked || false,
+        depression: document.getElementById('cond_depr')?.checked || false,
+        osteoporosis: document.getElementById('cond_osteop')?.checked || false,
+        other: document.getElementById('cond_other')?.checked || false,
+      };
+      return out;
+    }
+
+    // Ping backend (show status)
+    async function pingBackend() {
+      const badge = document.getElementById('backendStatus');
+      try {
+        const r = await fetch(`${BASE_API}/healthz`);
+        const j = await r.json();
+        badge.textContent = 'Backend: ok';
+        badge.style.color = '#065f46';
+      } catch(e) {
+        badge.textContent = 'Backend: down';
+        badge.style.color = '#991b1b';
+      }
+    }
+    pingBackend();
+
+    // Run Analysis → POST to /eldercare/checkin and show JSON in RESULTS
+    async function runAnalysis(){
+      const resultsBox = document.getElementById('resultsBox');
+      resultsBox.textContent = 'Analyzing…';
+      try{
+        const payload = collectPayload();
+        const res = await fetch(`${BASE_API}/eldercare/checkin`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const json = await res.json();
+        resultsBox.textContent = JSON.stringify(json, null, 2);
+      }catch(e){
+        resultsBox.textContent = JSON.stringify({ error: 'Request failed or backend unreachable' }, null, 2);
+      }
+    }
+    document.getElementById('runAnalysisBtn').addEventListener('click', runAnalysis);
   </script>
 </body>
 </html>
