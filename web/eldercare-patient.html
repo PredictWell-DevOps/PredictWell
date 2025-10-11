@@ -1,4 +1,4 @@
-<!-- ====== eldercare-patient.html (Patient Portal — 12-input + client-side score + visual badge) ====== -->
+<!-- ====== eldercare-patient.html (Patient Portal — 12-input + client-side score + visual badge + human-friendly results) ====== -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -54,7 +54,46 @@
     .results-head{ display:flex; align-items:center; gap:12px; margin-bottom:10px; flex-wrap:wrap; }
     .badge{ display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px; font-weight:800; box-shadow:var(--shadow); background:#e5e7eb; color:#0b1020; }
     .badge .dot{ width:10px; height:10px; border-radius:999px; background:#9ca3af; }
-    pre.results{ margin:0; padding:14px; background:#0b1020; color:#c7d2fe; border-radius:14px; min-height:160px; overflow:auto; white-space:pre-wrap; word-break:break-word; }
+
+    /* Patient-friendly results card (NEW) */
+    .human-results{
+      background: linear-gradient(180deg, rgba(255,255,255,0.92), rgba(255,255,255,0.86));
+      border: 1px solid rgba(17,24,39,0.08);
+      border-radius: 16px;
+      padding: 16px 18px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+      margin-bottom: 12px;
+    }
+    .human-results .hr-title{
+      font-size: 20px;
+      font-weight: 900;
+      margin: 0 0 8px 0;
+      letter-spacing: .2px;
+      color: #0b1020;
+    }
+    .human-results .hr-row{
+      display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+    .human-results .pill{
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 8px 12px; border-radius: 999px; font-weight: 800;
+      background: #eef2ff;
+      border: 1px solid rgba(37,99,235,0.18);
+      color: #0b1020;
+      font-size: 16px;
+    }
+    .human-results .pill .dot{
+      width: 10px; height: 10px; border-radius: 999px; background: #9ca3af;
+    }
+    .human-results .hr-text{
+      font-size: 18px; line-height: 1.55; color: #0b1020;
+    }
+    .human-results ul{ margin: 10px 0 0 0; padding-left: 20px; }
+    .human-results li{ margin: 6px 0; font-size: 18px; line-height: 1.55; }
+
+    /* Keep JSON for devs, slightly larger for readability */
+    pre.results{ margin:0; padding:14px; background:#0b1020; color:#c7d2fe; border-radius:14px; min-height:160px; overflow:auto; white-space:pre-wrap; word-break:break-word; font-size:14px; line-height:1.4; }
 
     .footer{ text-align:center; color:#374151; font-size:12px; margin-top:28px; text-shadow:0 1px 0 rgba(255,255,255,0.75); }
   </style>
@@ -146,6 +185,19 @@
         </div>
         <h2 style="margin:0;">Your Results</h2>
       </div>
+
+      <!-- NEW: Patient-friendly, plain-English summary -->
+      <div id="resultsHuman" class="human-results" style="display:none;">
+        <div class="hr-title">What this means for you</div>
+        <div class="hr-row">
+          <div class="pill"><span class="dot" id="hrDot"></span><span id="hrLevel">Level</span></div>
+          <div class="pill">Score: <span id="hrScore">0</span></div>
+        </div>
+        <div class="hr-text" id="hrSummary">We’ll show your personalized summary here.</div>
+        <ul id="hrActions"></ul>
+      </div>
+
+      <!-- Original JSON output remains (unchanged) -->
       <pre class="results" id="resultsBox">{ "status": "ready" }</pre>
     </section>
 
@@ -260,6 +312,38 @@
       badge.style.color = '#0b1020';
     }
 
+    // ----- NEW: Plain-English renderer -----
+    function friendlySummary(level){
+      switch(level){
+        case 'Very High': return 'Your answers show a very high chance of falling or getting hurt soon. Please take action today and talk with your doctor.';
+        case 'High':      return 'You have several risk signs. Simple steps at home and a quick check-in with your doctor can lower your risk.';
+        case 'Moderate':  return 'You have a few risk signs. Small daily habits can make a big difference.';
+        default:          return 'Great news — your current answers suggest a low risk. Keep up your healthy habits.';
+      }
+    }
+
+    function renderHumanResults(local, suggestions){
+      const card = document.getElementById('resultsHuman');
+      const hrDot = document.getElementById('hrDot');
+      const hrLevel = document.getElementById('hrLevel');
+      const hrScore = document.getElementById('hrScore');
+      const hrSummary = document.getElementById('hrSummary');
+      const hrActions = document.getElementById('hrActions');
+
+      card.style.display = 'block';
+      hrDot.style.background = local.color;
+      hrLevel.textContent = local.level;
+      hrScore.textContent = String(local.score);
+      hrSummary.textContent = friendlySummary(local.level);
+
+      hrActions.innerHTML = '';
+      suggestions.forEach(s => {
+        const li = document.createElement('li');
+        li.textContent = s;
+        hrActions.appendChild(li);
+      });
+    }
+
     // Backend status
     async function pingBackend() {
       const badge = document.getElementById('backendStatus');
@@ -283,6 +367,9 @@
       };
 
       updateBadge(local);
+      // NEW: Show human-friendly summary
+      renderHumanResults(local, suggestions);
+
       resultsBox.textContent = JSON.stringify(localBlock, null, 2);
 
       try{
