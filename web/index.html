@@ -12,26 +12,28 @@
     img, video { max-width: 100%; height: auto; display: block; }
 
     :root{
-      --card-bg: rgba(255,255,255,0.92);
+      --card-bg: rgba(255,255,255,0.75);  /* more see-through */
       --card-border: rgba(0,0,0,0.06);
       --brand: #0b4c8c;
       --accent: #ff7a00;
       --radius: 18px;
-      --shadow: 0 8px 28px rgba(0,0,0,0.12);
+      --shadow: 0 10px 30px rgba(0,0,0,0.16); /* a bit deeper for contrast */
+      --blur: 8px; /* glassy vibe */
     }
 
     body{
       background-image: url("/static/images/predictwell_background.png");
       background-size: cover;
       background-position: center;
-      background-attachment: fixed;
+      background-attachment: fixed; /* remove if iOS feels janky */
       min-height: 100vh;
       color: #0b1b2b;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
       font-size: clamp(14px, 2vw, 16px);
     }
 
-    .overlay { position: fixed; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,.10), rgba(0,0,0,.08)); pointer-events:none; }
+    .overlay { position: fixed; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,.12), rgba(0,0,0,.10)); pointer-events:none; }
+
     .container { width: min(1100px, 100%); margin: 0 auto; padding: clamp(16px, 3vw, 28px); }
 
     /* ===== Header + Mobile Menu ===== */
@@ -58,10 +60,7 @@
     .tagline{ margin:2px 0 0 0; font-size: clamp(12px, 3.2vw, 14px); opacity:.9; }
     @media (max-width: 420px){ .tagline{ display:none; } }
 
-    .nav{
-      display:none;
-      gap:10px; align-items:center; flex-wrap:nowrap;
-    }
+    .nav{ display:none; gap:10px; align-items:center; flex-wrap:nowrap; }
     .nav a{
       text-decoration:none; color: var(--brand); font-weight:600;
       padding: 8px 12px; border-radius: 999px; border: 1px solid rgba(11,76,140,.20);
@@ -90,9 +89,7 @@
     .hamburger[aria-expanded="true"] .hamburger-bars::after{ transform: translateY(-7px) rotate(-45deg); }
 
     .menu-panel{
-      position: absolute;
-      top: 100%; left: 0; right: 0; z-index: 20;
-      padding: 8px 0 0;
+      position: absolute; top: 100%; left: 0; right: 0; z-index: 20; padding: 8px 0 0;
     }
     .menu-card{
       margin: 0 clamp(12px, 3vw, 24px);
@@ -101,7 +98,7 @@
       border-radius: 14px;
       box-shadow: var(--shadow);
       overflow: hidden;
-      backdrop-filter: blur(6px);
+      backdrop-filter: blur(var(--blur));
     }
     .menu-list{ display: grid; gap: 0; list-style: none; margin: 0; padding: 6px; }
     .menu-list a{
@@ -109,33 +106,71 @@
       border-radius: 10px; font-weight:600;
     }
     .menu-list a:hover, .menu-list a:focus{ background: rgba(11,76,140,.08); outline: none; }
-
-    @media (min-width: 700px){
-      .nav{ display:flex; }
-      .hamburger{ display:none; }
-      .menu-panel{ display:none !important; }
-    }
+    @media (min-width: 700px){ .nav{ display:flex; } .hamburger{ display:none; } .menu-panel{ display:none !important; } }
 
     /* ===== Cards / Content ===== */
     .card{
-      background: var(--card-bg); border: 1px solid var(--card-border);
-      border-radius: var(--radius); box-shadow: var(--shadow);
-      padding: clamp(18px, 3.5vw, 28px); backdrop-filter: blur(6px);
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: clamp(18px, 3.5vw, 28px);
+      backdrop-filter: blur(var(--blur));
     }
     .hero{ margin: clamp(12px, 2vw, 18px) 0; text-align:center; }
     .hero h2{ font-size: clamp(22px, 5.5vw, 36px); line-height:1.15; margin:0 0 10px 0; color:#0b1b2b; }
     .hero p{ font-size: clamp(14px, 3.2vw, 18px); margin:0 auto; max-width:800px; opacity:.95; }
 
+    /* ===== How It Works banner ===== */
+    .how{
+      margin: clamp(12px, 2vw, 18px) 0;
+      background: rgba(255,255,255,0.65);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: clamp(14px, 3vw, 24px);
+      backdrop-filter: blur(calc(var(--blur) * 0.8));
+    }
+    .how h3{ margin: 0 0 8px 0; text-align:center; font-size: clamp(18px, 4.8vw, 24px); }
+    .steps{ display:grid; gap:12px; grid-template-columns: repeat(4, 1fr); }
+    @media (max-width: 900px){ .steps{ grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 560px){ .steps{ grid-template-columns: 1fr; } }
+    .step{
+      display:flex; gap:12px; align-items:flex-start;
+      background: rgba(255,255,255,0.7);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 12px;
+    }
+    .step .ico{
+      width: 36px; height: 36px; border-radius: 10px;
+      display:flex; align-items:center; justify-content:center;
+      background: linear-gradient(135deg, #e9f1fb, #ffffff);
+      border: 1px solid rgba(11,76,140,0.15);
+      flex: 0 0 36px;
+    }
+    .step h4{ margin: 0 0 4px 0; font-size: clamp(15px, 3.8vw, 18px); color: var(--brand); }
+    .step p{ margin: 0; font-size: clamp(13px, 3.2vw, 15px); opacity: 0.95; }
+
+    /* ===== Options Grid ===== */
     .grid{ display:grid; gap:16px; }
     .grid-2{ grid-template-columns: repeat(2, 1fr); }
     @media (max-width: 900px){ .grid-2{ grid-template-columns: 1fr; } }
 
-    .option{ border-radius: var(--radius); padding: clamp(16px, 3vw, 24px); border: 1px solid var(--card-border); background: #fff; }
+    .option{
+      border-radius: var(--radius);
+      padding: clamp(16px, 3vw, 24px);
+      border: 1px solid var(--card-border);
+      background: rgba(255,255,255,0.78);
+      backdrop-filter: blur(var(--blur));
+      box-shadow: var(--shadow);
+    }
     .option h3{ margin:0 0 8px 0; font-size: clamp(18px, 4.4vw, 22px); color: var(--brand); }
     .option p{ margin:0 0 14px 0; font-size: clamp(13px, 3vw, 16px); opacity:.9; }
 
+    /* ===== Buttons ===== */
     .btn{
-      display:inline-block; text-decoration:none; text-align:center; font-weight:600;
+      display:inline-block; text-decoration:none; text-align:center; font-weight:600; user-select:none;
       border:1px solid transparent; border-radius:999px; transition: transform .05s ease, box-shadow .2s ease, background .2s ease;
       min-height:44px; line-height:44px; padding:0 18px;
     }
@@ -143,14 +178,40 @@
     .btn-primary{ background: linear-gradient(135deg, var(--brand), #0f6cbc); color:#fff; box-shadow: 0 8px 18px rgba(11,76,140,.28); }
     .btn-accent{ background: linear-gradient(135deg, var(--accent), #ff9a3d); color:#1c1c1c; box-shadow: 0 8px 18px rgba(255,122,0,.28); }
 
+    /* ===== About section ===== */
+    .about{
+      margin: clamp(12px, 2vw, 24px) 0;
+      display:grid; gap:16px;
+      grid-template-columns: 1.2fr 1fr;
+      align-items: stretch;
+    }
+    @media (max-width: 900px){ .about{ grid-template-columns: 1fr; } }
+    .about .blurb{ }
+    .about .facts{
+      display:grid; gap:12px;
+    }
+    .fact{
+      background: rgba(255,255,255,0.7);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 12px;
+      backdrop-filter: blur(calc(var(--blur) * 0.8));
+      box-shadow: var(--shadow);
+    }
+    .fact strong{ color: var(--brand); }
+
+    /* Footer */
     footer{ text-align:center; margin:24px 0 8px; font-size: clamp(12px, 2.6vw, 14px); color: rgba(0,0,0,.7); }
 
+    /* Reduced motion */
     @media (prefers-reduced-motion: reduce){ * { animation: none !important; transition: none !important; } }
   </style>
 </head>
 <body>
   <div class="overlay" aria-hidden="true"></div>
+
   <div class="container">
+    <!-- ===== Header ===== -->
     <header class="header" id="top">
       <a class="brand" href="/">
         <div class="logo" aria-hidden="true"></div>
@@ -160,6 +221,7 @@
         </div>
       </a>
 
+      <!-- Desktop nav -->
       <nav class="nav" aria-label="Primary">
         <a href="/eldercare.html">Eldercare • Doctors</a>
         <a href="/eldercare-patient.html">Eldercare • Patients</a>
@@ -167,10 +229,12 @@
         <a href="/athletics-patient.html">Athletics • Patients</a>
       </nav>
 
+      <!-- Mobile hamburger -->
       <button class="hamburger" id="menuBtn" aria-label="Open menu" aria-controls="menuPanel" aria-expanded="false">
         <div class="hamburger-bars"><span></span></div>
       </button>
 
+      <!-- Mobile menu panel -->
       <div class="menu-panel" id="menuPanel" hidden>
         <div class="menu-card" role="dialog" aria-label="Site menu">
           <ul class="menu-list">
@@ -183,11 +247,60 @@
       </div>
     </header>
 
+    <!-- ===== Hero ===== -->
     <section class="card hero" role="region" aria-label="Introduction">
       <h2>Choose your portal</h2>
       <p>Mobile-friendly tools for monitoring risk and guiding care. Doctors see structured inputs and results; patients get a simplified check-in.</p>
     </section>
 
+    <!-- ===== How It Works ===== -->
+    <section class="how" role="region" aria-label="How PredictWell works">
+      <h3>How it works</h3>
+      <div class="steps">
+        <div class="step">
+          <div class="ico" aria-hidden="true">
+            <!-- watch icon -->
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#0b4c8c" stroke-width="2"/><path d="M12 7v5l3 2" stroke="#0b4c8c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div>
+            <h4>Passive signals</h4>
+            <p>Wearables and phone sensors stream sleep, activity, and HRV—no extra effort for patients.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="ico" aria-hidden="true">
+            <!-- mic icon -->
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="9" y="3" width="6" height="10" rx="3" stroke="#0b4c8c" stroke-width="2"/><path d="M5 12a7 7 0 0 0 14 0M12 19v2" stroke="#0b4c8c" stroke-width="2" stroke-linecap="round"/></svg>
+          </div>
+          <div>
+            <h4>Quick check-ins</h4>
+            <p>Patients complete a 60–90s weekly voice/gait check-in and a few targeted questions.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="ico" aria-hidden="true">
+            <!-- brain icon -->
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M8 6a3 3 0 0 0-3 3v6a3 3 0 0 0 3 3h1a3 3 0 0 0 3-3M16 6a3 3 0 0 1 3 3v6a3 3 0 0 1-3 3h-1a3 3 0 0 1-3-3" stroke="#0b4c8c" stroke-width="2" stroke-linecap="round"/></svg>
+          </div>
+          <div>
+            <h4>Risk models</h4>
+            <p>ML aggregates signals to flag falls, frailty, cognition changes, and sport-specific overload.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="ico" aria-hidden="true">
+            <!-- clipboard icon -->
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="7" y="4" width="10" height="16" rx="2" stroke="#0b4c8c" stroke-width="2"/><path d="M9 4h6v2H9zM9 10h6M9 14h6" stroke="#0b4c8c" stroke-width="2" stroke-linecap="round"/></svg>
+          </div>
+          <div>
+            <h4>Clear actions</h4>
+            <p>Clinicians get structured inputs and recommendations; patients see simple, actionable feedback.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Options ===== -->
     <section class="grid grid-2" aria-label="Portals">
       <div class="option">
         <h3>Eldercare — Doctors</h3>
@@ -208,6 +321,28 @@
         <h3>Athletics — Patients</h3>
         <p>Quick athlete self-report to generate a personalized risk snapshot.</p>
         <a class="btn btn-accent" href="/athletics-patient.html">Open Patient Check-In</a>
+      </div>
+    </section>
+
+    <!-- ===== About ===== -->
+    <section class="about" role="region" aria-label="About PredictWell">
+      <div class="card blurb">
+        <h3 style="margin:0 0 8px 0; font-size: clamp(18px, 4.8vw, 26px);">About PredictWell</h3>
+        <p style="margin:0 0 10px 0; font-size: clamp(14px, 3.2vw, 16px);">
+          PredictWell Health.ai combines multi-signal wearables with brief, guided check-ins to surface risks
+          earlier—before they become events. Our tools are tuned for two high-impact populations:
+          <strong>older adults</strong> (falls, frailty, cognition, hospitalization) and
+          <strong>athletes</strong> (workload balance, fatigue, return-to-play).
+        </p>
+        <p style="margin:0; font-size: clamp(14px, 3.2vw, 16px);">
+          Designed with clinicians and coaches, our results emphasize clarity and next steps rather than
+          raw scores. Data privacy and safety reviews are built-in.
+        </p>
+      </div>
+      <div class="facts">
+        <div class="fact"><strong>Fast setup:</strong> connect wearables or use phone-only mode.</div>
+        <div class="fact"><strong>Low burden:</strong> 60–90s weekly check-ins with auto-reminders.</div>
+        <div class="fact"><strong>Actionable:</strong> clear flags, trend views, and suggested follow-ups.</div>
       </div>
     </section>
 
