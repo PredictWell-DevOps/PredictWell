@@ -19,7 +19,7 @@
     .wrap{max-width:1180px;margin:0 auto;padding:0 20px}
     header{position:sticky;top:0;z-index:10;background:linear-gradient(90deg,var(--brand) 0%,var(--brand2) 60%, #7aa4ff 100%);color:#062033;box-shadow:0 6px 20px rgba(0,0,0,.15)}
     .nav{display:flex;align-items:center;gap:22px;padding:12px 0}
-    .brand{display:flex;align-items:center;gap:10px;font-weight:800}
+    .brand{display:flex;align-items:center;gap:10px;font-weight:800;cursor:pointer}
     .logo{height:22px;width:22px;border-radius:8px;background:linear-gradient(135deg,var(--brand),var(--brand2));box-shadow:0 6px 18px rgba(18,227,180,.35)}
     .nav ul{display:flex;gap:20px;list-style:none;margin:0;padding:0}
     .spacer{flex:1}
@@ -28,9 +28,8 @@
     .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:26px}
     h1{margin:6px 0 6px;font-size:1.85rem}
     .muted{color:var(--muted)}
-    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
     .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-    @media (max-width:1000px){.grid-2,.grid-3{grid-template-columns:1fr}}
+    @media (max-width:1000px){.grid-3{grid-template-columns:1fr}}
     label{font-weight:700;font-size:.95rem}
     input,select,textarea{width:100%;padding:11px;border-radius:12px;border:1px solid #e1e7ef;background:#fafcff;color:#0b1322}
     textarea{min-height:90px;resize:vertical}
@@ -46,10 +45,13 @@
   </style>
 </head>
 <body>
+  <!-- HEADER -->
   <header>
     <div class="wrap">
       <nav class="nav" aria-label="Primary">
-        <div class="brand"><div class="logo" aria-hidden="true"></div><span>PredictWell Health.ai</span></div>
+        <a class="brand" href="/" aria-label="Go to PredictWell Health home">
+          <div class="logo" aria-hidden="true"></div><span>PredictWell Health.ai</span>
+        </a>
         <ul>
           <li><a href="/#about">About</a></li>
           <li><a href="/#how">How It Works</a></li>
@@ -64,101 +66,34 @@
   </header>
 
   <main class="wrap">
-    <!-- Page intro -->
     <section class="card">
       <h1>Eldercare — Doctor Portal</h1>
-      <p class="muted">Quick clinician intake. We’ll compute a risk orientation and list contributing factors. Shareable summary included.</p>
+      <p class="muted">Quick clinician intake. Compute risk orientation and contributing factors. Shareable summary included.</p>
       <div class="row" style="margin-top:10px">
         <a class="btn btn-ghost" href="/">← Back to Home</a>
         <a class="btn btn-ghost" href="/eldercare-patient.html">Open Patient Portal</a>
       </div>
     </section>
 
-    <!-- Form -->
     <section style="margin-top:18px" class="card">
       <form id="form" class="grid-3">
-        <!-- Demographics -->
-        <div class="full"><strong>Patient</strong></div>
-        <div>
-          <label>Age</label>
-          <input type="number" id="age" min="40" max="110" placeholder="e.g., 79" required>
-        </div>
-        <div>
-          <label>Sex</label>
-          <select id="sex">
-            <option value="female">Female</option>
-            <option value="male">Male</option>
-            <option value="other">Other</option>
-          </select>
-        </div>
-        <div>
-          <label>MRN / ID (optional)</label>
-          <input type="text" id="mrn" placeholder="e.g., A123456">
-        </div>
-
-        <!-- Recent signals -->
-        <div class="full" style="margin-top:6px"><strong>Recent Signals</strong></div>
-        <div>
-          <label>Average nightly SpO₂ (%)</label>
-          <input type="number" id="spo2" min="70" max="100" placeholder="e.g., 94">
-        </div>
-        <div>
-          <label>Resting HR (bpm)</label>
-          <input type="number" id="rest_hr" min="30" max="180" placeholder="e.g., 72">
-        </div>
-        <div>
-          <label>HRV/RMSSD (ms)</label>
-          <input type="number" id="hrv" min="5" max="200" placeholder="e.g., 18">
-        </div>
-        <div>
-          <label>Steps yesterday</label>
-          <input type="number" id="steps" min="0" max="50000" placeholder="e.g., 3200">
-        </div>
-        <div>
-          <label>Sleep last night (h)</label>
-          <input type="number" step="0.1" id="sleep" min="0" max="14" placeholder="e.g., 6.5">
-        </div>
-        <div>
-          <label>SBP (mmHg)</label>
-          <input type="number" id="sbp" min="70" max="220" placeholder="e.g., 132">
-        </div>
-
-        <!-- Flags -->
-        <div class="full" style="margin-top:6px"><strong>Flags</strong></div>
-        <div>
-          <label>Fall in last 30 days?</label>
-          <select id="falls"><option>no</option><option>yes</option></select>
-        </div>
-        <div>
-          <label>Dizziness/Unsteady?</label>
-          <select id="dizzy"><option>no</option><option>yes</option></select>
-        </div>
-        <div>
-          <label>Medication change?</label>
-          <select id="meds"><option>no</option><option>yes</option></select>
-        </div>
-        <div>
-          <label>New pain (mod+)?</label>
-          <select id="pain"><option>no</option><option>yes</option></select>
-        </div>
-        <div class="full">
-          <label>Cognition / ADL concerns (optional)</label>
-          <input id="adl" placeholder="Memory, confusion, bathing, dressing, etc.">
-        </div>
-
-        <!-- Notes -->
-        <div class="full">
-          <label>Clinician notes (optional)</label>
-          <textarea id="notes" placeholder="Context, recent illness, discharge, social changes, etc."></textarea>
-        </div>
-
-        <div class="full row" style="margin-top:6px">
-          <button type="submit" class="btn btn-primary">Compute Risk</button>
-          <button type="button" id="reset" class="btn btn-ghost">Reset</button>
-        </div>
+        <div class="full"><strong>Patient Info</strong></div>
+        <div><label>Age</label><input type="number" id="age" min="40" max="110" placeholder="e.g., 79" required></div>
+        <div><label>Sex</label><select id="sex"><option>female</option><option>male</option><option>other</option></select></div>
+        <div><label>Avg nightly SpO₂ (%)</label><input type="number" id="spo2" min="70" max="100" placeholder="e.g., 94"></div>
+        <div><label>Resting HR (bpm)</label><input type="number" id="rest_hr" min="30" max="180" placeholder="e.g., 72"></div>
+        <div><label>HRV/RMSSD (ms)</label><input type="number" id="hrv" min="5" max="200" placeholder="e.g., 18"></div>
+        <div><label>Steps yesterday</label><input type="number" id="steps" min="0" max="50000" placeholder="e.g., 3200"></div>
+        <div><label>Sleep last night (h)</label><input type="number" step="0.1" id="sleep" min="0" max="14" placeholder="e.g., 6.5"></div>
+        <div><label>SBP (mmHg)</label><input type="number" id="sbp" min="70" max="220" placeholder="e.g., 132"></div>
+        <div><label>Fall in last 30 days?</label><select id="falls"><option>no</option><option>yes</option></select></div>
+        <div><label>Dizziness?</label><select id="dizzy"><option>no</option><option>yes</option></select></div>
+        <div><label>Medication change?</label><select id="meds"><option>no</option><option>yes</option></select></div>
+        <div><label>New pain?</label><select id="pain"><option>no</option><option>yes</option></select></div>
+        <div class="full"><label>Notes</label><textarea id="notes"></textarea></div>
+        <div class="full row"><button type="submit" class="btn btn-primary">Compute Risk</button><button type="button" id="reset" class="btn btn-ghost">Reset</button></div>
       </form>
 
-      <!-- Result -->
       <div id="result" class="result">
         <div class="pill" id="riskBadge">Risk: —</div>
         <p id="summary" style="margin:.6rem 0 0"></p>
@@ -167,96 +102,34 @@
   </main>
 
   <footer class="wrap">© <span id="yr"></span> PredictWell Health — All rights reserved.</footer>
-
   <script>
     document.getElementById('yr').textContent = new Date().getFullYear();
     const BASE_API = 'https://predictwell-backend-ai.onrender.com';
-
-    const form = document.getElementById('form');
-    const resultBox = document.getElementById('result');
-    const badge = document.getElementById('riskBadge');
-    const summary = document.getElementById('summary');
-    document.getElementById('reset').onclick = () => { form.reset(); resultBox.style.display='none'; };
-
-    form.addEventListener('submit', async (e)=>{
+    const form=document.getElementById('form'),resultBox=document.getElementById('result'),
+          badge=document.getElementById('riskBadge'),summary=document.getElementById('summary');
+    document.getElementById('reset').onclick=()=>{form.reset();resultBox.style.display='none';};
+    form.addEventListener('submit',async e=>{
       e.preventDefault();
-      const p = {
-        mode: 'doctor',
-        age: num('age'),
-        sex: val('sex'),
-        mrn: val('mrn') || null,
-        spo2_avg: num('spo2'),
-        resting_hr: num('rest_hr'),
-        hrv_rmssd: num('hrv'),
-        steps: num('steps'),
-        sleep_hours: num('sleep'),
-        sbp: num('sbp'),
-        falls_last_30d: val('falls'),
-        dizziness: val('dizzy'),
-        meds_change: val('meds'),
-        pain: val('pain'),
-        adl_concerns: val('adl') || null,
-        notes: val('notes') || null
-      };
-
-      let ok = false;
+      const p={age:num('age'),sex:val('sex'),spo2_avg:num('spo2'),resting_hr:num('rest_hr'),
+      hrv_rmssd:num('hrv'),steps:num('steps'),sleep_hours:num('sleep'),sbp:num('sbp'),
+      falls_last_30d:val('falls'),dizziness:val('dizzy'),meds_change:val('meds'),
+      pain:val('pain'),notes:val('notes')||null};
       try{
-        const res = await fetch(`${BASE_API}/eldercare/checkin`,{
-          method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(p)
-        });
+        const res=await fetch(`${BASE_API}/eldercare/checkin`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(p)});
         if(res.ok){
-          const data = await res.json(); // {risk_score, level, message, factors?}
-          const level = data.level || levelFromScore(data.risk_score);
-          render(level, data.message || autoMsg(p, level));
-          ok = true;
+          const d=await res.json(),level=d.level||levelFromScore(d.risk_score);
+          render(level,d.message||'Review key risks and follow-up needs.');return;
         }
       }catch(_){}
-
-      if(!ok){
-        const level = localEstimate(p);
-        render(level, autoMsg(p, level) + ' (quick estimate)', true);
-      }
+      const lvl=localEstimate(p);render(lvl,`Quick estimate (${lvl})`);
     });
-
-    function val(id){ return document.getElementById(id).value.trim(); }
-    function num(id){ const v = document.getElementById(id).value; return v===""?null:Number(v); }
-    function levelFromScore(s){ if(s==null) return 'Unknown'; if(s>=0.66) return 'High'; if(s>=0.33) return 'Moderate'; return 'Low'; }
-
-    function localEstimate(p){
-      let score = 0;
-      if(p.falls_last_30d==='yes') score+=0.4;
-      if(p.dizziness==='yes') score+=0.25;
-      if(p.meds_change==='yes') score+=0.15;
-      if(p.pain==='yes') score+=0.15;
-      if(p.spo2_avg!=null && p.spo2_avg<92) score+=0.15;
-      if(p.resting_hr!=null && p.resting_hr>95) score+=0.1;
-      if(p.hrv_rmssd!=null && p.hrv_rmssd<15) score+=0.1;
-      if(p.steps!=null && p.steps<1500) score+=0.1;
-      if(p.sleep_hours!=null && p.sleep_hours<5.5) score+=0.1;
-      if(score>=0.66) return 'High'; if(score>=0.33) return 'Moderate'; return 'Low';
-    }
-
-    function autoMsg(p, level){
-      const f=[];
-      if(p.falls_last_30d==='yes') f.push('recent fall');
-      if(p.dizziness==='yes') f.push('dizziness/unstable');
-      if(p.meds_change==='yes') f.push('medication change');
-      if(p.pain==='yes') f.push('new pain');
-      if(p.spo2_avg!=null && p.spo2_avg<92) f.push('low SpO₂');
-      if(p.hrv_rmssd!=null && p.hrv_rmssd<15) f.push('low HRV');
-      if(p.steps!=null && p.steps<1500) f.push('very low activity');
-      if(p.sleep_hours!=null && p.sleep_hours<5.5) f.push('short sleep');
-      if(p.sbp!=null && p.sbp>=150) f.push('elevated SBP');
-      const because = f.length?` Because of ${f.join(', ')}.`:'';
-      return `Orientation: **${level}**.${because} Review meds, balance, hydration, and safety; consider follow-up if symptoms persist.`;
-    }
-
-    function render(level,msg){
-      badge.textContent = `Risk: ${level}`;
-      summary.innerHTML = msg;
-      resultBox.style.display='block';
-      resultBox.scrollIntoView({behavior:'smooth',block:'start'});
-    }
+    function val(id){return document.getElementById(id).value.trim();}
+    function num(id){const v=document.getElementById(id).value;return v===""?null:Number(v);}
+    function levelFromScore(s){if(s==null)return'Unknown';if(s>=0.66)return'High';if(s>=0.33)return'Moderate';return'Low';}
+    function localEstimate(p){let s=0;if(p.falls_last_30d==='yes')s+=.4;if(p.dizziness==='yes')s+=.25;
+      if(p.meds_change==='yes')s+=.15;if(p.pain==='yes')s+=.15;if(p.spo2_avg&&p.spo2_avg<92)s+=.15;
+      if(p.steps&&p.steps<1500)s+=.1;if(p.sleep_hours&&p.sleep_hours<5.5)s+=.1;return s>=.66?'High':s>=.33?'Moderate':'Low';}
+    function render(l,m){badge.textContent=`Risk: ${l}`;summary.textContent=m;resultBox.style.display='block';resultBox.scrollIntoView({behavior:'smooth'});}
   </script>
 </body>
 </html>
