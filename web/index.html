@@ -1,198 +1,248 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>PredictWell Health — Home</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <title>PredictWell Health.ai — Early insight. Safer care.</title>
+  <meta name="description" content="PredictWell Health.ai: preventive health for seniors and athletes. Eldercare Sentinel and Athletics Sentinel — fast, private, evidence-informed insights." />
+  <link rel="icon" href="data:,">
   <style>
     :root{
-      --bg:#0b1220;
-      --ink:#e9eefc;
-      --muted:#9bb0d3;
-      --panel:rgba(10,16,30,.72);
-      --line:rgba(255,255,255,.08);
-      --btn-grad:linear-gradient(90deg,#34d399,#60a5fa);
-      --chip:#1f2a44;
+      --bg-dark:#0a0f1a;
+      --card:#0f1725ee;
+      --card-strong:#0f1725f5;
+      --muted:#8aa0b3;
+      --text:#e9f1f7;
+      --brand:#63e6be;   /* mint */
+      --brand-2:#5aa6ff; /* blue */
+      --accent:#ffb86b;  /* warm accent */
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --radius: 18px;
     }
+
+    /* ===== Base ===== */
     *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;
-      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
-      color:var(--ink);
-      background:var(--bg);
-      overflow-x:hidden;
-    }
+    html,body{margin:0;height:100%;background:var(--bg-dark);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif;line-height:1.45}
+    a{color:inherit;text-decoration:none}
+    .wrap{max-width:1200px;margin:0 auto;padding:0 20px}
 
-    /* Background image layer */
-    .bg{
-      position:fixed; inset:0; z-index:-2; overflow:hidden;
-    }
-    .bg::before{
+    /* ===== Background image with overlay ===== */
+    body::before{
       content:"";
-      position:absolute; inset:0;
-      background:
-        url("/static/images/predictwell_background.png?v=2") center/cover no-repeat fixed;
-      filter:saturate(105%);
-      transform:scale(1.02);
+      position:fixed; inset:0;
+      background-image:url("/static/images/predictwell_background.png");
+      background-size:cover; background-position:center; background-repeat:no-repeat;
+      filter:brightness(.7) saturate(.95);
+      z-index:-2;
+    }
+    body::after{
+      content:"";
+      position:fixed; inset:0;
+      background:linear-gradient(180deg, rgba(10,15,26,.55) 0%, rgba(10,15,26,.70) 40%, rgba(10,15,26,.85) 100%);
+      z-index:-1;
     }
 
-    /* Dark gradient overlay to keep text readable */
-    .overlay{
-      position:fixed; inset:0; z-index:-1;
-      background:
-        radial-gradient(1200px 600px at 10% -10%, rgba(52,211,153,.12), transparent 60%),
-        radial-gradient(1200px 600px at 110% 110%, rgba(96,165,250,.12), transparent 60%),
-        linear-gradient(180deg, rgba(8,12,24,.60), rgba(8,12,24,.78));
-      backdrop-filter:saturate(120%);
+    /* ===== Top contact bar ===== */
+    .topbar{
+      width:100%;
+      background: linear-gradient(90deg, var(--brand) 0%, var(--brand-2) 60%, #7f9fff 100%);
+      color:#0b1322; font-weight:600; letter-spacing:.2px;
     }
+    .topbar .wrap{display:flex;align-items:center;gap:16px;padding:10px 20px}
+    .topbar .dot{height:12px;width:12px;border-radius:50%;background:#0b1322;opacity:.35}
+    .topbar .contact{margin-left:auto}
+    .topbar .contact a{font-weight:700}
 
-    .wrap{max-width:1180px;margin:0 auto;padding:26px}
+    /* ===== Header / Nav ===== */
+    header{backdrop-filter:saturate(150%) blur(6px); position:sticky; top:0; z-index:10}
+    .nav{display:flex;align-items:center;justify-content:space-between; padding:16px 0;}
+    .brand{display:flex;align-items:center;gap:10px;font-weight:800}
+    .logo{height:22px;width:22px;border-radius:8px;background:linear-gradient(135deg,var(--brand),var(--brand-2));box-shadow:0 6px 18px rgba(99,230,190,.35)}
+    .nav ul{display:flex;gap:22px;list-style:none;margin:0;padding:0}
+    .nav a{opacity:.85}
+    .nav a:hover{opacity:1}
 
-    header{display:flex;align-items:center;justify-content:space-between;padding:6px 0 18px}
-    .brand{display:flex;gap:10px;align-items:center;font-weight:700}
-    .logo{width:28px;height:28px;border-radius:8px;background:var(--btn-grad);box-shadow:0 0 0 2px rgba(11,18,32,.7)}
-    nav a{color:#a6c8ff;text-decoration:none;margin-left:16px;font-weight:600}
-    nav a:hover{text-decoration:underline}
+    /* ===== Hero (About / Mission) ===== */
+    .hero{padding:34px 0 24px}
+    .hero .panel{
+      background:var(--card);
+      border:1px solid rgba(255,255,255,.06);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:32px;
+      display:grid; gap:18px;
+    }
+    .eyebrow{display:inline-flex;gap:8px;align-items:center;font-size:.9rem;color:var(--muted)}
+    .eyebrow .chip{height:8px;width:8px;border-radius:50%;background:var(--brand)}
+    h1{font-size:2.1rem;margin:0}
+    .lead{color:#cfe4f3; max-width:70ch}
 
-    .hero{display:grid;grid-template-columns:1.2fr 1fr;gap:22px;align-items:stretch}
-    @media (max-width: 960px){ .hero{grid-template-columns:1fr} }
+    .cta-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:6px}
+    .btn{
+      display:inline-flex;align-items:center;justify-content:center;
+      padding:12px 16px;border-radius:14px;font-weight:700;border:1px solid transparent;cursor:pointer;
+      transition:transform .04s ease, box-shadow .2s ease, background .2s ease, opacity .2s ease;
+      text-decoration:none;
+    }
+    .btn:active{transform:translateY(1px)}
+    .btn-primary{background:linear-gradient(135deg,var(--brand),var(--brand-2)); color:#07111f; box-shadow:0 10px 24px rgba(90,166,255,.25)}
+    .btn-ghost{background:transparent;border-color:rgba(255,255,255,.08);color:#e7f4ff}
+    .tagline{display:flex;gap:10px;color:var(--muted);font-size:.92rem;flex-wrap:wrap}
 
+    /* ===== Two Domain Sections ===== */
+    .sections{display:grid;grid-template-columns:1fr 1fr; gap:20px; margin:24px 0 34px}
     .card{
-      background:var(--panel);
-      border:1px solid var(--line);
-      border-radius:18px;
+      background:var(--card-strong);
+      border:1px solid rgba(255,255,255,.06);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
       padding:24px;
+      display:grid; gap:14px;
     }
-    h1{margin:0 0 10px;font-size:34px;line-height:1.2}
-    h2{margin:0 0 10px}
-    p.lead{margin:0 0 16px;color:var(--muted)}
+    .card h2{margin:0;font-size:1.35rem}
+    .card p{margin:0;color:#cfe4f3}
+    .portals{display:flex;gap:12px;flex-wrap:wrap}
+    .portals .btn{min-width:150px}
 
-    .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-    @media (max-width: 960px){ .grid{grid-template-columns:1fr} }
+    /* ===== Services band ===== */
+    .services{
+      margin: 10px 0 36px;
+      background: rgba(15,23,37,.65);
+      border:1px solid rgba(255,255,255,.06);
+      border-radius:var(--radius); box-shadow:var(--shadow);
+      padding:22px;
+    }
+    .services h3{margin:0 0 8px}
+    .service-grid{display:grid;grid-template-columns:repeat(3,1fr); gap:14px}
+    .service{
+      background:rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.05);
+      border-radius:14px; padding:14px;
+      color:#d9e9f6;
+    }
+    .service small{display:block;color:var(--muted)}
 
-    .panel-title{font-weight:700;margin:0 0 6px}
-    .muted{color:var(--muted)}
-    .pill{display:inline-block;background:#1f2a44;color:var(--muted);padding:6px 10px;border-radius:999px;font-size:12px}
+    /* ===== About & Contact (anchors) ===== */
+    section.anchor{scroll-margin-top:90px}
 
-    .btn{display:inline-block;font-weight:700;text-decoration:none;padding:12px 16px;border-radius:12px}
-    .btn-primary{background:var(--btn-grad);color:#0b1220;border:0}
-    .btn-dark{background:#1a2440;border:1px solid rgba(255,255,255,.08);color:#fff}
-    .row{display:flex;flex-wrap:wrap;gap:12px}
-    .two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-    @media (max-width: 640px){ .two{grid-template-columns:1fr} }
+    /* ===== Footer ===== */
+    footer{color:#b9cadd; padding:28px 0 40px; opacity:.9}
 
-    footer{margin:36px 0 12px;text-align:center;color:var(--muted);font-size:13px}
+    /* ===== Responsive ===== */
+    @media (max-width: 1000px){
+      .sections{grid-template-columns:1fr}
+      .service-grid{grid-template-columns:1fr}
+    }
   </style>
 </head>
 <body>
-  <!-- fixed background + overlay -->
-  <div class="bg"></div>
-  <div class="overlay"></div>
-
-  <div class="wrap">
-
-    <header>
-      <div class="brand">
-        <div class="logo"></div>
-        <div>PredictWell Health</div>
-      </div>
-      <nav>
-        <a href="/eldercare.html">Eldercare (Doctors)</a>
-        <a href="/athletics.html">Athletics (Doctors)</a>
-      </nav>
-    </header>
-
-    <section class="hero">
-      <!-- Left: headline + quick starts -->
-      <div class="card">
-        <h1>Early insight. Safer care.</h1>
-        <p class="lead">PredictWell turns quick check-ins into clear, actionable risk signals for older adults and athletes.</p>
-        <div class="row">
-          <a class="btn btn-primary" href="/eldercare.html">Start Eldercare (Doctors)</a>
-          <a class="btn btn-dark" href="/athletics.html">Start Athletics (Doctors)</a>
-        </div>
-        <div style="margin-top:12px"><span class="pill">Fast • Private • Evidence-informed</span></div>
-      </div>
-
-      <!-- Right: four explicit choices -->
-      <div class="card">
-        <h2>Choose your path</h2>
-        <p class="muted" style="margin-top:4px">Two options for Eldercare and two for Athletics.</p>
-
-        <div class="grid" style="margin-top:12px">
-          <!-- Eldercare — Doctors -->
-          <div class="card">
-            <div class="panel-title">Eldercare — Doctors</div>
-            <p class="muted">Full assessment with rich results.</p>
-            <div class="two">
-              <a class="btn btn-primary" href="/eldercare.html">Open</a>
-              <a class="btn btn-dark"    href="/eldercare.html">Go</a>
-            </div>
-          </div>
-
-          <!-- Eldercare — Patients -->
-          <div class="card">
-            <div class="panel-title">Eldercare — Patients</div>
-            <p class="muted">Simple form and easy-to-read results.</p>
-            <div class="two">
-              <a class="btn btn-primary" href="/eldercare-patient.html">Open</a>
-              <a class="btn btn-dark"    href="/eldercare-patient.html">Go</a>
-            </div>
-          </div>
-
-          <!-- Athletics — Doctors -->
-          <div class="card">
-            <div class="panel-title">Athletics — Doctors</div>
-            <p class="muted">Full workload & wellness risk view.</p>
-            <div class="two">
-              <a class="btn btn-primary" href="/athletics.html">Open</a>
-              <a class="btn btn-dark"    href="/athletics.html">Go</a>
-            </div>
-          </div>
-
-          <!-- Athletics — Patients -->
-          <div class="card">
-            <div class="panel-title">Athletics — Patients</div>
-            <p class="muted">Quick check-in with simple result.</p>
-            <div class="two">
-              <a class="btn btn-primary" href="/athletics-patient.html">Open</a>
-              <a class="btn btn-dark"    href="/athletics-patient.html">Go</a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Secondary section (kept concise) -->
-    <section style="margin-top:18px">
-      <div class="grid">
-        <div class="card">
-          <div class="panel-title">Eldercare Sentinel</div>
-          <p class="muted">Vitals, sleep, steps, gait/cognitive flags, and a friendly summary with a live risk gauge.</p>
-          <div class="row">
-            <a class="btn btn-primary" href="/eldercare.html">Doctors</a>
-            <a class="btn btn-dark" href="/eldercare-patient.html">Patients</a>
-          </div>
-        </div>
-        <div class="card">
-          <div class="panel-title">Athletics Sentinel</div>
-          <p class="muted">Workload & wellness to estimate short-term injury/under-performance risk.</p>
-          <div class="row">
-            <a class="btn btn-primary" href="/athletics.html">Doctors</a>
-            <a class="btn btn-dark" href="/athletics-patient.html">Patients</a>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <footer>© <span id="yr"></span> PredictWell Health — All rights reserved</footer>
+  <!-- Top contact banner -->
+  <div class="topbar">
+    <div class="wrap">
+      <div class="dot"></div>
+      <div><strong>PredictWell Health.ai</strong></div>
+      <div class="dot"></div>
+      <div class="contact">Email: <a href="mailto:hello@predictwellhealth.ai">hello@predictwellhealth.ai</a></div>
+    </div>
   </div>
 
+  <!-- Header / Navigation -->
+  <header>
+    <div class="wrap">
+      <nav class="nav" aria-label="Primary">
+        <div class="brand">
+          <div class="logo" aria-hidden="true"></div>
+          <span>PredictWell Health</span>
+        </div>
+        <ul>
+          <li><a href="#about">About</a></li>
+          <li><a href="#services">Services</a></li>
+          <li><a href="#contact">Contact</a></li>
+          <li><a href="/eldercare.html" title="Doctor Portal — Eldercare">Eldercare (Doctors)</a></li>
+          <li><a href="/athletics.html" title="Doctor Portal — Athletics">Athletics (Doctors)</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero / About -->
+  <main class="wrap">
+    <section id="about" class="hero anchor" aria-labelledby="about-title">
+      <div class="panel">
+        <span class="eyebrow"><span class="chip"></span> ABOUT PREDICTWELL</span>
+        <h1 id="about-title">Early insight. Safer care.</h1>
+        <p class="lead">
+          PredictWell turns quick check-ins into clear, actionable risk signals for older adults and for athletes.  
+          Our two products — <strong>Eldercare Sentinel</strong> and <strong>Athletics Sentinel</strong> — blend wearable data and simple weekly inputs to surface what matters, when it matters.
+        </p>
+        <div class="cta-row">
+          <a class="btn btn-primary" href="/eldercare.html">Start Eldercare (Doctors)</a>
+          <a class="btn btn-ghost" href="/athletics.html">Start Athletics (Doctors)</a>
+        </div>
+        <div class="tagline">
+          <span>Fast</span> · <span>Private</span> · <span>Evidence-informed</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Two domain sections -->
+    <section id="domains" class="sections">
+      <!-- Eldercare -->
+      <article class="card" aria-labelledby="eld-title">
+        <h2 id="eld-title">Eldercare Sentinel</h2>
+        <p>Vitals, sleep, steps, medication and cognition flags with a friendly summary and explain-why insights.</p>
+        <div class="portals">
+          <a class="btn btn-primary" href="/eldercare.html">Doctor Portal</a>
+          <a class="btn btn-ghost" href="/eldercare-patient.html">Patient Portal</a>
+        </div>
+      </article>
+
+      <!-- Athletics -->
+      <article class="card" aria-labelledby="ath-title">
+        <h2 id="ath-title">Athletics Sentinel</h2>
+        <p>Workload, wellness and mechanics flags to estimate short-term injury/under-performance risk.</p>
+        <div class="portals">
+          <a class="btn btn-primary" href="/athletics.html">Doctor Portal</a>
+          <a class="btn btn-ghost" href="/athletics-patient.html">Patient Portal</a>
+        </div>
+      </article>
+    </section>
+
+    <!-- Services (simple band you can expand later) -->
+    <section id="services" class="services anchor" aria-labelledby="services-title">
+      <h3 id="services-title">Services</h3>
+      <div class="service-grid">
+        <div class="service">
+          <strong>Eldercare Risk & Trends</strong>
+          <small>Falls, frailty, hospitalization, medication risk, cognition & daily function.</small>
+        </div>
+        <div class="service">
+          <strong>Athlete Risk & Readiness</strong>
+          <small>Workload balance, pain flags, recovery, under-performance risk signals.</small>
+        </div>
+        <div class="service">
+          <strong>Clinician & Facility Dashboards</strong>
+          <small>Simple, sharable reports; RPM/RTM friendly workflows.</small>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact" class="anchor" aria-labelledby="contact-title">
+      <div class="card">
+        <h2 id="contact-title">Contact</h2>
+        <p>Questions, pilots, partnerships, or press — we’d love to hear from you.</p>
+        <p><strong>Email:</strong> <a href="mailto:hello@predictwellhealth.ai">hello@predictwellhealth.ai</a></p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="wrap">
+    © <span id="yr"></span> PredictWell Health — All rights reserved.
+  </footer>
+
   <script>
-    document.getElementById('yr').textContent=new Date().getFullYear();
+    document.getElementById('yr').textContent = new Date().getFullYear();
   </script>
 </body>
 </html>
