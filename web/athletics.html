@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Athletics — Doctor Portal | PredictWell Health.ai</title>
-  <meta name="description" content="Clinician/coach-facing Athletics Sentinel intake with quick risk, explain-why, and summary." />
+  <meta name="description" content="Coach/clinician-facing Athletics Sentinel intake with quick readiness & injury-risk orientation." />
   <link rel="icon" href="data:,">
   <style>
     :root{
@@ -14,23 +14,30 @@
     *{box-sizing:border-box}
     html,body{margin:0;height:100%;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--ink)}
     a{color:inherit;text-decoration:none}
-    body::before{content:"";position:fixed;inset:0;background-image:url("/static/images/predictwell_background.png");background-size:cover;background-position:center;filter:brightness(.92) saturate(.98);z-index:-2}
-    body::after{content:"";position:fixed;inset:0;background:linear-gradient(180deg, rgba(255,255,255,.35) 0%, rgba(255,255,255,.45) 40%, rgba(255,255,255,.55) 100%);z-index:-1}
+    /* Background matches site */
+    body::before{
+      content:"";position:fixed;inset:0;background-image:url("/static/images/predictwell_background.png");
+      background-size:cover;background-position:center;filter:brightness(.92) saturate(.98);z-index:-2
+    }
+    body::after{
+      content:"";position:fixed;inset:0;background:linear-gradient(180deg, rgba(255,255,255,.35) 0%, rgba(255,255,255,.45) 40%, rgba(255,255,255,.55) 100%);z-index:-1
+    }
     .wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+    /* Combined header */
     header{position:sticky;top:0;z-index:10;background:linear-gradient(90deg,var(--brand) 0%,var(--brand2) 60%, #7aa4ff 100%);color:#062033;box-shadow:0 6px 20px rgba(0,0,0,.15)}
     .nav{display:flex;align-items:center;gap:22px;padding:12px 0}
-    .brand{display:flex;align-items:center;gap:10px;font-weight:800}
+    .brand{display:flex;align-items:center;gap:10px;font-weight:800;cursor:pointer}
     .logo{height:22px;width:22px;border-radius:8px;background:linear-gradient(135deg,var(--brand),var(--brand2));box-shadow:0 6px 18px rgba(18,227,180,.35)}
     .nav ul{display:flex;gap:20px;list-style:none;margin:0;padding:0}
     .spacer{flex:1}
     .email a{font-weight:800}
+    /* Cards & form */
     main{padding:26px 0 40px}
     .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:26px}
     h1{margin:6px 0 6px;font-size:1.85rem}
     .muted{color:var(--muted)}
     .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-    @media (max-width:1000px){.grid-3,.grid-2{grid-template-columns:1fr}}
+    @media (max-width:1000px){.grid-3{grid-template-columns:1fr}}
     label{font-weight:700;font-size:.95rem}
     input,select,textarea{width:100%;padding:11px;border-radius:12px;border:1px solid #e1e7ef;background:#fafcff;color:#0b1322}
     textarea{min-height:90px;resize:vertical}
@@ -46,10 +53,13 @@
   </style>
 </head>
 <body>
+  <!-- HEADER -->
   <header>
     <div class="wrap">
       <nav class="nav" aria-label="Primary">
-        <div class="brand"><div class="logo" aria-hidden="true"></div><span>PredictWell Health.ai</span></div>
+        <a class="brand" href="/" aria-label="Go to PredictWell Health home">
+          <div class="logo" aria-hidden="true"></div><span>PredictWell Health.ai</span>
+        </a>
         <ul>
           <li><a href="/#about">About</a></li>
           <li><a href="/#how">How It Works</a></li>
@@ -64,10 +74,10 @@
   </header>
 
   <main class="wrap">
-    <!-- Page intro -->
+    <!-- Intro -->
     <section class="card">
       <h1>Athletics — Doctor Portal</h1>
-      <p class="muted">Coach/clinician intake for quick readiness & injury-risk orientation with explain-why factors.</p>
+      <p class="muted">Coach/clinician intake for a quick readiness & injury-risk orientation with explain-why factors.</p>
       <div class="row" style="margin-top:10px">
         <a class="btn btn-ghost" href="/">← Back to Home</a>
         <a class="btn btn-ghost" href="/athletics-patient.html">Open Patient Portal</a>
@@ -78,65 +88,24 @@
     <section style="margin-top:18px" class="card">
       <form id="form" class="grid-3">
         <div class="full"><strong>Athlete</strong></div>
-        <div>
-          <label>Sport / Position</label>
-          <input id="position" placeholder="e.g., Baseball — Pitcher">
-        </div>
-        <div>
-          <label>Level</label>
-          <select id="level">
-            <option>HS</option><option>College</option><option>Pro</option><option>Rec/Youth</option>
-          </select>
-        </div>
-        <div>
-          <label>Age</label>
-          <input type="number" id="age" min="10" max="60" placeholder="e.g., 17">
-        </div>
+        <div><label>Sport / Position</label><input id="position" placeholder="e.g., Baseball — Pitcher"></div>
+        <div><label>Level</label><select id="level"><option>HS</option><option>College</option><option>Pro</option><option>Rec/Youth</option></select></div>
+        <div><label>Age</label><input type="number" id="age" min="10" max="60" placeholder="e.g., 17"></div>
 
         <div class="full" style="margin-top:6px"><strong>Workload & Wellness</strong></div>
-        <div>
-          <label>Throws today (count)</label>
-          <input type="number" id="throwsToday" min="0" max="500" placeholder="e.g., 35">
-        </div>
-        <div>
-          <label>Last 7-day throws</label>
-          <input type="number" id="throws7d" min="0" max="2000" placeholder="e.g., 220">
-        </div>
-        <div>
-          <label>Sleep last night (h)</label>
-          <input type="number" step="0.1" id="sleep" min="0" max="14" placeholder="e.g., 7.0">
-        </div>
-        <div>
-          <label>Pain</label>
-          <select id="pain"><option>none</option><option>mild</option><option>moderate</option><option>severe</option></select>
-        </div>
-        <div>
-          <label>Fatigue</label>
-          <select id="fatigue"><option>low</option><option>moderate</option><option>high</option></select>
-        </div>
-        <div>
-          <label>Wellness (RPE 1–10)</label>
-          <input type="number" id="rpe" min="1" max="10" placeholder="e.g., 6">
-        </div>
+        <div><label>Throws today (count)</label><input type="number" id="throwsToday" min="0" max="500" placeholder="e.g., 35"></div>
+        <div><label>Last 7-day throws</label><input type="number" id="throws7d" min="0" max="2000" placeholder="e.g., 220"></div>
+        <div><label>Sleep last night (h)</label><input type="number" step="0.1" id="sleep" min="0" max="14" placeholder="e.g., 7.0"></div>
+        <div><label>Pain</label><select id="pain"><option>none</option><option>mild</option><option>moderate</option><option>severe</option></select></div>
+        <div><label>Fatigue</label><select id="fatigue"><option>low</option><option>moderate</option><option>high</option></select></div>
+        <div><label>Wellness (RPE 1–10)</label><input type="number" id="rpe" min="1" max="10" placeholder="e.g., 6"></div>
 
         <div class="full" style="margin-top:6px"><strong>Flags (optional)</strong></div>
-        <div>
-          <label>Velocity change (mph)</label>
-          <input type="number" id="veloDelta" step="0.1" placeholder="-1.5">
-        </div>
-        <div>
-          <label>Mechanics flag</label>
-          <select id="mech"><option value="none">None</option><option value="arm_slot">Arm slot drift</option><option value="timing">Late timing</option><option value="stride">Stride/landing</option></select>
-        </div>
-        <div>
-          <label>Soreness zone</label>
-          <select id="sore"><option value="none">None</option><option value="shoulder">Shoulder</option><option value="elbow">Elbow</option><option value="back">Back</option><option value="leg">Leg</option></select>
-        </div>
+        <div><label>Velocity change (mph)</label><input type="number" id="veloDelta" step="0.1" placeholder="-1.5"></div>
+        <div><label>Mechanics flag</label><select id="mech"><option value="none">None</option><option value="arm_slot">Arm slot drift</option><option value="timing">Late timing</option><option value="stride">Stride/landing</option></select></div>
+        <div><label>Soreness zone</label><select id="sore"><option value="none">None</option><option value="shoulder">Shoulder</option><option value="elbow">Elbow</option><option value="back">Back</option><option value="leg">Leg</option></select></div>
 
-        <div class="full">
-          <label>Coach/clinician notes</label>
-          <textarea id="notes" placeholder="Context, travel, illness, recent workload spike, mechanics comments, etc."></textarea>
-        </div>
+        <div class="full"><label>Coach/clinician notes</label><textarea id="notes" placeholder="Context, travel, illness, workload spike, mechanics comments, etc."></textarea></div>
 
         <div class="full row" style="margin-top:6px">
           <button type="submit" class="btn btn-primary">Compute Risk</button>
