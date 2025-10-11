@@ -1,385 +1,219 @@
-<!-- ====== eldercare.html — PredictWell Eldercare Sentinel ====== -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>PredictWell Health.ai — Eldercare Sentinel</title>
-  <meta name="description" content="PredictWell Eldercare Sentinel: preventive health signals, check-ins, and gentle daily actions." />
+  <title>PredictWell — Eldercare Doctor Portal</title>
+  <meta name="description" content="Clinician inputs and results for falls, frailty, cognition and hospitalization risk." />
   <link rel="icon" href="data:," />
-
   <style>
-    :root {
-      --brand-navy: #0b2545;
-      --brand-orange: #ff7a18;
-      --brand-sky: #e7f0ff;
-      --card: #ffffff;
-      --text: #0f172a;
-      --muted: #64748b;
-      --ok: #16a34a;
-      --warn: #ea580c;
-      --err: #dc2626;
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;overflow-x:hidden}
+    body{
+      background-image:url("/static/images/predictwell_background.png");
+      background-size:cover;background-position:center;background-attachment:fixed;
+      min-height:100vh;color:#0b1b2b;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+      font-size:clamp(14px,2vw,16px);
     }
+    :root{
+      --brand:#0b4c8c; --accent:#ff7a00;
+      --card-bg:rgba(255,255,255,.75); --card-border:rgba(0,0,0,.06);
+      --radius:18px; --shadow:0 10px 30px rgba(0,0,0,.16); --blur:8px;
+    }
+    .overlay{position:fixed;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.12),rgba(0,0,0,.10));pointer-events:none}
+    .container{width:min(1100px,100%);margin:0 auto;padding:clamp(16px,3vw,28px)}
+    .card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:var(--radius);box-shadow:var(--shadow);backdrop-filter:blur(var(--blur));padding:clamp(16px,3vw,22px)}
+    h2,h3{margin:0 0 8px 0}
 
-    /* Background */
-    body {
-      margin: 0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
-      color: var(--text);
-      background-image: url("/static/images/predictwell_background.png");
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      background-attachment: fixed;
-      min-height: 100vh;
-    }
+    /* Header (same as index) */
+    .header{position:relative;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:8px 0}
+    .brand{display:inline-flex;align-items:center;gap:10px;color:inherit;text-decoration:none;flex:1 1 auto;min-width:200px}
+    .logo{width:clamp(32px,7vw,44px);height:clamp(32px,7vw,44px);border-radius:12px;background:linear-gradient(135deg,var(--brand),#143e66);box-shadow:var(--shadow)}
+    .brand h1{margin:0;line-height:1.1;font-size:clamp(18px,5.5vw,26px);white-space:nowrap}
+    .tagline{margin:2px 0 0 0;font-size:clamp(12px,3.2vw,14px);opacity:.9}
+    @media(max-width:420px){.tagline{display:none}}
+    .hamburger{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:10px;border:1px solid rgba(0,0,0,.15);background:#fff;cursor:pointer}
+    .hamburger:focus{outline:2px solid #0f6cbc;outline-offset:2px}
+    .hamburger-bars{width:22px;height:16px;position:relative}
+    .hamburger-bars::before,.hamburger-bars::after,.hamburger-bars span{content:"";position:absolute;left:0;right:0;height:2px;background:#0b1b2b;border-radius:2px;transition:transform .2s ease,opacity .2s ease}
+    .hamburger-bars::before{top:0}.hamburger-bars span{top:7px}.hamburger-bars::after{bottom:0}
+    .hamburger[aria-expanded="true"] .hamburger-bars::before{transform:translateY(7px) rotate(45deg)}
+    .hamburger[aria-expanded="true"] .hamburger-bars span{opacity:0}
+    .hamburger[aria-expanded="true"] .hamburger-bars::after{transform:translateY(-7px) rotate(-45deg)}
+    .menu-panel{position:absolute;top:100%;right:0;z-index:20;padding-top:8px}
+    .menu-card{min-width:240px;margin:0 clamp(12px,3vw,24px);background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;box-shadow:var(--shadow);overflow:hidden;backdrop-filter:blur(var(--blur))}
+    .menu-list{list-style:none;margin:0;padding:6px;display:grid;gap:4px}
+    .menu-list a{display:block;padding:12px 14px;text-decoration:none;color:#0b1b2b;border-radius:10px;font-weight:600}
+    .menu-list a:hover,.menu-list a:focus{background:rgba(11,76,140,.08);outline:none}
 
-    /* Dark overlay to improve contrast */
-    .overlay {
-      min-height: 100vh;
-      background: radial-gradient(ellipse at center, rgba(255,255,255,0.85), rgba(255,255,255,0.92));
-      padding: 32px 16px 48px;
-    }
+    /* Layout */
+    .hero{margin:clamp(10px,2vw,16px) 0}
+    .main{display:grid;gap:16px;grid-template-columns:1.2fr .8fr}
+    @media(max-width:980px){.main{grid-template-columns:1fr}}
 
-    .container {
-      max-width: 1000px;
-      margin: 0 auto;
+    /* Form */
+    form{display:grid;gap:14px}
+    .fieldset{display:grid;gap:10px;border:1px dashed rgba(11,76,140,.18);padding:12px;border-radius:12px;background:rgba(255,255,255,.72)}
+    .fieldset legend{font-weight:700;color:var(--brand);padding:0 6px}
+    .row{display:grid;gap:10px;grid-template-columns:repeat(4,1fr)}
+    @media(max-width:980px){.row{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:560px){.row{grid-template-columns:1fr}}
+    label{font-size:13px;opacity:.9}
+    input[type="text"],input[type="number"],textarea{
+      width:100%;min-height:40px;border-radius:10px;border:1px solid rgba(0,0,0,.18);
+      background:#fff;padding:8px 10px;font-size:14px;
     }
+    textarea{min-height:110px;resize:vertical}
+    .checks{display:grid;gap:8px;grid-template-columns:repeat(2,1fr)}
+    @media(max-width:560px){.checks{grid-template-columns:1fr}}
 
-    header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 20px;
-    }
+    /* Buttons (gradients) */
+    .btn{display:inline-block;text-decoration:none;text-align:center;font-weight:700;border:1px solid transparent;border-radius:999px;min-height:44px;line-height:44px;padding:0 18px;cursor:pointer}
+    .btn-primary{background:linear-gradient(135deg,#0b4c8c,#0f6cbc);color:#fff;box-shadow:0 8px 18px rgba(11,76,140,.28)}
+    .btn-accent{background:linear-gradient(135deg,#ff7a00,#ff9a3d);color:#1c1c1c;box-shadow:0 8px 18px rgba(255,122,0,.28)}
+    .btn-ghost{background:#fff;color:#0b4c8c;border-color:rgba(11,76,140,.25)}
 
-    .brand {
-      display: flex;
-      align-items: baseline;
-      gap: 10px;
-      color: var(--brand-navy);
-    }
-    .brand h1 {
-      margin: 0;
-      font-size: clamp(20px, 4vw, 28px);
-      letter-spacing: 0.3px;
-    }
-    .brand span {
-      color: var(--brand-orange);
-      font-weight: 700;
-    }
+    .result-card pre{margin:0;background:#0e1a2a;color:#d9e6ff;padding:12px;border-radius:10px;overflow:auto}
 
-    nav a {
-      color: var(--brand-navy);
-      text-decoration: none;
-      font-weight: 600;
-      padding: 8px 12px;
-      border-radius: 10px;
-      background: rgba(255,255,255,0.6);
-      border: 1px solid rgba(2,6,23,0.06);
-    }
-    nav a:hover { background: var(--sky); }
-
-    .hero {
-      background: rgba(255,255,255,0.75);
-      border: 1px solid rgba(2,6,23,0.06);
-      border-radius: 18px;
-      padding: 20px;
-      margin-bottom: 16px;
-      box-shadow: 0 8px 20px rgba(2,6,23,0.08);
-    }
-    .hero h2 {
-      margin: 0 0 8px;
-      font-size: clamp(18px, 3.2vw, 24px);
-      color: var(--brand-navy);
-    }
-    .hero p { margin: 0; color: var(--muted); }
-
-    .grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 16px;
-    }
-    @media (min-width: 900px) {
-      .grid { grid-template-columns: 1.1fr 0.9fr; }
-    }
-
-    .card {
-      background: var(--card);
-      border: 1px solid rgba(2,6,23,0.06);
-      border-radius: 18px;
-      padding: 20px;
-      box-shadow: 0 8px 20px rgba(2,6,23,0.08);
-    }
-
-    .card h3 {
-      margin-top: 0;
-      color: var(--brand-navy);
-    }
-
-    .row {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 12px;
-      margin-bottom: 12px;
-    }
-    @media (min-width: 720px) {
-      .row.two { grid-template-columns: 1fr 1fr; }
-      .row.three { grid-template-columns: 1fr 1fr 1fr; }
-    }
-
-    label {
-      font-size: 14px;
-      color: var(--muted);
-      margin-bottom: 6px;
-      display: block;
-    }
-
-    input[type="text"],
-    input[type="number"],
-    input[type="date"],
-    textarea,
-    select {
-      width: 100%;
-      padding: 10px 12px;
-      border-radius: 12px;
-      border: 1px solid rgba(2,6,23,0.12);
-      background: #fff;
-      font-size: 16px;
-      box-sizing: border-box;
-    }
-    textarea { min-height: 92px; resize: vertical; }
-
-    .checkbox {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 14px;
-      color: var(--muted);
-    }
-
-    .btn-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 8px;
-    }
-    button {
-      padding: 10px 14px;
-      font-weight: 700;
-      border-radius: 12px;
-      border: 1px solid transparent;
-      cursor: pointer;
-    }
-    .primary {
-      background: var(--brand-orange);
-      color: #fff;
-    }
-    .ghost {
-      background: #fff;
-      color: var(--brand-navy);
-      border-color: rgba(2,6,23,0.12);
-    }
-
-    pre.output {
-      background: #0b1220;
-      color: #e2e8f0;
-      padding: 14px;
-      border-radius: 12px;
-      overflow: auto;
-      font-size: 13px;
-      line-height: 1.45;
-      max-height: 420px;
-    }
-
-    .status-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 6px 10px;
-      border-radius: 999px;
-      background: #f1f5f9;
-      color: var(--muted);
-      font-weight: 600;
-      font-size: 12px;
-    }
-    .ok { color: var(--ok); }
-    .warn { color: var(--warn); }
-    .err { color: var(--err); }
+    footer{text-align:center;margin:24px 0 8px;font-size:clamp(12px,2.6vw,14px);color:rgba(0,0,0,.7)}
+    @media(prefers-reduced-motion:reduce){*{transition:none !important;animation:none !important}}
   </style>
 </head>
 <body>
-  <div class="overlay">
-    <div class="container">
-      <header>
-        <div class="brand">
-          <h1>PredictWell <span>Health.ai</span></h1>
-        </div>
-        <nav>
-          <a href="/eldercare.html">Eldercare</a>
-          <a href="/athletics.html">Athletics</a>
-        </nav>
-      </header>
+  <div class="overlay" aria-hidden="true"></div>
 
-      <section class="hero">
-        <h2>Eldercare Sentinel — Weekly Check-In</h2>
-        <p>Log wearable signals and notes. We’ll compute risk signals and suggested micro-actions.</p>
-      </section>
+  <div class="container">
+    <!-- Header (brand links home) -->
+    <header class="header">
+      <a class="brand" href="/"><div class="logo" aria-hidden="true"></div>
+        <div><h1>PredictWell Health.ai</h1><div class="tagline">Proactive health insights for seniors & athletes</div></div>
+      </a>
 
-      <div class="grid">
-        <!-- FORM CARD -->
-        <div class="card">
-          <h3>Care Check-In</h3>
-
-          <div class="row two">
-            <div>
-              <label for="name">Name</label>
-              <input id="name" type="text" placeholder="e.g., Pat Quinn" />
-            </div>
-            <div>
-              <label for="age">Age</label>
-              <input id="age" type="number" min="30" max="120" placeholder="79" />
-            </div>
-          </div>
-
-          <div class="row three">
-            <div>
-              <label for="avg_spo2">Avg nightly SpO₂ (%)</label>
-              <input id="avg_spo2" type="number" step="0.1" min="50" max="100" placeholder="94.5" />
-            </div>
-            <div>
-              <label for="hrv_rmssd">HRV (RMSSD, ms)</label>
-              <input id="hrv_rmssd" type="number" step="1" min="1" max="200" placeholder="18" />
-            </div>
-            <div>
-              <label for="resting_hr">Resting HR (bpm)</label>
-              <input id="resting_hr" type="number" step="1" min="30" max="150" placeholder="68" />
-            </div>
-          </div>
-
-          <div class="row two">
-            <div>
-              <label for="sleep_hours">Avg sleep (hrs)</label>
-              <input id="sleep_hours" type="number" step="0.1" min="0" max="14" placeholder="6.7" />
-            </div>
-            <div>
-              <label for="steps_daily">Avg daily steps</label>
-              <input id="steps_daily" type="number" step="1" min="0" placeholder="4200" />
-            </div>
-          </div>
-
-          <div class="row two">
-            <div class="checkbox">
-              <input id="gait_concern" type="checkbox" />
-              <label for="gait_concern">Any recent balance, gait, or dizziness concerns?</label>
-            </div>
-            <div class="checkbox">
-              <input id="cognitive_flags" type="checkbox" />
-              <label for="cognitive_flags">Any memory, attention, or mood flags?</label>
-            </div>
-          </div>
-
-          <div class="row">
-            <div>
-              <label for="notes">Notes (optional)</label>
-              <textarea id="notes" placeholder="Any changes this week? New meds, colds, pain, falls, etc."></textarea>
-            </div>
-          </div>
-
-          <div class="btn-row">
-            <button class="primary" id="submitBtn">Submit Check-In</button>
-            <button class="ghost" id="pingBtn">Ping Backend</button>
-            <span class="status-pill" id="statusPill">Backend: <strong>unknown</strong></span>
-          </div>
-        </div>
-
-        <!-- OUTPUT CARD -->
-        <div class="card">
-          <h3>Results</h3>
-          <pre class="output" id="output">{ Submit to see results... }</pre>
+      <button class="hamburger" id="menuBtn" aria-label="Open menu" aria-controls="menuPanel" aria-expanded="false">
+        <div class="hamburger-bars"><span></span></div>
+      </button>
+      <div class="menu-panel" id="menuPanel" hidden>
+        <div class="menu-card" role="dialog" aria-label="Site menu">
+          <ul class="menu-list">
+            <li><a href="/eldercare.html">Eldercare • Doctors</a></li>
+            <li><a href="/eldercare-patient.html">Eldercare • Patients</a></li>
+            <li><a href="/athletics.html">Athletics • Doctors</a></li>
+            <li><a href="/athletics-patient.html">Athletics • Patients</a></li>
+          </ul>
         </div>
       </div>
+    </header>
 
-      <footer style="margin-top:20px; text-align:center; color:var(--muted); font-size:12px;">
-        © <span id="year"></span> PredictWell Health.ai — Eldercare Sentinel
-      </footer>
-    </div>
+    <!-- Title -->
+    <section class="card hero">
+      <h2>Eldercare Sentinel — Weekly Check-In</h2>
+      <p>Log wearable signals and notes. We’ll compute risk signals and suggested micro-actions.</p>
+    </section>
+
+    <!-- Main -->
+    <section class="main">
+      <!-- Form column -->
+      <div class="card">
+        <form id="checkinForm">
+          <fieldset class="fieldset">
+            <legend>Patient</legend>
+            <div class="row">
+              <div><label>Name</label><input type="text" name="name" placeholder="e.g., Pat Quinn"/></div>
+              <div><label>Age</label><input type="number" name="age" min="0" placeholder="79"/></div>
+              <div><label>Resting HR (bpm)</label><input type="number" name="resting_hr" min="0" placeholder="68"/></div>
+              <div><label>Avg nightly SpO₂ (%)</label><input type="number" name="spo2" min="0" max="100" step="0.1" placeholder="94.5"/></div>
+            </div>
+          </fieldset>
+
+          <fieldset class="fieldset">
+            <legend>Sleep & Activity</legend>
+            <div class="row">
+              <div><label>Avg sleep (hrs)</label><input type="number" name="sleep_hrs" min="0" step="0.1" placeholder="6.7"/></div>
+              <div><label>Avg daily steps</label><input type="number" name="steps" min="0" placeholder="4200"/></div>
+              <div><label>HRV (RMSSD, ms)</label><input type="number" name="hrv" min="0" placeholder="18"/></div>
+              <div><label>Weight change (lbs, ±)</label><input type="number" name="wt_delta" step="0.1" placeholder="0.0"/></div>
+            </div>
+          </fieldset>
+
+          <fieldset class="fieldset">
+            <legend>Balance, Mobility, Cognition</legend>
+            <div class="checks">
+              <label><input type="checkbox" name="flag_balance"/> Any recent balance, gait or dizziness concerns?</label>
+              <label><input type="checkbox" name="flag_cognition"/> Any memory, attention or mood flags?</label>
+              <label><input type="checkbox" name="flag_falls"/> Any falls in the last 7 days?</label>
+              <label><input type="checkbox" name="flag_hospital"/> Any ER/hospital visits?</label>
+            </div>
+          </fieldset>
+
+          <fieldset class="fieldset">
+            <legend>Notes</legend>
+            <textarea name="notes" placeholder="Any changes this week? New meds, colds, pain, falls, etc."></textarea>
+          </fieldset>
+
+          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+            <button type="submit" class="btn btn-primary">Submit Check-In</button>
+            <button type="button" id="pingBtn" class="btn btn-ghost">Ping Backend</button>
+            <span id="backendStatus" class="card" style="padding:6px 10px;border-radius:999px;display:inline-block">Backend: <strong>…</strong></span>
+          </div>
+        </form>
+      </div>
+
+      <!-- Results column -->
+      <aside class="card result-card" aria-label="Results">
+        <h3>Results</h3>
+        <pre id="results">{ "status": "ok" }</pre>
+      </aside>
+    </section>
+
+    <footer>© <span id="y"></span> PredictWell Health.ai — Eldercare Sentinel</footer>
   </div>
 
   <script>
-    // ====== IMPORTANT: Production backend URL ======
-    const BASE_API = 'https://predictwell-backend-ai.onrender.com';
+    // footer year
+    document.getElementById('y').textContent = new Date().getFullYear();
 
-    const out = (obj) => {
-      const el = document.getElementById('output');
-      el.textContent = (typeof obj === 'string') ? obj : JSON.stringify(obj, null, 2);
-    };
+    // hamburger
+    const btn = document.getElementById('menuBtn');
+    const panel = document.getElementById('menuPanel');
+    const closeMenu=()=>{btn.setAttribute('aria-expanded','false');panel.hidden=true;document.removeEventListener('click',outside);document.removeEventListener('keydown',esc);}
+    const outside=e=>{if(!panel.contains(e.target)&&e.target!==btn)closeMenu();}
+    const esc=e=>{if(e.key==='Escape')closeMenu();}
+    btn.addEventListener('click',()=>{const open=btn.getAttribute('aria-expanded')==='true'; if(open){closeMenu();} else {btn.setAttribute('aria-expanded','true');panel.hidden=false;setTimeout(()=>{document.addEventListener('click',outside);document.addEventListener('keydown',esc);},0);}});
 
-    const pill = document.getElementById('statusPill');
-    function setPill(text, cls) {
-      pill.innerHTML = `Backend: <strong class="${cls || ''}">${text}</strong>`;
-    }
+    // simple form handler: echo inputs + toy flags
+    const form = document.getElementById('checkinForm');
+    const out = document.getElementById('results');
+    form.addEventListener('submit', (e)=>{
+      e.preventDefault();
+      const data = Object.fromEntries(new FormData(form).entries());
+      // Convert checkbox string "on" to booleans
+      ['flag_balance','flag_cognition','flag_falls','flag_hospital'].forEach(k=>{data[k]=!!form.elements[k].checked;});
+      data.timestamp = new Date().toISOString();
 
-    async function ping() {
-      try {
-        const r = await fetch(`${BASE_API}/healthz`, { cache: 'no-store' });
-        if (!r.ok) throw new Error(`HTTP ${r.status}`);
-        const d = await r.json();
-        setPill('ok', 'ok');
-        out(d);
-      } catch (e) {
-        setPill('error', 'err');
-        out({ error: String(e) });
-      }
-    }
+      // very simple toy risk flags (placeholder — integrate your real model/backend)
+      const risks = [];
+      if (Number(data.spo2) && Number(data.spo2) < 92) risks.push('Low SpO₂');
+      if (Number(data.hrv) && Number(data.hrv) < 15) risks.push('Low HRV');
+      if (Number(data.sleep_hrs) && Number(data.sleep_hrs) < 6) risks.push('Short sleep');
+      if (data.flag_balance) risks.push('Balance/Gait');
+      if (data.flag_cognition) risks.push('Cognition/Mood');
+      if (data.flag_falls) risks.push('Recent fall');
+      if (data.flag_hospital) risks.push('Recent ER/Hospital');
 
-    async function submitCheckin() {
-      const payload = {
-        name: document.getElementById('name').value.trim() || null,
-        age: Number(document.getElementById('age').value) || null,
-        metrics: {
-          spo2_avg: Number(document.getElementById('avg_spo2').value) || null,
-          hrv_rmssd: Number(document.getElementById('hrv_rmssd').value) || null,
-          resting_hr: Number(document.getElementById('resting_hr').value) || null,
-          sleep_hours: Number(document.getElementById('sleep_hours').value) || null,
-          steps_daily: Number(document.getElementById('steps_daily').value) || null
-        },
-        flags: {
-          gait_concern: document.getElementById('gait_concern').checked,
-          cognitive_flags: document.getElementById('cognitive_flags').checked
-        },
-        notes: document.getElementById('notes').value.trim() || null,
-        timestamp: new Date().toISOString()
-      };
+      out.textContent = JSON.stringify({ ok:true, risks, input:data }, null, 2);
+      // TODO: POST to your API instead of echoing
+    });
 
-      try {
-        out('Submitting...');
-        const res = await fetch(`${BASE_API}/eldercare/checkin`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-
-        if (!res.ok) {
-          const txt = await res.text();
-          throw new Error(`HTTP ${res.status} — ${txt}`);
-        }
-
-        const data = await res.json();
-        out(data);
-      } catch (err) {
-        out({ error: String(err) });
-      }
-    }
-
-    // Events
-    document.getElementById('submitBtn').addEventListener('click', submitCheckin);
-    document.getElementById('pingBtn').addEventListener('click', ping);
-    document.getElementById('year').textContent = new Date().getFullYear();
-
-    // Auto-ping on load to show connection state
-    ping();
+    // backend ping (best-effort; won’t break page if absent)
+    const pingBtn = document.getElementById('pingBtn');
+    const statusEl = document.getElementById('backendStatus').querySelector('strong');
+    pingBtn.addEventListener('click', async ()=>{
+      statusEl.textContent = '…';
+      try{
+        const res = await fetch('/api/health/ping').catch(()=>fetch('/ping'));
+        statusEl.textContent = res && res.ok ? 'ok' : 'offline';
+      }catch{ statusEl.textContent = 'offline'; }
+    });
   </script>
 </body>
 </html>
