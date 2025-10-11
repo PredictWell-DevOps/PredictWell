@@ -1,101 +1,202 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>Athletics — Patient Check-In</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <title>Athletics — Patient Portal | PredictWell Health.ai</title>
+  <meta name="description" content="Quick athlete self-check with a simple readiness/injury-risk view." />
+  <link rel="icon" href="data:,">
   <style>
-    :root{--bg:#0b1220;--ink:#e9eefc;--muted:#9bb0d3;--panel:#121a2b;--line:#213052}
-    *{box-sizing:border-box} body{margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink)}
-    .wrap{max-width:980px;margin:0 auto;padding:26px}
-    .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:20px;margin-bottom:14px}
-    label{display:block;margin-bottom:6px;font-weight:600}
-    input[type="number"]{width:100%;padding:12px;border-radius:12px;border:1px solid var(--line);background:#0b1426;color:#e9eefc}
+    :root{
+      --bg:#0a0f1a; --panel:#0f1725ee; --muted:#8aa0b3; --text:#e9f1f7;
+      --brand:#63e6be; --brand2:#5aa6ff; --radius:18px; --shadow:0 10px 30px rgba(0,0,0,.35);
+    }
+    *{box-sizing:border-box} html,body{margin:0;height:100%;font-family:Inter,system-ui,Arial,sans-serif;background:var(--bg);color:var(--text)}
+    a{color:inherit;text-decoration:none}
+    body::before{content:"";position:fixed;inset:0;background-image:url("/static/images/predictwell_background.png");background-size:cover;background-position:center;filter:brightness(.7);z-index:-2}
+    body::after{content:"";position:fixed;inset:0;background:linear-gradient(180deg, rgba(10,15,26,.55), rgba(10,15,26,.85));z-index:-1}
+    .wrap{max-width:900px;margin:0 auto;padding:24px}
+    .top{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+    .logo{height:22px;width:22px;border-radius:8px;background:linear-gradient(135deg,var(--brand2),var(--brand))}
+    h1{margin:0}
+    .card{background:var(--panel);border:1px solid rgba(255,255,255,.06);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px}
     .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-    @media(max-width:760px){.grid{grid-template-columns:1fr}}
-    .row{display:flex;gap:10px;flex-wrap:wrap}
-    .btn{appearance:none;border:1px solid #2a3a5e;background:#1a2440;color:#fff;border-radius:12px;padding:12px 16px;font-weight:700;cursor:pointer}
-    .muted{color:var(--muted)}
-    .bar{height:12px;border-radius:999px;background:linear-gradient(90deg,#34d399,#f59e0b,#ef4444)}
-    .gauge{position:relative;margin-top:8px}
-    .needle{position:absolute;top:-6px;width:2px;height:24px;background:#fff;border-radius:1px}
-    .kv{display:grid;grid-template-columns:220px 1fr;gap:8px;margin:6px 0}
+    label{font-weight:600;font-size:.95rem}
+    input,select,textarea{width:100%;padding:11px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);color:var(--text)}
+    textarea{min-height:88px;resize:vertical}
+    .full{grid-column:1/-1}
+    .actions{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap}
+    .btn{padding:12px 16px;border-radius:14px;border:1px solid transparent;cursor:pointer;font-weight:700}
+    .primary{background:linear-gradient(135deg,var(--brand2),var(--brand));color:#07111f}
+    .ghost{background:transparent;border-color:rgba(255,255,255,.12);color:#e7f4ff}
+    .muted{color:var(--muted);font-size:.95rem}
+    .result{margin-top:16px;display:none}
+    .pill{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08)}
   </style>
 </head>
 <body>
   <div class="wrap">
-    <div class="card"><h2 style="margin:0">Athletics — Patient Check-In</h2><p class="muted" style="margin:6px 0 0">Quick check-in with a simple result.</p></div>
+    <div class="top">
+      <div class="logo"></div>
+      <div><strong>PredictWell Health</strong> · <a href="/">Home</a></div>
+    </div>
 
-    <form id="f" class="card">
-      <div class="grid">
-        <div><label>Soreness (0–10)</label><input id="soreness" type="number" min="0" max="10" value="3" /></div>
-        <div><label>Fatigue (0–10)</label><input id="fatigue" type="number" min="0" max="10" value="4" /></div>
-        <div><label>Stress (0–10)</label><input id="stress" type="number" min="0" max="10" value="3" /></div>
-        <div><label>Sleep (hours)</label><input id="sleep" type="number" min="0" max="12" step="0.1" value="7" /></div>
-        <div><label>RPE (0–10)</label><input id="rpe" type="number" min="0" max="10" value="5" /></div>
-        <div><label>Duration (min)</label><input id="dur" type="number" min="0" step="5" value="60" /></div>
-      </div>
+    <div class="card">
+      <h1 style="margin-top:0">Athletics — Patient Check-In</h1>
+      <p class="muted">Quick self-check to estimate today’s readiness and short-term injury risk.</p>
 
-      <div class="row" style="margin-top:12px">
-        <button class="btn" type="submit">Show Results</button>
-        <a class="btn" href="/index.html">Back</a>
-      </div>
-    </form>
+      <form id="form" class="grid">
+        <div>
+          <label>Sport / Position</label>
+          <input type="text" id="position" placeholder="e.g., Baseball — Pitcher">
+        </div>
+        <div>
+          <label>Age</label>
+          <input type="number" id="age" min="10" max="60" placeholder="e.g., 17">
+        </div>
+        <div>
+          <label>Throws today (count)</label>
+          <input type="number" id="throwsToday" min="0" max="400" placeholder="e.g., 35">
+        </div>
+        <div>
+          <label>Last 7-day total throws</label>
+          <input type="number" id="throws7d" min="0" max="1500" placeholder="e.g., 220">
+        </div>
+        <div>
+          <label>Pain today</label>
+          <select id="pain">
+            <option value="none" selected>None</option>
+            <option value="mild">Mild</option>
+            <option value="moderate">Moderate</option>
+            <option value="severe">Severe</option>
+          </select>
+        </div>
+        <div>
+          <label>Fatigue today</label>
+          <select id="fatigue">
+            <option value="low" selected>Low</option>
+            <option value="moderate">Moderate</option>
+            <option value="high">High</option>
+          </select>
+        </div>
+        <div>
+          <label>Sleep last night (hours)</label>
+          <input type="number" step="0.1" id="sleep" min="0" max="14" placeholder="e.g., 7.2">
+        </div>
+        <div>
+          <label>Wellness (RPE 1–10)</label>
+          <input type="number" id="rpe" min="1" max="10" placeholder="e.g., 6">
+        </div>
+        <div class="full">
+          <label>Notes (optional)</label>
+          <textarea id="notes" placeholder="Any tightness, recent workload jump, travel, illness, etc."></textarea>
+        </div>
+        <div class="full actions">
+          <button type="submit" class="btn primary">Get My Result</button>
+          <button type="button" id="reset" class="btn ghost">Reset</button>
+        </div>
+      </form>
 
-    <div id="result" class="card" style="display:none">
-      <h3 style="margin-top:0">Results</h3>
-
-      <div class="gauge">
-        <div class="bar"></div>
-        <div id="needle" class="needle"></div>
-      </div>
-      <div class="muted" style="display:flex;justify-content:space-between;margin-top:6px">
-        <span>Low</span><span>Moderate</span><span>High</span>
-      </div>
-
-      <div style="margin-top:10px"><strong id="band">—</strong> <span class="muted" id="score"></span></div>
-
-      <div class="card" style="margin-top:12px">
-        <h4 style="margin:0 0 6px">Summary</h4>
-        <div id="sum"></div>
+      <div id="result" class="result">
+        <div class="pill" id="riskBadge">Risk: —</div>
+        <p id="summary" style="margin-top:10px"></p>
+        <p class="muted" style="margin-top:8px">This quick view is informational, not medical advice. If pain worsens, stop activity and seek care.</p>
       </div>
     </div>
   </div>
 
-<script>
-function v(id){return +document.getElementById(id).value||0}
-function kv(k,v){return `<div class="kv"><div class="muted">${k}</div><div>${v}</div></div>`}
-function compute(){
-  const wl = v('rpe') * v('dur');                 // session load
-  let score = Math.min(60, wl/10);                // cap workload contribution
-  score += v('soreness')*2 + v('fatigue')*1.5 + v('stress')*1.5;
-  score += Math.max(0, 7 - v('sleep'))*2;
-  score = Math.round(Math.max(0, Math.min(100, score)));
-  const band = score<33?'Low':(score<66?'Moderate':'High');
-  return {score,band};
-}
-function setNeedle(score){
-  const n=document.getElementById('needle');
-  n.style.left=`calc(${score}% - 1px)`;
-}
-document.getElementById('f').addEventListener('submit',(e)=>{
-  e.preventDefault();
-  const {score,band}=compute();
-  setNeedle(score);
-  document.getElementById('band').textContent=band;
-  document.getElementById('score').textContent=`(${score}/100)`;
-  const s=[];
-  s.push(kv('Soreness', v('soreness')));
-  s.push(kv('Fatigue', v('fatigue')));
-  s.push(kv('Stress', v('stress')));
-  s.push(kv('Sleep (h)', v('sleep')));
-  s.push(kv('RPE', v('rpe')));
-  s.push(kv('Duration (min)', v('dur')));
-  document.getElementById('sum').innerHTML=s.join('');
-  document.getElementById('result').style.display='';
-});
-</script>
+  <script>
+    const BASE_API = 'https://predictwell-backend-ai.onrender.com';
+
+    const form = document.getElementById('form');
+    const resultBox = document.getElementById('result');
+    const riskBadge = document.getElementById('riskBadge');
+    const summary = document.getElementById('summary');
+
+    document.getElementById('reset').onclick = () => { form.reset(); resultBox.style.display='none'; };
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const payload = {
+        domain: 'athletics',
+        age: num('age'),
+        position: document.getElementById('position').value.trim() || null,
+        throws_today: num('throwsToday'),
+        throws_7d: num('throws7d'),
+        pain: val('pain'),
+        fatigue: val('fatigue'),
+        sleep_hours: num('sleep'),
+        rpe: num('rpe'),
+        notes: document.getElementById('notes').value?.trim() || null
+      };
+
+      // Try generic /risk endpoint first
+      let ok = false;
+      try {
+        const res = await fetch(`${BASE_API}/risk`, {
+          method: 'POST',
+          headers: {'Content-Type':'application/json'},
+          body: JSON.stringify(payload)
+        });
+        if (res.ok) {
+          const data = await res.json(); // expect { risk_score, level, message } if available
+          const level = data.level || levelFromScore(data.risk_score);
+          render(level, data.message || autoMessage(payload, level));
+          ok = true;
+        }
+      } catch (err) { /* fall through */ }
+
+      // Fallback local estimate
+      if (!ok) {
+        const level = localEstimate(payload);
+        render(level, autoMessage(payload, level), true);
+      }
+    });
+
+    function val(id){ return document.getElementById(id).value; }
+    function num(id){ const v = document.getElementById(id).value; return v===""?null:Number(v); }
+
+    function levelFromScore(s){
+      if (s==null) return 'Unknown';
+      if (s >= 0.66) return 'High';
+      if (s >= 0.33) return 'Moderate';
+      return 'Low';
+    }
+
+    function localEstimate(p){
+      let score = 0;
+      // workload spike
+      if (p.throws_7d!=null && p.throws_today!=null && p.throws_today > Math.max(25, 0.35 * p.throws_7d)) score += 0.25;
+      // pain / fatigue
+      if (p.pain==='moderate') score += 0.25;
+      if (p.pain==='severe') score += 0.5;
+      if (p.fatigue==='moderate') score += 0.15;
+      if (p.fatigue==='high') score += 0.3;
+      // sleep & wellness
+      if (p.sleep_hours!=null && p.sleep_hours < 6) score += 0.15;
+      if (p.rpe!=null && p.rpe >= 8) score += 0.15;
+
+      if (score >= 0.66) return 'High';
+      if (score >= 0.33) return 'Moderate';
+      return 'Low';
+    }
+
+    function autoMessage(p, level){
+      const bits = [];
+      if (p.pain==='moderate' || p.pain==='severe') bits.push('current pain');
+      if (p.fatigue!=='low') bits.push('fatigue');
+      if (p.sleep_hours!=null && p.sleep_hours<6) bits.push('short sleep');
+      if (p.throws_today!=null && p.throws_7d!=null && p.throws_today > Math.max(25, 0.35*p.throws_7d)) bits.push('workload spike today');
+      const because = bits.length ? `Because of ${bits.join(', ')}.` : '';
+      return `Your quick risk looks **${level}**. ${because} Adjust workload and recovery accordingly, and tell your coach/clinician if symptoms persist.`;
+    }
+
+    function render(level, msg, fallback=false){
+      riskBadge.textContent = `Risk: ${level}${fallback ? ' (quick estimate)' : ''}`;
+      summary.innerHTML = msg;
+      resultBox.style.display = 'block';
+      resultBox.scrollIntoView({behavior:'smooth', block:'start'});
+    }
+  </script>
 </body>
 </html>
