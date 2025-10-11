@@ -1,241 +1,289 @@
+<!-- ====== athletics.html — PredictWell Athletics (Pitching Risk) ====== -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Athletics — Doctor Portal | PredictWell Health.ai</title>
-  <meta name="description" content="Coach/clinician-facing Athletics Sentinel intake with quick readiness & injury-risk orientation." />
-  <link rel="icon" href="data:,">
+  <title>PredictWell Health.ai — Athletics (Pitching Risk)</title>
+  <meta name="description" content="PredictWell Athletics: pitcher workload, pain, and biomechanics flags into a single risk score." />
+  <link rel="icon" href="data:," />
+
   <style>
-    :root{
-      --brand:#12e3b4;         /* mint */
-      --brand2:#5aa6ff;        /* blue */
-      --ink:#0b1322;           /* dark text */
-      --muted:#576779;
-      --card: rgba(255,255,255,.78);   /* MORE see-through bubble */
-      --line:#e6eef6;
-      --radius:18px;
-      --shadow:0 14px 38px rgba(0,0,0,.18);
-    }
-    *{box-sizing:border-box}
-    html,body{margin:0;height:100%;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--ink)}
-    a{color:inherit;text-decoration:none}
-
-    /* Background */
-    body::before{
-      content:"";position:fixed;inset:0;background-image:url("/static/images/predictwell_background.png");
-      background-size:cover;background-position:center;filter:brightness(.92) saturate(.98);z-index:-2;
-    }
-    body::after{
-      content:"";position:fixed;inset:0;z-index:-1;
-      background:linear-gradient(180deg,rgba(255,255,255,.28)0%,rgba(255,255,255,.40)40%,rgba(255,255,255,.48)100%);
+    :root {
+      --brand-navy: #0b2545;
+      --brand-orange: #ff7a18;
+      --muted: #64748b;
+      --card: #ffffff;
+      --ok: #16a34a;
+      --err: #dc2626;
     }
 
-    .wrap{max-width:1180px;margin:0 auto;padding:0 20px}
-
-    /* ===== SOLID WHITE HEADER ===== */
-    header{
-      position:sticky; top:0; z-index:10;
-      background:#fff; color:#0a1726;
-      box-shadow:0 6px 20px rgba(0,0,0,.12);
-      border-bottom:1px solid #e6eef6;
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      color: #0f172a;
+      background-image: url("/static/images/predictwell_background.png");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      min-height: 100vh;
     }
-    .nav{display:flex;align-items:center;gap:22px;padding:12px 0}
-    .brand{display:flex;align-items:center;gap:10px;font-weight:800;cursor:pointer}
-    .logo{height:22px;width:22px;border-radius:8px;background:linear-gradient(135deg,var(--brand),var(--brand2));box-shadow:0 6px 18px rgba(18,227,180,.35)}
-    .nav ul{display:flex;gap:20px;list-style:none;margin:0;padding:0}
-    .nav a{color:#0a1726;font-weight:600}
-    .spacer{flex:1}
-    .email a{font-weight:800}
-
-    /* ===== Cards / Buttons ===== */
-    main{padding:26px 0 40px}
-    .card{
-      background:var(--card);
-      border:1px solid var(--line);
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
-      padding:26px;
-      backdrop-filter:saturate(1.1) blur(1px);
+    .overlay {
+      min-height: 100vh;
+      background: linear-gradient(180deg, rgba(255,255,255,0.88), rgba(255,255,255,0.94));
+      padding: 32px 16px 48px;
     }
-    h1{margin:6px 0 6px;font-size:1.9rem}
-    .muted{color:var(--muted)}
-    .row{display:flex;gap:10px;flex-wrap:wrap}
+    .container { max-width: 1000px; margin: 0 auto; }
 
-    .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-    @media (max-width:1000px){.grid-3{grid-template-columns:1fr}}
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .brand { display: flex; align-items: baseline; gap: 10px; color: var(--brand-navy); }
+    .brand h1 { margin: 0; font-size: clamp(20px, 4vw, 28px); }
+    .brand span { color: var(--brand-orange); font-weight: 700; }
 
-    label{font-weight:700;font-size:.95rem}
-    input,select,textarea{width:100%;padding:11px;border-radius:12px;border:1px solid #e1e7ef;background:#fafcff;color:#0b1322}
-    textarea{min-height:90px;resize:vertical}
-    .full{grid-column:1/-1}
+    nav a {
+      color: var(--brand-navy);
+      text-decoration: none;
+      font-weight: 700;
+      padding: 8px 12px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.6);
+      border: 1px solid rgba(2,6,23,0.06);
+    }
 
-    .btn{display:inline-flex;align-items:center;justify-content:center;padding:12px 16px;border-radius:14px;border:1px solid transparent;font-weight:800;cursor:pointer;text-decoration:none;transition:transform .04s ease, box-shadow .2s ease}
-    .btn:active{transform:translateY(1px)}
-    .btn-primary{background:linear-gradient(135deg,var(--brand2),var(--brand));color:#07111f;box-shadow:0 10px 24px rgba(90,166,255,.25)}
-    /* Distinct Patient Portal color (NOT red) */
-    .btn-alt{background:linear-gradient(135deg,#99e7ff,#bfc8ff);color:#07111f;box-shadow:0 10px 24px rgba(95,150,255,.22)}
-    .btn-ghost{background:#f7fafc;border:1px solid #e1e7ef;color:#0f1b2b}
+    .hero {
+      background: rgba(255,255,255,0.75);
+      border: 1px solid rgba(2,6,23,0.06);
+      border-radius: 18px;
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: 0 8px 20px rgba(2,6,23,0.08);
+    }
+    .hero h2 { margin: 0 0 8px; color: var(--brand-navy); }
+    .hero p { margin: 0; color: var(--muted); }
 
-    .pill{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:#f3f7fb;border:1px solid #e1e7ef;font-weight:800}
-    .result{display:none;margin-top:14px}
+    .grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
+    @media (min-width: 900px) { .grid { grid-template-columns: 1.1fr 0.9fr; } }
 
-    footer{color:#2b3a48;padding:18px 0 40px;text-align:center}
+    .card {
+      background: var(--card);
+      border: 1px solid rgba(2,6,23,0.06);
+      border-radius: 18px;
+      padding: 20px;
+      box-shadow: 0 8px 20px rgba(2,6,23,0.08);
+    }
+    .card h3 { margin-top: 0; color: var(--brand-navy); }
+
+    .row { display: grid; grid-template-columns: 1fr; gap: 12px; margin-bottom: 12px; }
+    @media (min-width: 720px) {
+      .row.two { grid-template-columns: 1fr 1fr; }
+      .row.three { grid-template-columns: 1fr 1fr 1fr; }
+    }
+
+    label { font-size: 14px; color: var(--muted); margin-bottom: 6px; display: block; }
+    input[type="text"], input[type="number"], textarea {
+      width: 100%; padding: 10px 12px; border-radius: 12px;
+      border: 1px solid rgba(2,6,23,0.12); background: #fff; font-size: 16px; box-sizing: border-box;
+    }
+    textarea { min-height: 92px; resize: vertical; }
+
+    .checkbox { display: flex; align-items: center; gap: 10px; color: var(--muted); }
+
+    .btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px; }
+    button { padding: 10px 14px; font-weight: 700; border-radius: 12px; border: 1px solid transparent; cursor: pointer; }
+    .primary { background: var(--brand-orange); color: #fff; }
+    .ghost { background: #fff; color: var(--brand-navy); border-color: rgba(2,6,23,0.12); }
+
+    pre.output {
+      background: #0b1220; color: #e2e8f0; padding: 14px; border-radius: 12px;
+      overflow: auto; font-size: 13px; line-height: 1.45; max-height: 420px;
+    }
+
+    .status-pill {
+      display: inline-flex; align-items: center; gap: 8px; padding: 6px 10px;
+      border-radius: 999px; background: #f1f5f9; color: var(--muted); font-weight: 600; font-size: 12px;
+    }
+    .ok { color: var(--ok); }
+    .err { color: var(--err); }
   </style>
 </head>
 <body>
-  <!-- HEADER -->
-  <header>
-    <div class="wrap">
-      <nav class="nav" aria-label="Primary">
-        <a class="brand" href="/" aria-label="Go to PredictWell Health home">
-          <div class="logo" aria-hidden="true"></div><span>PredictWell Health.ai</span>
-        </a>
-        <ul>
-          <li><a href="/#about">About</a></li>
-          <li><a href="/#how">How It Works</a></li>
-          <li><a href="/#services">Services</a></li>
-          <li><a href="/#contact">Contact</a></li>
-          <li><a href="/eldercare.html">Eldercare (Doctors)</a></li>
-        </ul>
-        <div class="spacer"></div>
-        <div class="email">Email: <a href="mailto:hello@predictwellhealth.ai">hello@predictwellhealth.ai</a></div>
-      </nav>
-    </div>
-  </header>
-
-  <main class="wrap">
-    <!-- Intro -->
-    <section class="card">
-      <h1>Athletics — Doctor Portal</h1>
-      <p class="muted">Coach/clinician intake for a quick readiness & injury-risk orientation with explain-why factors.</p>
-      <div class="row" style="margin-top:10px">
-        <a class="btn btn-ghost" href="/">← Back to Home</a>
-        <a class="btn btn-alt" href="/athletics-patient.html">Open Patient Portal</a>
-      </div>
-    </section>
-
-    <!-- Form -->
-    <section style="margin-top:18px" class="card">
-      <form id="form" class="grid-3">
-        <div class="full"><strong>Athlete</strong></div>
-        <div><label>Sport / Position</label><input id="position" placeholder="e.g., Baseball — Pitcher"></div>
-        <div><label>Level</label><select id="level"><option>HS</option><option>College</option><option>Pro</option><option>Rec/Youth</option></select></div>
-        <div><label>Age</label><input type="number" id="age" min="10" max="60" placeholder="e.g., 17"></div>
-
-        <div class="full" style="margin-top:6px"><strong>Workload & Wellness</strong></div>
-        <div><label>Throws today (count)</label><input type="number" id="throwsToday" min="0" max="500" placeholder="e.g., 35"></div>
-        <div><label>Last 7-day throws</label><input type="number" id="throws7d" min="0" max="2000" placeholder="e.g., 220"></div>
-        <div><label>Sleep last night (h)</label><input type="number" step="0.1" id="sleep" min="0" max="14" placeholder="e.g., 7.0"></div>
-        <div><label>Pain</label><select id="pain"><option>none</option><option>mild</option><option>moderate</option><option>severe</option></select></div>
-        <div><label>Fatigue</label><select id="fatigue"><option>low</option><option>moderate</option><option>high</option></select></div>
-        <div><label>Wellness (RPE 1–10)</label><input type="number" id="rpe" min="1" max="10" placeholder="e.g., 6"></div>
-
-        <div class="full" style="margin-top:6px"><strong>Flags (optional)</strong></div>
-        <div><label>Velocity change (mph)</label><input type="number" id="veloDelta" step="0.1" placeholder="-1.5"></div>
-        <div><label>Mechanics flag</label><select id="mech"><option value="none">None</option><option value="arm_slot">Arm slot drift</option><option value="timing">Late timing</option><option value="stride">Stride/landing</option></select></div>
-        <div><label>Soreness zone</label><select id="sore"><option value="none">None</option><option value="shoulder">Shoulder</option><option value="elbow">Elbow</option><option value="back">Back</option><option value="leg">Leg</option></select></div>
-
-        <div class="full"><label>Coach/clinician notes</label><textarea id="notes" placeholder="Context, travel, illness, workload spike, mechanics comments, etc."></textarea></div>
-
-        <div class="full row" style="margin-top:6px">
-          <button type="submit" class="btn btn-primary">Compute Risk</button>
-          <button type="button" id="reset" class="btn btn-ghost">Reset</button>
+  <div class="overlay">
+    <div class="container">
+      <header>
+        <div class="brand">
+          <h1>PredictWell <span>Health.ai</span></h1>
         </div>
-      </form>
+        <nav>
+          <a href="/eldercare.html">Eldercare</a>
+          <a href="/athletics.html">Athletics</a>
+        </nav>
+      </header>
 
-      <!-- Result -->
-      <div id="result" class="result">
-        <div class="pill" id="riskBadge">Risk: —</div>
-        <p id="summary" style="margin:.6rem 0 0"></p>
+      <section class="hero">
+        <h2>Pitching Risk — Daily/Weekly Input</h2>
+        <p>Enter workload, pain, rest, and flags. We’ll compute a risk score and recommendations.</p>
+      </section>
+
+      <div class="grid">
+        <!-- FORM CARD -->
+        <div class="card">
+          <h3>Pitcher Inputs</h3>
+
+          <div class="row two">
+            <div>
+              <label for="p_name">Pitcher Name</label>
+              <input id="p_name" type="text" placeholder="e.g., A. Miller" />
+            </div>
+            <div>
+              <label for="p_age">Age</label>
+              <input id="p_age" type="number" min="8" max="60" placeholder="17" />
+            </div>
+          </div>
+
+          <div class="row three">
+            <div>
+              <label for="pitch_count_7d">Pitch count (last 7 days)</label>
+              <input id="pitch_count_7d" type="number" min="0" step="1" placeholder="92" />
+            </div>
+            <div>
+              <label for="innings_7d">Innings (last 7 days)</label>
+              <input id="innings_7d" type="number" min="0" step="0.1" placeholder="6.2" />
+            </div>
+            <div>
+              <label for="rest_days">Rest days since last outing</label>
+              <input id="rest_days" type="number" min="0" max="10" step="1" placeholder="2" />
+            </div>
+          </div>
+
+          <div class="row three">
+            <div>
+              <label for="velo_avg">Avg Velo (mph)</label>
+              <input id="velo_avg" type="number" step="0.1" min="40" max="110" placeholder="84.7" />
+            </div>
+            <div>
+              <label for="pain_level">Pain today (0–10)</label>
+              <input id="pain_level" type="number" step="1" min="0" max="10" placeholder="2" />
+            </div>
+            <div>
+              <label for="workload_today">Throws today</label>
+              <input id="workload_today" type="number" step="1" min="0" placeholder="35" />
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="checkbox">
+              <input id="elbow_history" type="checkbox" />
+              <label for="elbow_history">Prior elbow/shoulder injury or surgery?</label>
+            </div>
+          </div>
+
+          <div class="row">
+            <div>
+              <label for="mech_flags">Mechanics flags (optional)</label>
+              <textarea id="mech_flags" placeholder="e.g., late arm, inconsistent stride, drag line anomalies..."></textarea>
+            </div>
+          </div>
+
+          <div class="btn-row">
+            <button class="primary" id="riskBtn">Compute Risk</button>
+            <button class="ghost" id="pingBtn">Ping Backend</button>
+            <span class="status-pill" id="statusPill">Backend: <strong>unknown</strong></span>
+          </div>
+        </div>
+
+        <!-- OUTPUT CARD -->
+        <div class="card">
+          <h3>Risk Score & Recommendations</h3>
+          <pre class="output" id="output">{ Submit to see results... }</pre>
+        </div>
       </div>
-    </section>
-  </main>
 
-  <footer class="wrap">© <span id="yr"></span> PredictWell Health — All rights reserved.</footer>
+      <footer style="margin-top:20px; text-align:center; color:var(--muted); font-size:12px;">
+        © <span id="year"></span> PredictWell Health.ai — Athletics
+      </footer>
+    </div>
+  </div>
 
   <script>
-    document.getElementById('yr').textContent = new Date().getFullYear();
+    // ====== IMPORTANT: Production backend URL ======
     const BASE_API = 'https://predictwell-backend-ai.onrender.com';
 
-    const form = document.getElementById('form');
-    const resultBox = document.getElementById('result');
-    const badge = document.getElementById('riskBadge');
-    const summary = document.getElementById('summary');
-    document.getElementById('reset').onclick = () => { form.reset(); resultBox.style.display='none'; };
+    const out = (obj) => {
+      const el = document.getElementById('output');
+      el.textContent = (typeof obj === 'string') ? obj : JSON.stringify(obj, null, 2);
+    };
 
-    form.addEventListener('submit', async (e)=>{
-      e.preventDefault();
-      const p = {
-        domain:'athletics',
-        position: val('position') || null,
-        level: val('level'),
-        age: num('age'),
-        throws_today: num('throwsToday'),
-        throws_7d: num('throws7d'),
-        sleep_hours: num('sleep'),
-        pain: val('pain'),
-        fatigue: val('fatigue'),
-        rpe: num('rpe'),
-        velo_delta: num('veloDelta'),
-        mechanics_flag: val('mech'),
-        soreness_zone: val('sore'),
-        notes: val('notes') || null
+    const pill = document.getElementById('statusPill');
+    function setPill(text, cls) {
+      pill.innerHTML = `Backend: <strong class="${cls || ''}">${text}</strong>`;
+    }
+
+    async function ping() {
+      try {
+        const r = await fetch(`${BASE_API}/healthz`, { cache: 'no-store' });
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        const d = await r.json();
+        setPill('ok', 'ok');
+        out(d);
+      } catch (e) {
+        setPill('error', 'err');
+        out({ error: String(e) });
+      }
+    }
+
+    async function computeRisk() {
+      const payload = {
+        name: document.getElementById('p_name').value.trim() || null,
+        age: Number(document.getElementById('p_age').value) || null,
+        workload: {
+          pitch_count_7d: Number(document.getElementById('pitch_count_7d').value) || 0,
+          innings_7d: Number(document.getElementById('innings_7d').value) || 0,
+          rest_days: Number(document.getElementById('rest_days').value) || 0,
+          workload_today: Number(document.getElementById('workload_today').value) || 0,
+          velo_avg: Number(document.getElementById('velo_avg').value) || null,
+          pain_level: Number(document.getElementById('pain_level').value) || 0
+        },
+        flags: {
+          elbow_history: document.getElementById('elbow_history').checked,
+          mechanics_notes: document.getElementById('mech_flags').value.trim() || null
+        },
+        timestamp: new Date().toISOString()
       };
 
-      let ok = false;
-      try{
-        const res = await fetch(`${BASE_API}/risk`,{
-          method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(p)
+      try {
+        out('Computing risk...');
+        const res = await fetch(`${BASE_API}/risk`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
         });
-        if(res.ok){
-          const data = await res.json(); // {risk_score, level, message}
-          const level = data.level || levelFromScore(data.risk_score);
-          render(level, data.message || autoMsg(p, level));
-          ok = true;
+
+        if (!res.ok) {
+          const txt = await res.text();
+          throw new Error(`HTTP ${res.status} — ${txt}`);
         }
-      }catch(_){}
 
-      if(!ok){
-        const level = localEstimate(p);
-        render(level, autoMsg(p, level) + ' (quick estimate)');
+        const data = await res.json();
+        out(data);
+      } catch (err) {
+        out({ error: String(err) });
       }
-    });
-
-    function val(id){ return document.getElementById(id).value.trim(); }
-    function num(id){ const v = document.getElementById(id).value; return v===""?null:Number(v); }
-    function levelFromScore(s){ if(s==null) return 'Unknown'; if(s>=0.66) return 'High'; if(s>=0.33) return 'Moderate'; return 'Low'; }
-
-    function localEstimate(p){
-      let score=0;
-      if(p.throws_7d!=null && p.throws_today!=null && p.throws_today > Math.max(30, 0.35*p.throws_7d)) score+=0.25;
-      if(p.pain==='moderate') score+=0.25; if(p.pain==='severe') score+=0.5;
-      if(p.fatigue==='moderate') score+=0.15; if(p.fatigue==='high') score+=0.3;
-      if(p.sleep_hours!=null && p.sleep_hours<6) score+=0.15;
-      if(p.rpe!=null && p.rpe>=8) score+=0.15;
-      if(p.velo_delta!=null && p.velo_delta<=-1) score+=0.15;
-      if(p.mechanics_flag!=='none') score+=0.1;
-      if(score>=0.66) return 'High'; if(score>=0.33) return 'Moderate'; return 'Low';
     }
 
-    function autoMsg(p, level){
-      const bits=[];
-      if(p.pain==='moderate'||p.pain==='severe') bits.push('current pain');
-      if(p.fatigue!=='low') bits.push('fatigue');
-      if(p.sleep_hours!=null && p.sleep_hours<6) bits.push('short sleep');
-      if(p.throws_today!=null && p.throws_7d!=null && p.throws_today>Math.max(30,0.35*p.throws_7d)) bits.push('workload spike');
-      if(p.velo_delta!=null && p.velo_delta<=-1) bits.push('velo drop');
-      if(p.mechanics_flag!=='none') bits.push('mechanics flag');
-      const because = bits.length?` Because of ${bits.join(', ')}.`:'';
-      return `Orientation: **${level}**.${because} Consider workload cap, mechanics review, and recovery focus; escalate if pain persists.`;
-    }
+    // Events
+    document.getElementById('riskBtn').addEventListener('click', computeRisk);
+    document.getElementById('pingBtn').addEventListener('click', ping);
+    document.getElementById('year').textContent = new Date().getFullYear();
 
-    function render(level,msg){
-      badge.textContent = `Risk: ${level}`;
-      summary.innerHTML = msg;
-      resultBox.style.display='block';
-      resultBox.scrollIntoView({behavior:'smooth',block:'start'});
-    }
+    // Auto-ping on load
+    ping();
   </script>
 </body>
 </html>
