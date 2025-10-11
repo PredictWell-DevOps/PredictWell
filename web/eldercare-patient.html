@@ -1,205 +1,296 @@
+<!-- ====== eldercare-patient.html (Patient Portal — 12-input AI-optimized + client-side score) ====== -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>PredictWell — Eldercare Patient Portal</title>
-<link rel="icon" href="data:," />
-<meta name="description" content="Eldercare Patient Portal — daily health check-ins.">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PredictWell Health.ai — Eldercare Patient Portal</title>
+  <meta name="description" content="Simple 12-question checkup for seniors and caregivers. Instant client-side score + server AI insights." />
+  <link rel="icon" href="data:,">
+  <style>
+    :root{ --glass-bg: rgba(255,255,255,0.78); --radius: 18px; --shadow: 0 10px 30px rgba(0,0,0,0.18);
+           --blu:#2563eb; --ink:#0b1020; --muted:#374151; --line: rgba(17,24,39,0.08); }
+    html, body{ height:100%; margin:0; font-family: system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+      color:#111827; background-image:url("/static/images/predictwell_background.png"); background-size:cover; background-position:center; background-repeat:no-repeat; background-attachment:fixed; }
+    .header{ position:sticky; top:0; z-index:50; backdrop-filter:saturate(1.2) blur(6px); background:rgba(255,255,255,0.75); border-bottom:1px solid rgba(255,255,255,0.4); }
+    .header-inner{ max-width:1080px; margin:0 auto; padding:14px 18px; display:flex; align-items:center; gap:14px; }
+    .brand{ display:flex; align-items:center; gap:10px; text-decoration:none; color:#0b1020; }
+    .brand-logo{ width:34px; height:34px; border-radius:10px; background:linear-gradient(135deg,var(--blu),#60a5fa); box-shadow:var(--shadow); }
+    .brand-title{ font-weight:800; letter-spacing:.2px; font-size:20px; line-height:1; }
+    .brand-title .hi{ color:#111827; } .brand-title .ai{ color:#000; }
+    .brand-tagline{ font-size:12px; color:#4b5563; line-height:1.1; }
+    .spacer{ flex:1; }
+    .hamburger{ border:none; background:#fff; border-radius:999px; width:36px; height:36px; display:grid; place-items:center; box-shadow:var(--shadow); cursor:pointer; }
+    .hamburger:after{ content:"≡"; font-size:20px; color:#111827; position:relative; top:-1px; }
+    .menu{ position:absolute; right:18px; top:58px; background:var(--glass-bg); backdrop-filter:blur(10px); border-radius:14px; box-shadow:var(--shadow); padding:8px; display:none; }
+    .menu a{ display:block; padding:10px 12px; border-radius:10px; text-decoration:none; color:#111827; min-width:220px; }
+    .menu a:hover{ background:rgba(17,24,39,0.06); }
 
-<style>
-  :root{
-    --bg-a:#0a3d35;        /* deep teal */
-    --bg-b:#0f6f62;        /* lighter teal */
-    --card:#0d4a41;
-    --text:#e9fff8;
-    --muted:#cfe9e3;
-    --accent:#f4b000;
-    --accent-press:#d99a00;
-    --shadow:0 14px 40px rgba(0,0,0,.45);
-    --radius:16px;
-    --max:980px;
-    --fieldh:46px;
-  }
+    .wrap{ max-width:760px; margin:28px auto 36px; padding:0 18px; }
+    .hero{ background:var(--glass-bg); border-radius:var(--radius); box-shadow:var(--shadow); padding:22px 24px; margin-bottom:18px; }
+    .hero h1{ margin:0 0 8px 0; font-size:28px; }
+    .hero p{ margin:0; color:var(--muted); }
+    .chip{ display:inline-block; padding:6px 10px; border-radius:999px; background:linear-gradient(135deg,#9ca3af,#e5e7eb); color:#000; font-weight:700; font-size:12px; }
 
-  html,body{height:100%}
-  body{
-    margin:0;
-    font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
-    color:var(--text);
-    background-image:url("/static/images/predictwell_background.png");
-    background-size:cover; background-position:center; background-attachment:fixed;
-  }
-  body::before{
-    content:"";
-    position:fixed; inset:0; z-index:-1;
-    background:linear-gradient(180deg, rgba(10,61,53,.92), rgba(15,111,98,.92));
-  }
+    .section{ background:var(--glass-bg); border-radius:var(--radius); box-shadow:var(--shadow); padding:18px; margin-top:16px; }
+    .section h2{ margin:0 0 14px 0; font-size:18px; letter-spacing:.2px; }
 
-  /* sticky header like Doctor Portal */
-  .top{
-    position:sticky; top:0; z-index:10;
-    display:flex; align-items:center; justify-content:space-between;
-    padding:14px 22px;
-    background:linear-gradient(90deg, rgba(10,61,53,.85), rgba(15,111,98,.85));
-    border-bottom:1px solid rgba(255,255,255,.08);
-    backdrop-filter:blur(6px);
-  }
-  .brand{display:flex; align-items:center; gap:10px; color:var(--text); text-decoration:none;}
-  .brand .dot{width:28px;height:28px;border-radius:8px;background:#ffffff1a}
-  .brand b{letter-spacing:.2px}
-  .nav a{color:var(--text); text-decoration:none; margin-left:20px; opacity:.85}
-  .nav a:hover{opacity:1}
-  .nav a.active{font-weight:700; text-decoration:underline}
+    .grid-2{ display:grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap:12px; }
+    .grid-3{ display:grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap:12px; }
+    @media (max-width:740px){ .grid-2,.grid-3{ grid-template-columns:1fr; } }
 
-  .hero{ text-align:center; padding:34px 16px 16px }
-  .hero h1{ margin:0; font-size:34px; font-weight:800 }
-  .hero p{ margin:8px 0 0; opacity:.92 }
-
-  .card{
-    width:min(100% - 40px, var(--max));
-    margin: 16px auto 64px;
-    background: linear-gradient(180deg, rgba(13,74,65,.86), rgba(13,74,65,.94));
-    box-shadow:var(--shadow);
-    border:1px solid rgba(255,255,255,.08);
-    border-radius:20px;
-    padding:28px;
-  }
-
-  .grid{ display:grid; grid-template-columns: 1fr 1fr; gap:16px }
-  .grid-1{ display:grid; grid-template-columns: 1fr; gap:16px }
-  label{ display:block; font-size:13px; margin:2px 2px 8px; opacity:.9 }
-  input,select,textarea,button{
-    width:100%; box-sizing:border-box;
-    height:var(--fieldh);
-    border-radius:12px; border:1px solid rgba(255,255,255,.12);
-    background:#0b3e37; color:var(--text); padding:0 12px; outline:none;
-  }
-  input::placeholder, textarea::placeholder{ color:var(--muted) }
-  textarea{ height:120px; padding:12px; resize:vertical }
-  button{
-    height:48px; font-weight:700; letter-spacing:.2px; cursor:pointer;
-    background:var(--accent); color:#111; border:none;
-  }
-  button:hover{ background:var(--accent-press) }
-
-  .help{font-size:12.5px; opacity:.85; margin-top:8px}
-  .status{margin-top:10px; font-size:14px}
-  .ok{color:#47c17e} .err{color:#ff6b6b}
-
-  footer{
-    text-align:center; color:#e3fff8cc; font-size:12px; padding:22px 10px 40px;
-    background:linear-gradient(180deg, rgba(10,61,53,.82), rgba(10,61,53,.92));
-    border-top:1px solid rgba(255,255,255,.08);
-  }
-
-  @media (max-width:780px){
-    .grid{ grid-template-columns:1fr }
-    .hero h1{ font-size:28px }
-  }
-</style>
+    .field{ display:flex; flex-direction:column; gap:6px; }
+    label{ font-size:12px; color:var(--muted); }
+    input[type="number"], select{
+      width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:12px; background:#fff; font-size:16px; outline:none;
+    }
+    .actions{ display:flex; gap:10px; flex-wrap:wrap; margin-top:12px; align-items:center; }
+    .btn{ appearance:none; border:none; padding:12px 18px; border-radius:999px; color:#fff; font-weight:800; cursor:pointer; box-shadow:var(--shadow); font-size:16px; }
+    .btn-blue{ background:linear-gradient(135deg,#2563eb,#60a5fa); }
+    .btn-gray{ background:linear-gradient(135deg,#6b7280,#9ca3af); color:#0b1020; }
+    .muted{ color:var(--muted); font-size:12px; }
+    pre.results{ margin:0; padding:14px; background:#0b1020; color:#c7d2fe; border-radius:14px; min-height:160px; overflow:auto; white-space:pre-wrap; word-break:break-word; }
+    .footer{ text-align:center; color:#374151; font-size:12px; margin-top:28px; text-shadow:0 1px 0 rgba(255,255,255,0.75); }
+  </style>
 </head>
 <body>
-  <div class="top">
-    <a class="brand" href="/index.html" aria-label="PredictWell Home">
-      <span class="dot"></span><b>PredictWell Health.ai</b>
-    </a>
-    <nav class="nav">
-      <a href="/eldercare.html">Doctors</a>
-      <a href="/eldercare-patient.html" class="active">Patients</a>
-      <a href="/athletics.html">Athletics</a>
-    </nav>
-  </div>
-
-  <section class="hero">
-    <h1>Eldercare Patient Portal</h1>
-    <p>Enter your daily check-in details below.</p>
-  </section>
-
-  <main class="card">
-    <form id="eldPatientForm" autocomplete="on" novalidate>
-      <div class="grid">
+  <header class="header">
+    <div class="header-inner">
+      <a class="brand" href="/index.html" aria-label="Back to PredictWell Health.ai home">
+        <div class="brand-logo" aria-hidden="true"></div>
         <div>
-          <label for="name">Full Name</label>
-          <input id="name" name="name" placeholder="John Smith" required />
+          <div class="brand-title"><span class="hi">PredictWell Health</span><span class="ai">.ai</span></div>
+          <div class="brand-tagline">Proactive health insights for seniors & athletes</div>
         </div>
-        <div>
-          <label for="age">Age</label>
-          <input id="age" name="age" placeholder="e.g., 79" inputmode="numeric" />
+      </a>
+      <div class="spacer"></div>
+      <button class="hamburger" id="menuBtn" aria-label="Open menu"></button>
+      <nav class="menu" id="menu">
+        <a href="/eldercare.html">Eldercare — Doctors</a>
+        <a href="/eldercare-patient.html"><strong>Eldercare — Patients</strong></a>
+        <a href="/athletics.html">Athletics — Doctors</a>
+        <a href="/athletics-patient.html">Athletics — Patients</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <section class="hero">
+      <h1>Eldercare — Patient Checkup</h1>
+      <p>Answer these 12 quick questions. You’ll see an instant PredictWell Score and suggestions.</p>
+      <div style="margin-top:10px;">
+        <span class="chip">Patient Portal</span>
+        <span class="chip">12 Questions</span>
+        <span class="chip">Instant Results</span>
+      </div>
+    </section>
+
+    <form id="patientForm" class="section" onsubmit="event.preventDefault(); saveForm();">
+      <h2>Your Quick Checkup</h2>
+      <div class="grid-2">
+        <div class="field"><label for="age">1) Age</label><input id="age" type="number" min="0" step="1" placeholder="e.g., 79" /></div>
+        <div class="field"><label for="living">2) Living situation</label>
+          <select id="living"><option value="">Select…</option><option>Alone</option><option>With spouse/family</option><option>Assisted living</option></select>
+        </div>
+        <div class="field"><label for="falls_12m">3) Falls in the past year</label>
+          <select id="falls_12m"><option value="">Select…</option><option>0</option><option>1</option><option>2 or more</option></select>
+        </div>
+        <div class="field"><label for="unsteady">4) Cane/walker or feel unsteady?</label>
+          <select id="unsteady"><option value="">Select…</option><option>No</option><option>Sometimes</option><option>Often</option></select>
+        </div>
+        <div class="field"><label for="fear_fall">5) Are you afraid of falling?</label>
+          <select id="fear_fall"><option value="">Select…</option><option>No</option><option>Yes</option></select>
+        </div>
+        <div class="field"><label for="chair_rise">6) Stand from a chair without using your arms?</label>
+          <select id="chair_rise"><option value="">Select…</option><option>Yes, easily</option><option>Yes, but hard</option><option>No</option></select>
+        </div>
+        <div class="field"><label for="dizzy">7) Dizzy or lightheaded when standing?</label>
+          <select id="dizzy"><option value="">Select…</option><option>No</option><option>Occasionally</option><option>Often</option></select>
+        </div>
+        <div class="field"><label for="med_count">8) About how many daily medicines?</label>
+          <select id="med_count"><option value="">Select…</option><option>0–2</option><option>3–4</option><option>5 or more</option></select>
+        </div>
+        <div class="field"><label for="memory">9) New memory problems or confusion?</label>
+          <select id="memory"><option value="">Select…</option><option>No</option><option>Some days</option><option>Most days</option></select>
+        </div>
+        <div class="field"><label for="mood">10) Mood / emotional health</label>
+          <select id="mood"><option value="">Select…</option><option>Good</option><option>Somewhat down/anxious</option><option>Depressed or anxious</option></select>
+        </div>
+        <div class="field"><label for="activity">11) Physical activity most days</label>
+          <select id="activity"><option value="">Select…</option><option>Hardly active</option><option>Lightly active</option><option>Walk/exercise often</option></select>
+        </div>
+        <div class="field"><label for="home_haz">12) Home safety: throw rugs, poor night lighting, or no grab bars?</label>
+          <select id="home_haz"><option value="">Select…</option><option>No</option><option>Yes</option><option>Not sure</option></select>
         </div>
       </div>
 
-      <div class="grid">
-        <div>
-          <label for="status">Health Status</label>
-          <select id="status" name="status">
-            <option value="">Select Health Status</option>
-            <option>Excellent</option><option>Good</option>
-            <option>Fair</option><option>Poor</option>
-          </select>
-        </div>
-        <div>
-          <label for="symptoms">New Symptoms Today?</label>
-          <select id="symptoms" name="symptoms">
-            <option value="">Select</option>
-            <option>No</option>
-            <option>Yes — Mild</option>
-            <option>Yes — Moderate</option>
-            <option>Yes — Severe</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="grid-1">
-        <div>
-          <label for="notes">Notes or symptoms</label>
-          <textarea id="notes" name="notes" placeholder="Dizziness, falls, swelling, medication changes, etc."></textarea>
-        </div>
-        <button type="submit">Submit</button>
-        <div class="help">Submission mirrors the Doctor Portal flow and records your check-in.</div>
-        <div id="statusMsg" class="status" role="status" aria-live="polite"></div>
+      <div class="actions">
+        <button type="button" class="btn btn-blue" id="runBtn">Get Results</button>
+        <button type="submit" class="btn btn-gray">Save My Answers</button>
+        <span class="muted" id="saveStatus"></span>
+        <span class="muted" id="backendStatus" style="margin-left:8px;"></span>
       </div>
     </form>
-  </main>
 
-  <footer>© <span id="yr"></span> PredictWell Health.ai — Eldercare</footer>
+    <section class="section">
+      <h2>Your Results</h2>
+      <pre class="results" id="resultsBox">{ "status": "ready" }</pre>
+    </section>
 
-<script>
-  document.getElementById('yr').textContent = new Date().getFullYear();
+    <div class="footer">© 2025 PredictWell Health.ai — Eldercare</div>
+  </div>
 
-  const BASE_API = 'https://predictwell-backend-ai.onrender.com'; // same as Doctor
-  const form = document.getElementById('eldPatientForm');
-  const statusEl = document.getElementById('statusMsg');
+  <script>
+    const BASE_API = 'https://predictwell-backend-ai.onrender.com';
 
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    statusEl.textContent = 'Submitting...'; statusEl.className='status';
+    // Header menu toggle
+    const menuBtn = document.getElementById('menuBtn');
+    const menu = document.getElementById('menu');
+    document.addEventListener('click', (e) => {
+      if (menuBtn.contains(e.target)) {
+        menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+      } else if (!menu.contains(e.target)) {
+        menu.style.display = 'none';
+      }
+    });
 
-    const payload = {
-      name: form.name.value.trim(),
-      age: form.age.value ? parseInt(form.age.value, 10) : null,
-      health_status: form.status.value || null,
-      symptoms: form.symptoms.value || null,
-      notes: form.notes.value.trim() || null
-    };
-
-    try{
-      const res = await fetch(`${BASE_API}/eldercare/checkin`, {
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify(payload)
-      });
-      if(!res.ok) throw new Error('HTTP '+res.status);
-      const data = await res.json();
-      statusEl.textContent = 'Thank you! Your check-in was received.' + (data?.risk ? ` Risk: ${data.risk}` : '');
-      statusEl.className='status ok';
-      form.reset();
-    }catch(err){
-      console.error(err);
-      statusEl.textContent = 'Submission failed. Please try again.';
-      statusEl.className='status err';
+    // Save / Restore
+    function saveForm(){
+      const ids = ['age','living','falls_12m','unsteady','fear_fall','chair_rise','dizzy','med_count','memory','mood','activity','home_haz'];
+      const data = {}; ids.forEach(id => data[id] = document.getElementById(id)?.value ?? '');
+      try{ localStorage.setItem('eldercare_patient12', JSON.stringify(data));
+        document.getElementById('saveStatus').textContent = 'Saved.';
+        setTimeout(()=>{ document.getElementById('saveStatus').textContent=''; }, 2000);
+      }catch(e){ document.getElementById('saveStatus').textContent = 'Could not save.';
+        setTimeout(()=>{ document.getElementById('saveStatus').textContent=''; }, 2000);
+      }
     }
-  });
-</script>
+    (function restore(){
+      try{ const raw = localStorage.getItem('eldercare_patient12'); if(!raw) return;
+        const data = JSON.parse(raw); Object.entries(data).forEach(([id,val])=>{ const el = document.getElementById(id); if(el) el.value = val; });
+      }catch(e){}
+    })();
+
+    // Map UI -> payload
+    function collectPayload(){
+      const g = id => document.getElementById(id)?.value || '';
+      return {
+        source: 'patient_portal_v12',
+        age: Number(g('age') || 0),
+        living: g('living'),
+        falls_12m: g('falls_12m'),
+        unsteady: g('unsteady'),
+        fear_fall: g('fear_fall'),
+        chair_rise: g('chair_rise'),
+        dizzy_stand: g('dizzy'),
+        med_count: g('med_count'),
+        memory_change: g('memory'),
+        mood: g('mood'),
+        activity: g('activity'),
+        home_hazards: g('home_haz')
+      };
+    }
+
+    // ---------- Client-side scoring (instant) ----------
+    function scoreBuckets(score){
+      // 0–8 Low, 9–16 Moderate, 17–24 High, 25+ Very High
+      if (score >= 25) return { level: 'Very High', color: '#991b1b' };
+      if (score >= 17) return { level: 'High', color: '#b45309' };
+      if (score >= 9)  return { level: 'Moderate', color: '#065f46' };
+      return { level: 'Low', color: '#1d4ed8' };
+    }
+
+    function computePredictWellScore(p){
+      let s = 0;
+      // Age
+      if (p.age >= 85) s += 3; else if (p.age >= 75) s += 2; else if (p.age >= 65) s += 1;
+      // Living
+      if (p.living === 'Alone') s += 2; else if (p.living === 'Assisted living') s += 1;
+      // Falls history
+      if (p.falls_12m === '1') s += 2; else if (p.falls_12m === '2 or more') s += 4;
+      // Unsteady / device
+      if (p.unsteady === 'Sometimes') s += 2; else if (p.unsteady === 'Often') s += 4;
+      // Fear of falling
+      if (p.fear_fall === 'Yes') s += 2;
+      // Chair rise
+      if (p.chair_rise === 'Yes, but hard') s += 2; else if (p.chair_rise === 'No') s += 4;
+      // Dizziness on standing
+      if (p.dizzy_stand === 'Occasionally') s += 1; else if (p.dizzy_stand === 'Often') s += 3;
+      // Med count
+      if (p.med_count === '3–4') s += 1; else if (p.med_count === '5 or more') s += 2;
+      // Memory change
+      if (p.memory_change === 'Some days') s += 2; else if (p.memory_change === 'Most days') s += 3;
+      // Mood
+      if (p.mood === 'Somewhat down/anxious') s += 1; else if (p.mood === 'Depressed or anxious') s += 2;
+      // Activity
+      if (p.activity === 'Lightly active') s += 1; else if (p.activity === 'Hardly active') s += 2;
+      // Home hazards
+      if (p.home_hazards === 'Yes') s += 2; else if (p.home_hazards === 'Not sure') s += 1;
+
+      const bucket = scoreBuckets(s);
+      return { score: s, level: bucket.level, color: bucket.color };
+    }
+
+    function buildSuggestions(p){
+      const sug = [];
+      if (p.falls_12m !== '0' && p.falls_12m) sug.push('Discuss recent falls with your doctor; consider a falls clinic evaluation.');
+      if (p.unsteady === 'Sometimes' || p.unsteady === 'Often') sug.push('Start balance/strength exercises (sit-to-stand, heel-to-toe); ask about PT.');
+      if (p.chair_rise === 'Yes, but hard' || p.chair_rise === 'No') sug.push('Practice safe chair rises; check chair height; consider PT for leg strength.');
+      if (p.fear_fall === 'Yes') sug.push('Try short, safe walks with support; review footwear and home lighting.');
+      if (p.dizzy_stand === 'Occasionally' || p.dizzy_stand === 'Often') sug.push('Hydrate; stand up slowly; ask about orthostatic BP and meds review.');
+      if (p.med_count === '5 or more') sug.push('Ask for a medication review to reduce fall-risk medicines.');
+      if (p.memory_change === 'Some days' || p.memory_change === 'Most days') sug.push('Track memory changes; consider a brief cognition screen.');
+      if (p.mood === 'Somewhat down/anxious' || p.mood === 'Depressed or anxious') sug.push('Talk about mood; short walks and social time can help.');
+      if (p.activity === 'Hardly active') sug.push('Begin a gentle daily walking plan (5–10 minutes).');
+      if (p.home_hazards === 'Yes' || p.home_hazards === 'Not sure') sug.push('Remove throw rugs, add night lights, and install bathroom grab bars.');
+      if (p.living === 'Alone') sug.push('Set up a daily check-in or wearable alert button.');
+
+      // Return top 3 most relevant (keep it short)
+      return sug.slice(0, 3);
+    }
+
+    // Ping backend
+    async function pingBackend() {
+      const badge = document.getElementById('backendStatus');
+      try { const r = await fetch(`${BASE_API}/healthz`); await r.json();
+        badge.textContent = 'Backend: ok'; badge.style.color = '#065f46';
+      } catch(e) { badge.textContent = 'Backend: down'; badge.style.color = '#991b1b'; }
+    }
+    pingBackend();
+
+    // Run analysis: show client score instantly, then append server AI
+    async function runAnalysis(){
+      const resultsBox = document.getElementById('resultsBox');
+      const payload = collectPayload();
+
+      // Client-side score
+      const local = computePredictWellScore(payload);
+      const suggestions = buildSuggestions(payload);
+      const localBlock = {
+        client_score: local.score,
+        client_category: local.level,
+        client_suggestions: suggestions
+      };
+
+      resultsBox.textContent = JSON.stringify(localBlock, null, 2);
+
+      // Send to backend; append its response
+      try{
+        const res = await fetch(`${BASE_API}/eldercare/checkin`, {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ...payload, client_score: local.score, client_category: local.level })
+        });
+        const json = await res.json();
+        // Merge and show both
+        const merged = { ...localBlock, server_response: json };
+        resultsBox.textContent = JSON.stringify(merged, null, 2);
+      }catch(e){
+        const merged = { ...localBlock, server_error: 'Request failed or backend unreachable' };
+        resultsBox.textContent = JSON.stringify(merged, null, 2);
+      }
+    }
+
+    document.getElementById('runBtn').addEventListener('click', runAnalysis);
+  </script>
 </body>
 </html>
