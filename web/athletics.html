@@ -1,4 +1,4 @@
-<!-- ====== athletics.html (Doctor Portal - styled to match landing page) ====== -->
+<!-- ====== athletics.html (Doctor Portal - ".ai" text color fixed to black) ====== -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,7 +8,6 @@
   <meta name="description" content="Pitching workload and risk inputs with clear flags and recommendations." />
   <link rel="icon" href="data:,">
 
-  <!-- Base styles to match index look/feel -->
   <style>
     :root{
       --glass-bg: rgba(255,255,255,0.78);
@@ -20,10 +19,7 @@
       --ink: #0b1020;
     }
 
-    /* Background (same as landing page) */
-    html, body {
-      height: 100%;
-    }
+    html, body { height: 100%; }
     body {
       margin: 0;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
@@ -36,7 +32,6 @@
       min-height: 100vh;
     }
 
-    /* Header */
     .header {
       position: sticky;
       top: 0;
@@ -74,7 +69,7 @@
       line-height: 1;
     }
     .brand-title .hi { color: #111827; }
-    .brand-title .ai { color: #fb923c; }
+    .brand-title .ai { color: #000000; } /* Changed from orange to black */
 
     .brand-tagline {
       font-size: 12px;
@@ -122,7 +117,6 @@
     }
     .menu a:hover { background: rgba(17,24,39,0.06); }
 
-    /* Page container + intro banner (match landing) */
     .hero-wrap {
       max-width: 1080px;
       margin: 28px auto 0;
@@ -145,7 +139,6 @@
       line-height: 1.55;
     }
 
-    /* Two-column card (inputs + results) */
     .card-row {
       display: grid;
       grid-template-columns: 1.08fr 0.92fr;
@@ -164,7 +157,6 @@
       letter-spacing: 0.2px;
     }
 
-    /* Form layout (keep same field structure/IDs) */
     .grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -200,7 +192,6 @@
       color: #374151;
     }
 
-    /* Buttons (gradient like landing) */
     .actions {
       display: flex;
       align-items: center;
@@ -236,7 +227,6 @@
       font-size: 12px;
     }
 
-    /* Results area */
     pre {
       margin: 0;
       padding: 14px;
@@ -249,7 +239,6 @@
       word-break: break-word;
     }
 
-    /* Footer (match landing minimal) */
     .footer {
       max-width: 1080px;
       margin: 20px auto 40px;
@@ -260,14 +249,12 @@
       text-shadow: 0 1px 0 rgba(255,255,255,0.75);
     }
 
-    /* Mobile */
     @media (max-width: 900px) {
       .card-row { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
-  <!-- Header (logo & tagline link back to landing page) -->
   <header class="header">
     <div class="header-inner">
       <a class="brand" href="/index.html" aria-label="Back to PredictWell Health.ai home">
@@ -290,16 +277,13 @@
     </div>
   </header>
 
-  <!-- Intro panel (same tone as landing) -->
   <div class="hero-wrap">
     <section class="hero">
       <h1>Pitching Risk — Daily/Weekly Input</h1>
       <p>Enter workload, pain, rest, and flags. We’ll compute a risk score and recommendations.</p>
     </section>
 
-    <!-- Two-column cards: Inputs | Results -->
     <div class="card-row">
-      <!-- Left: Inputs (unchanged IDs/fields) -->
       <section class="card">
         <h2>Pitcher Inputs</h2>
 
@@ -362,7 +346,6 @@
         </div>
       </section>
 
-      <!-- Right: Results (unchanged container) -->
       <section class="card">
         <h2>Risk Score &amp; Recommendations</h2>
         <pre id="resultBox">{\n  "status": "ok"\n}</pre>
@@ -372,11 +355,8 @@
 
   <div class="footer">© 2025 PredictWell Health.ai — Athletics</div>
 
-  <!-- Behavior (kept intact; only cosmetic around it) -->
   <script>
     const BASE_API = 'https://predictwell-backend-ai.onrender.com';
-
-    // Simple menu toggle (matches landing UX)
     const menuBtn = document.getElementById('menuBtn');
     const menu = document.getElementById('menu');
     document.addEventListener('click', (e) => {
@@ -442,8 +422,6 @@
 
     document.getElementById('pingBtn').addEventListener('click', pingBackend);
     document.getElementById('computeBtn').addEventListener('click', computeRisk);
-
-    // Initial quick ping to reflect status badge
     pingBackend();
   </script>
 </body>
