@@ -40,7 +40,7 @@
     .container { width: min(1100px, 100%); margin: 0 auto; padding: clamp(16px, 3vw, 28px); }
 
     /* ===== Header + Overflow Fix ===== */
-    .header, .brand, .nav { min-width: 0; }
+    .header, .brand, .nav, .menu-panel { min-width: 0; }
     .header{
       display:flex; align-items:center; justify-content:space-between; gap:12px;
       flex-wrap: wrap; /* key to avoid horizontal scroll */
@@ -65,18 +65,97 @@
     .tagline{ margin:2px 0 0 0; font-size: clamp(12px, 3.2vw, 14px); opacity:.9; }
     @media (max-width: 420px){ .tagline{ display:none; } }
 
+    /* ===== Desktop Nav (visible ≥ 700px) ===== */
     .nav{
-      display:flex; gap:10px; flex-wrap:wrap; justify-content:center;
-      flex:1 1 260px; min-width:0;
+      display:none; /* default hidden for mobile */
+      gap:10px;
+      align-items:center;
+      flex-wrap:nowrap;
     }
-    .nav a, .btn{ font-size: clamp(13px, 3.5vw, 15px); padding: 0 14px; min-height: 40px; line-height: 40px; }
+    .nav a{
+      text-decoration:none; color: var(--brand); font-weight:600;
+      padding: 8px 12px; border-radius: 999px; border: 1px solid rgba(11,76,140,.20);
+      background:#fff;
+      font-size: 14px;
+      line-height: 1;
+      white-space: nowrap;
+    }
 
-    @media (max-width: 700px){
-      .header{ flex-direction: column; align-items: stretch; }
-      .brand{ justify-content: center; }
-      .nav{ justify-content: center; }
+    /* ===== Hamburger button (visible < 700px) ===== */
+    .hamburger{
+      display:inline-flex; align-items:center; justify-content:center;
+      width: 44px; height: 44px; border-radius: 10px;
+      border: 1px solid rgba(0,0,0,.15);
+      background: #ffffff;
+      cursor: pointer;
     }
-    .header * { max-width: 100%; } /* absolute safety */
+    .hamburger:focus{ outline: 2px solid #0f6cbc; outline-offset: 2px; }
+    .hamburger-bars{
+      width: 22px; height: 16px; position: relative;
+    }
+    .hamburger-bars::before,
+    .hamburger-bars::after,
+    .hamburger-bars span{
+      content: "";
+      position: absolute;
+      left: 0; right: 0;
+      height: 2px;
+      background: #0b1b2b;
+      border-radius: 2px;
+      transition: transform .2s ease, opacity .2s ease;
+    }
+    .hamburger-bars::before{ top: 0; }
+    .hamburger-bars span{ top: 7px; }
+    .hamburger-bars::after{ bottom: 0; }
+
+    /* animated state (optional) */
+    .hamburger[aria-expanded="true"] .hamburger-bars::before{ transform: translateY(7px) rotate(45deg); }
+    .hamburger[aria-expanded="true"] .hamburger-bars span{ opacity: 0; }
+    .hamburger[aria-expanded="true"] .hamburger-bars::after{ transform: translateY(-7px) rotate(-45deg); }
+
+    /* ===== Mobile Menu Panel ===== */
+    .menu-panel{
+      position: absolute;
+      top: 100%; left: 0; right: 0;
+      z-index: 20;
+      padding: 8px 0 0;
+    }
+    .menu-card{
+      margin: 0 clamp(12px, 3vw, 24px);
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      backdrop-filter: blur(6px);
+    }
+    .menu-list{
+      display: grid;
+      gap: 0;
+      list-style: none;
+      margin: 0;
+      padding: 6px;
+    }
+    .menu-list a{
+      display:block;
+      padding: 12px 14px;
+      text-decoration:none;
+      color:#0b1b2b;
+      border-radius: 10px;
+      font-weight:600;
+    }
+    .menu-list a:hover,
+    .menu-list a:focus{
+      background: rgba(11,76,140,.08);
+      outline: none;
+    }
+
+    /* ===== Show desktop nav, hide hamburger ≥ 700px ===== */
+    @media (min-width: 700px){
+      .nav{ display:flex; }
+      .hamburger{ display:none; }
+      .menu-panel{ display:none !important; }
+    }
 
     /* ===== Cards / Hero ===== */
     .card{
@@ -131,7 +210,7 @@
 
   <div class="container">
     <!-- ===== Header / Brand ===== -->
-    <header class="header">
+    <header class="header" id="top">
       <a class="brand" href="/">
         <div class="logo" aria-hidden="true"></div>
         <div>
@@ -139,8 +218,31 @@
           <div class="tagline">Proactive health insights for seniors & athletes</div>
         </div>
       </a>
-      <!-- Optional future nav -->
-      <nav class="nav" aria-label="Primary"></nav>
+
+      <!-- Desktop nav -->
+      <nav class="nav" aria-label="Primary">
+        <a href="/eldercare.html">Eldercare • Doctors</a>
+        <a href="/eldercare-patient.html">Eldercare • Patients</a>
+        <a href="/athletics.html">Athletics • Doctors</a>
+        <a href="/athletics-patient.html">Athletics • Patients</a>
+      </nav>
+
+      <!-- Mobile hamburger -->
+      <button class="hamburger" id="menuBtn" aria-label="Open menu" aria-controls="menuPanel" aria-expanded="false">
+        <div class="hamburger-bars"><span></span></div>
+      </button>
+
+      <!-- Mobile menu panel -->
+      <div class="menu-panel" id="menuPanel" hidden>
+        <div class="menu-card" role="dialog" aria-label="Site menu">
+          <ul class="menu-list">
+            <li><a href="/eldercare.html">Eldercare • Doctors</a></li>
+            <li><a href="/eldercare-patient.html">Eldercare • Patients</a></li>
+            <li><a href="/athletics.html">Athletics • Doctors</a></li>
+            <li><a href="/athletics-patient.html">Athletics • Patients</a></li>
+          </ul>
+        </div>
+      </div>
     </header>
 
     <!-- ===== Intro Card ===== -->
@@ -184,6 +286,44 @@
   <script>
     // keep the footer year current
     document.getElementById('y').textContent = new Date().getFullYear();
+
+    // Simple accessible hamburger logic
+    const btn = document.getElementById('menuBtn');
+    const panel = document.getElementById('menuPanel');
+
+    const closeMenu = () => {
+      btn.setAttribute('aria-expanded', 'false');
+      panel.hidden = true;
+      document.removeEventListener('click', outside);
+      document.removeEventListener('keydown', esc);
+    };
+
+    const outside = (e) => {
+      if (!panel.contains(e.target) && e.target !== btn) closeMenu();
+    };
+    const esc = (e) => {
+      if (e.key === 'Escape') closeMenu();
+    };
+
+    btn.addEventListener('click', () => {
+      const open = btn.getAttribute('aria-expanded') === 'true';
+      if (open) {
+        closeMenu();
+      } else {
+        btn.setAttribute('aria-expanded', 'true');
+        panel.hidden = false;
+        // close on outside click or ESC
+        setTimeout(() => {
+          document.addEventListener('click', outside);
+          document.addEventListener('keydown', esc);
+        }, 0);
+      }
+    });
+
+    // Close menu when a link is clicked
+    panel.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', closeMenu);
+    });
   </script>
 </body>
 </html>
