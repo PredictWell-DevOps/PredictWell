@@ -4,176 +4,333 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>PredictWell Health.ai</title>
-  <meta name="description" content="Proactive health insights for seniors & athletes—multi-signal wearables + weekly check-ins and sport-specific workload insights." />
+  <meta name="description" content="Preventive health AI for seniors and athletes—multi-signal wearables + weekly voice/gait check-ins and sport-specific workload insights.">
   <link rel="icon" href="data:,">
 
   <style>
-    :root{
-      --text:#0b1b2b;
-      --muted:#5b6b7c;
-      --card: rgba(255,255,255,0.90);
-      --shadow: 0 10px 30px rgba(0,0,0,0.20);
-      --radius: 22px;
-
-      /* Button gradients */
-      --grad-blue-1:#0b5fff;
-      --grad-blue-2:#0aa0ff;
-      --grad-orange-1:#ff7a00;
-      --grad-orange-2:#ffb24d;
-
-      --chip:#edf2ff;
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      color: #111827;
+      background-image: url("/static/images/predictwell_background.png");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
     }
 
-    /* Background */
-    body{
-      margin:0;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
-      color:var(--text);
-      background-image:url("/static/images/predictwell_background.png");
-      background-size:cover;
-      background-position:center;
-      background-attachment:fixed;
-      min-height:100vh;
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: saturate(1.2) blur(6px);
+      background: rgba(255,255,255,0.75);
+      border-bottom: 1px solid rgba(255,255,255,0.4);
     }
-    /* light overlay for readability */
-    .overlay{
-      position:fixed; inset:0; pointer-events:none;
-      background: radial-gradient(1200px 800px at 65% 25%, rgba(255,255,255,0.18), rgba(255,255,255,0.02));
+    .header-inner {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: #0b1020;
+    }
+    .brand-logo {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #2563eb, #60a5fa);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.18);
+    }
+    .brand-title {
+      font-weight: 800;
+      font-size: 20px;
+      line-height: 1;
+    }
+    .brand-title .hi { color: #111827; }
+    .brand-title .ai { color: #000000; }
+
+    .brand-tagline {
+      font-size: 12px;
+      color: #4b5563;
     }
 
-    /* Header */
-    .header{
-      position:sticky; top:0; z-index:10;
-      backdrop-filter: blur(8px);
-      background: rgba(255,255,255,0.65);
-      border-bottom:1px solid rgba(255,255,255,0.4);
+    .spacer { flex: 1; }
+    .hamburger {
+      border: none;
+      background: #fff;
+      border-radius: 999px;
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.18);
+      cursor: pointer;
     }
-    .nav{ max-width:1100px; margin:0 auto; padding:14px 18px; display:flex; align-items:center; justify-content:space-between; }
-    .brand{ display:flex; gap:10px; align-items:center; text-decoration:none; color:inherit;}
-    .logo{ width:36px; height:36px; border-radius:10px; background:linear-gradient(135deg, var(--grad-blue-1), var(--grad-blue-2)); box-shadow:var(--shadow); }
-    .title{ font-weight:800; font-size:18px; line-height:1.1 }
-    .subtitle{ font-size:12px; color:var(--muted); margin-top:2px }
+    .hamburger:after{
+      content: "≡";
+      font-size: 20px;
+      color: #111827;
+      position: relative;
+      top: -1px;
+    }
+    .menu {
+      position: absolute;
+      right: 18px;
+      top: 58px;
+      background: rgba(255,255,255,0.78);
+      backdrop-filter: blur(10px);
+      border-radius: 14px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.18);
+      padding: 8px;
+      display: none;
+    }
+    .menu a {
+      display: block;
+      padding: 10px 12px;
+      border-radius: 10px;
+      text-decoration: none;
+      color: #111827;
+      min-width: 220px;
+    }
+    .menu a:hover { background: rgba(17,24,39,0.06); }
 
-    .menu-btn{ appearance:none; border:0; background:#fff; width:40px; height:40px; border-radius:12px; display:grid; place-items:center; box-shadow:var(--shadow); cursor:pointer; }
-    .menu-dot{ width:18px; height:2px; background:#111; position:relative; border-radius:2px }
-    .menu-dot::before,.menu-dot::after{ content:""; position:absolute; width:18px; height:2px; left:0; background:#111; border-radius:2px }
-    .menu-dot::before{ top:-6px } .menu-dot::after{ top:6px }
-    .menu{ position:absolute; right:18px; top:60px; background:#fff; border-radius:14px; box-shadow:var(--shadow); display:none; min-width:260px; overflow:hidden; }
-    .menu a{ display:flex; justify-content:space-between; align-items:center; padding:12px 14px; text-decoration:none; color:#0b1b2b; font-weight:600; border-bottom:1px solid #f1f5f9; }
-    .menu a small{ color:var(--muted); font-weight:500 }
-    .menu a:last-child{ border-bottom:0 }
-    .menu.show{ display:block }
-
-    /* Layout */
-    .wrap{ max-width:1100px; margin:22px auto 90px; padding:0 18px; }
-
-    /* Big combined banner */
-    .big-banner{
-      background: var(--card);
-      box-shadow: var(--shadow);
-      border-radius: var(--radius);
-      padding: 22px;
+    .main {
+      max-width: 1080px;
+      margin: 40px auto;
+      padding: 0 18px;
+    }
+    .hero {
+      background: rgba(255,255,255,0.78);
+      border-radius: 18px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.18);
+      padding: 22px 24px;
       margin-bottom: 18px;
     }
-    .big-banner h1{ margin:4px 0 10px 0; font-size:24px }
-    .big-banner p{ margin:0; color:var(--text); line-height:1.6; }
-
-    /* Option cards */
-    .grid{ display:grid; grid-template-columns:1fr 1fr; gap:18px; }
-    .card{
-      background: var(--card);
-      border-radius: var(--radius);
+    .hero h1 {
+      font-size: 26px;
+      margin-top: 0;
+    }
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit,minmax(300px,1fr));
+      gap: 20px;
+    }
+    .card {
+      background: rgba(255,255,255,0.78);
+      border-radius: 18px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.18);
       padding: 18px;
-      box-shadow: var(--shadow);
     }
-    .card h2{ margin:6px 0 6px; font-size:22px }
-    .card p{ margin:0 0 14px; color:var(--muted) }
+    .card h3 { margin: 0 0 8px 0; }
+    .card p { margin: 0 0 12px 0; color: #4b5563; }
+    .card button {
+      border: none;
+      border-radius: 999px;
+      padding: 10px 16px;
+      font-weight: 700;
+      cursor: pointer;
+      color: #fff;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+    }
+    .blue { background: linear-gradient(135deg,#2563eb,#60a5fa); }
+    .orange { background: linear-gradient(135deg,#f97316,#fb923c); }
 
-    .btn{
-      display:inline-block;
-      border:0; padding:12px 18px; border-radius:999px; font-weight:800; letter-spacing:.2px;
-      color:#fff; text-decoration:none; box-shadow:var(--shadow);
+    /* ----- NEW PredictWell Mobile & Monitoring section ----- */
+    .pw-mobile-section { margin: 26px auto 40px; padding: 0 18px; }
+    .pw-mobile-wrap {
+      max-width: 1080px; margin: 0 auto;
+      background: rgba(255,255,255,0.78);
+      border-radius: 18px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.18);
+      padding: 26px 28px;
+      backdrop-filter: blur(6px) saturate(1.1);
     }
-    .btn-doc{ background:linear-gradient(135deg, var(--grad-blue-1), var(--grad-blue-2)); }
-    .btn-patient{ background:linear-gradient(135deg, var(--grad-orange-1), var(--grad-orange-2)); }
+    .pw-mobile-header {
+      text-align: center; margin: 0 0 8px 0;
+      font-size: clamp(24px, 2.2vw, 34px);
+      letter-spacing: .2px;
+      color: #0b1020;
+    }
+    .pw-mobile-sub {
+      text-align: center; margin: 8px auto 18px; max-width: 820px;
+      color: #374151; line-height: 1.55; font-size: 15px;
+    }
 
-    /* Mobile */
-    @media (max-width:900px){
-      .grid{ grid-template-columns:1fr; }
+    .pw-grid {
+      display: grid; gap: 24px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
     }
+    @media (max-width: 900px) {
+      .pw-grid { grid-template-columns: 1fr; }
+    }
+
+    .pw-card {
+      display: grid; grid-template-columns: 56px 1fr; gap: 12px;
+      background: rgba(255,255,255,0.92);
+      border: 1px solid rgba(17,24,39,0.06);
+      border-radius: 16px; padding: 16px 16px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+    }
+    .pw-ico {
+      width: 48px; height: 48px; border-radius: 12px;
+      display: grid; place-items: center;
+      background: linear-gradient(135deg, #2563eb, #60a5fa);
+      color: white;
+      box-shadow: 0 8px 16px rgba(37,99,235,0.2);
+    }
+    .pw-card h3 {
+      margin: 2px 0 6px 0; font-size: 20px; color: #0b1020;
+    }
+    .pw-card p { margin: 0; color: #374151; line-height: 1.55; font-size: 15px; }
+
+    .pw-cta-row {
+      display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+      margin-top: 22px;
+    }
+    .pw-btn {
+      border: none; cursor: pointer;
+      padding: 10px 16px; border-radius: 999px; font-weight: 700;
+      color: #fff; box-shadow: 0 10px 24px rgba(0,0,0,0.12);
+    }
+    .pw-btn-primary { background: linear-gradient(135deg, #2563eb, #60a5fa); }
+    .pw-btn-secondary { background: linear-gradient(135deg, #6b7280, #9ca3af); color: #0b1020; }
   </style>
 </head>
-<body>
-  <div class="overlay" aria-hidden="true"></div>
 
-  <!-- Header -->
+<body>
   <header class="header">
-    <nav class="nav">
-      <a class="brand" href="/"><div class="logo" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a class="brand" href="/index.html">
+        <div class="brand-logo"></div>
         <div>
-          <div class="title">PredictWell Health.ai</div>
-          <div class="subtitle">Proactive health insights for seniors & athletes</div>
+          <div class="brand-title"><span class="hi">PredictWell Health</span><span class="ai">.ai</span></div>
+          <div class="brand-tagline">Proactive health insights for seniors & athletes</div>
         </div>
       </a>
-
-      <button id="hamburger" class="menu-btn" aria-label="Open menu"><span class="menu-dot"></span></button>
-      <div id="menu" class="menu" role="menu" aria-label="Site menu">
-        <a href="/eldercare.html">Eldercare Doctors <small>Doctor portal</small></a>
-        <a href="/eldercare-patient.html">Eldercare Patients <small>Quick check-in</small></a>
-        <a href="/athletics.html">Athletics Doctors <small>Pitching risk</small></a>
-        <a href="/athletics-patient.html">Athletics Patients <small>Quick risk</small></a>
-      </div>
-    </nav>
+      <div class="spacer"></div>
+      <button class="hamburger" id="menuBtn"></button>
+      <nav class="menu" id="menu">
+        <a href="/eldercare.html"><strong>Eldercare — Doctors</strong></a>
+        <a href="/eldercare-patient.html">Eldercare — Patients</a>
+        <a href="/athletics.html">Athletics — Doctors</a>
+        <a href="/athletics-patient.html">Athletics — Patients</a>
+      </nav>
+    </div>
   </header>
 
-  <main class="wrap">
-    <!-- ONE BIG BANNER -->
-    <section class="big-banner">
+  <main class="main">
+    <section class="hero">
       <h1>Easier Setup, Lower Burden, Actionable Results</h1>
-      <p>
-        PredictWell gets you up and running fast—connect wearables in minutes or choose our phone-only mode if that’s simpler.
-        Weekly check-ins take just 60–90 seconds, helped by friendly reminders so nothing slips through the cracks.
-        Behind the scenes, our AI converts raw signals into clear flags, trend views, and practical next steps that are easy to act on.
-        Clinicians see a crisp picture of risk and progression, while families get plain-English summaries that actually make sense.
-        The result is a calmer, smarter workflow where everyone stays informed and proactive—without adding more work to the day.
-      </p>
+      <p>PredictWell gets you up and running fast—connect wearables in minutes or choose our phone-only mode if that’s simpler. Weekly check-ins take just 60–90 seconds, helped by friendly reminders so nothing slips through the cracks. Behind the scenes, our AI converts raw signals into clear flags, trend views, and practical next steps that are easy to act on. Clinicians see a crisp picture of risk and progression, while families get plain-English summaries that actually make sense. The result is a calmer, smarter workflow where everyone stays informed and proactive—without adding more work to the day.</p>
     </section>
 
-    <!-- Four option cards -->
-    <section class="grid">
-      <article class="card">
-        <h2>Eldercare — Doctors</h2>
+    <div class="cards">
+      <div class="card">
+        <h3>Eldercare — Doctors</h3>
         <p>Clinician form & results for falls, frailty, cognition, and hospitalization risk.</p>
-        <a class="btn btn-doc" href="/eldercare.html">Open Doctor Portal</a>
-      </article>
-
-      <article class="card">
-        <h2>Eldercare — Patients</h2>
+        <button class="blue" onclick="location.href='/eldercare.html'">Open Doctor Portal</button>
+      </div>
+      <div class="card">
+        <h3>Eldercare — Patients</h3>
         <p>Fast weekly check-in and an easy-to-read summary.</p>
-        <a class="btn btn-patient" href="/eldercare-patient.html">Open Patient Check-In</a>
-      </article>
-
-      <article class="card">
-        <h2>Athletics — Doctors</h2>
+        <button class="orange" onclick="location.href='/eldercare-patient.html'">Open Patient Check-In</button>
+      </div>
+      <div class="card">
+        <h3>Athletics — Doctors</h3>
         <p>Pitching workload & risk inputs with clear flags and recommendations.</p>
-        <a class="btn btn-doc" href="/athletics.html">Open Doctor Portal</a>
-      </article>
-
-      <article class="card">
-        <h2>Athletics — Patients</h2>
+        <button class="blue" onclick="location.href='/athletics.html'">Open Doctor Portal</button>
+      </div>
+      <div class="card">
+        <h3>Athletics — Patients</h3>
         <p>Quick athlete self-report to generate a personalized risk snapshot.</p>
-        <a class="btn btn-patient" href="/athletics-patient.html">Open Patient Check-In</a>
-      </article>
-    </section>
+        <button class="orange" onclick="location.href='/athletics-patient.html'">Open Patient Check-In</button>
+      </div>
+    </div>
   </main>
 
+  <!-- ===== NEW PredictWell Mobile & Monitoring Section ===== -->
+  <section class="pw-mobile-section">
+    <div class="pw-mobile-wrap">
+      <h2 class="pw-mobile-header">Help at the Press of a Button — Now, the PredictWell Way</h2>
+      <p class="pw-mobile-sub">
+        Our upcoming <strong>PredictWell&nbsp;Mobile</strong> experience turns everyday signals into proactive care.
+        Seniors, families, and clinicians stay aligned with real-time alerts, simple self-check-ins, and AI-guided next steps—without adding busywork.
+      </p>
+
+      <div class="pw-grid">
+        <article class="pw-card">
+          <div class="pw-ico">☎️</div>
+          <div>
+            <h3>24/7 Response & Clinician Connect</h3>
+            <p>Instant help connects users to trained responders and alerts care teams, capturing context for faster triage and peace of mind.</p>
+          </div>
+        </article>
+
+        <article class="pw-card">
+          <div class="pw-ico">🤖</div>
+          <div>
+            <h3>Smart Fall Detection+</h3>
+            <p>AI-enhanced sensing flags potential falls—even if no button is pressed—and learns from user feedback to reduce false alarms.</p>
+          </div>
+        </article>
+
+        <article class="pw-card">
+          <div class="pw-ico">📱</div>
+          <div>
+            <h3>PredictWell App</h3>
+            <p>One-minute daily check-ins, real-time health insights, and family visibility—all in one connected PredictWell mobile experience.</p>
+          </div>
+        </article>
+
+        <article class="pw-card">
+          <div class="pw-ico">🧠</div>
+          <div>
+            <h3>Personalized Care Plans</h3>
+            <p>Predictive analytics transform vitals, meds, and behavior data into simple, actionable guidance tailored to each person.</p>
+          </div>
+        </article>
+
+        <article class="pw-card">
+          <div class="pw-ico">💧</div>
+          <div>
+            <h3>Wearable & Waterproof Ready</h3>
+            <p>PredictWell’s sensors and integrations work seamlessly across watches, wearables, and buttons—built for safety anywhere.</p>
+          </div>
+        </article>
+
+        <article class="pw-card">
+          <div class="pw-ico">👨‍👩‍👧‍👦</div>
+          <div>
+            <h3>Loved-Ones Live View</h3>
+            <p>Families and caregivers can see updates, alerts, and trends in real-time—maintaining privacy while keeping everyone connected.</p>
+          </div>
+        </article>
+      </div>
+
+      <div class="pw-cta-row">
+        <button class="pw-btn pw-btn-primary" onclick="location.href='/eldercare-patient.html'">Try Patient Check-In</button>
+        <button class="pw-btn pw-btn-secondary" onclick="location.href='/eldercare.html'">See Clinician Workflow</button>
+      </div>
+    </div>
+  </section>
+
   <script>
-    // Simple hamburger dropdown
-    const menuBtn = document.getElementById('hamburger');
+    const menuBtn = document.getElementById('menuBtn');
     const menu = document.getElementById('menu');
-    menuBtn.addEventListener('click', () => menu.classList.toggle('show'));
     document.addEventListener('click', (e) => {
-      if (!menu.contains(e.target) && !menuBtn.contains(e.target)) menu.classList.remove('show');
+      if (menuBtn.contains(e.target)) {
+        menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+      } else if (!menu.contains(e.target)) {
+        menu.style.display = 'none';
+      }
     });
   </script>
 </body>
