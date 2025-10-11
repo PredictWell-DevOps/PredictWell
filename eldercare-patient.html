@@ -1,218 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Eldercare — Patient Portal | PredictWell Health.ai</title>
-  <meta name="description" content="Quick Eldercare patient check-in with an easy result view." />
-  <link rel="icon" href="data:,">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eldercare Patient Portal | PredictWell Health.ai</title>
   <style>
-    :root{
-      --brand:#12e3b4;         /* mint */
-      --brand2:#5aa6ff;        /* blue */
-      --ink:#0b1322;           /* dark text */
-      --muted:#576779;
-      --card: rgba(255,255,255,.78);   /* MORE see-through bubble */
-      --line:#e6eef6;
-      --radius:18px;
-      --shadow:0 14px 38px rgba(0,0,0,.18);
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to bottom right, #004d40, #26a69a);
+      color: white;
+      margin: 0;
+      padding: 20px;
+      text-align: center;
     }
-    *{box-sizing:border-box}
-    html,body{margin:0;height:100%;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--ink)}
-    a{color:inherit;text-decoration:none}
-
-    /* Background */
-    body::before{
-      content:"";position:fixed;inset:0;background-image:url("/static/images/predictwell_background.png");
-      background-size:cover;background-position:center;filter:brightness(.92) saturate(.98);z-index:-2;
+    h1 { color: #ffd166; }
+    form {
+      background: rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 20px;
+      display: inline-block;
+      width: 80%;
+      max-width: 500px;
     }
-    body::after{
-      content:"";position:fixed;inset:0;z-index:-1;
-      background:linear-gradient(180deg,rgba(255,255,255,.28)0%,rgba(255,255,255,.40)40%,rgba(255,255,255,.48)100%);
+    input, select, textarea, button {
+      width: 90%;
+      margin: 8px 0;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
     }
-
-    .wrap{max-width:1180px;margin:0 auto;padding:0 20px}
-
-    /* ===== SOLID WHITE HEADER ===== */
-    header{
-      position:sticky; top:0; z-index:10;
-      background:#fff; color:#0a1726;
-      box-shadow:0 6px 20px rgba(0,0,0,.12);
-      border-bottom:1px solid #e6eef6;
+    button {
+      background: #ffd166;
+      color: #004d40;
+      font-weight: bold;
+      cursor: pointer;
     }
-    .nav{display:flex;align-items:center;gap:22px;padding:12px 0}
-    .brand{display:flex;align-items:center;gap:10px;font-weight:800;cursor:pointer}
-    .logo{height:22px;width:22px;border-radius:8px;background:linear-gradient(135deg,var(--brand),var(--brand2));box-shadow:0 6px 18px rgba(18,227,180,.35)}
-    .nav ul{display:flex;gap:20px;list-style:none;margin:0;padding:0}
-    .nav a{color:#0a1726;font-weight:600}
-    .spacer{flex:1}
-    .email a{font-weight:800}
-
-    /* ===== Cards / Buttons ===== */
-    main{padding:26px 0 40px}
-    .card{
-      background:var(--card);
-      border:1px solid var(--line);
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
-      padding:26px;
-      backdrop-filter:saturate(1.1) blur(1px);
+    button:hover {
+      background: #fff176;
     }
-    h1{margin:6px 0 6px;font-size:1.85rem}
-    .muted{color:var(--muted)}
-    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-    @media (max-width:1000px){.grid-2{grid-template-columns:1fr}}
-
-    label{font-weight:700;font-size:.95rem}
-    input,select,textarea{width:100%;padding:11px;border-radius:12px;border:1px solid #e1e7ef;background:#fafcff;color:#0b1322}
-    textarea{min-height:90px;resize:vertical}
-    .full{grid-column:1/-1}
-    .row{display:flex;gap:10px;flex-wrap:wrap}
-
-    .btn{display:inline-flex;align-items:center;justify-content:center;padding:12px 16px;border-radius:14px;border:1px solid transparent;
-         font-weight:800;cursor:pointer;text-decoration:none;transition:transform .04s ease, box-shadow .2s ease}
-    .btn:active{transform:translateY(1px)}
-    .btn-primary{background:linear-gradient(135deg,var(--brand),var(--brand2));color:#07111f;box-shadow:0 10px 24px rgba(90,166,255,.25)}
-    .btn-ghost{background:#f7fafc;border:1px solid #e1e7ef;color:#0f1b2b}
-    /* Extra alt gradient if needed elsewhere */
-    .btn-alt{background:linear-gradient(135deg,#99e7ff,#bfc8ff);color:#07111f;box-shadow:0 10px 24px rgba(95,150,255,.22)}
-
-    .pill{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:#f3f7fb;border:1px solid #e1e7ef;font-weight:800}
-    .result{display:none;margin-top:14px}
-
-    footer{color:#2b3a48;padding:18px 0 40px;text-align:center}
   </style>
 </head>
 <body>
-  <!-- HEADER -->
-  <header>
-    <div class="wrap">
-      <nav class="nav" aria-label="Primary">
-        <a class="brand" href="/" aria-label="Go to PredictWell Health home">
-          <div class="logo" aria-hidden="true"></div><span>PredictWell Health.ai</span>
-        </a>
-        <ul>
-          <li><a href="/#about">About</a></li>
-          <li><a href="/#how">How It Works</a></li>
-          <li><a href="/#services">Services</a></li>
-          <li><a href="/#contact">Contact</a></li>
-          <li><a href="/eldercare.html">Eldercare (Doctors)</a></li>
-          <li><a href="/athletics.html">Athletics (Doctors)</a></li>
-        </ul>
-        <div class="spacer"></div>
-        <div class="email">Email: <a href="mailto:hello@predictwellhealth.ai">hello@predictwellhealth.ai</a></div>
-      </nav>
-    </div>
-  </header>
-
-  <main class="wrap">
-    <section class="card">
-      <h1>Eldercare — Patient Portal</h1>
-      <p class="muted">A quick 1-minute check-in to help spot early changes in your health and daily activity.</p>
-      <div class="row" style="margin-top:10px">
-        <a class="btn btn-ghost" href="/">← Back to Home</a>
-        <a class="btn btn-primary" href="/eldercare.html">Doctor Portal</a>
-      </div>
-    </section>
-
-    <section style="margin-top:18px" class="card">
-      <form id="form" class="grid-2">
-        <div><label>Age</label><input type="number" id="age" min="40" max="110" placeholder="e.g., 79" required></div>
-        <div><label>Average nightly SpO₂ (%)</label><input type="number" id="spo2" min="70" max="100" placeholder="e.g., 94"></div>
-        <div><label>Steps yesterday</label><input type="number" id="steps" min="0" max="50000" placeholder="e.g., 3200"></div>
-        <div><label>Sleep last night (hours)</label><input type="number" step="0.1" id="sleep" min="0" max="14" placeholder="e.g., 6.5"></div>
-        <div><label>Any fall in the past 30 days?</label><select id="falls"><option>no</option><option>yes</option></select></div>
-        <div><label>Dizziness this week?</label><select id="dizzy"><option>no</option><option>yes</option></select></div>
-        <div><label>New or changed medications?</label><select id="meds"><option>no</option><option>yes</option></select></div>
-        <div><label>New pain?</label><select id="pain"><option>no</option><option>yes</option></select></div>
-        <div class="full"><label>Notes (optional)</label><textarea id="notes" placeholder="Anything else you'd like to share?"></textarea></div>
-        <div class="full row"><button type="submit" class="btn btn-primary">Get My Result</button><button type="button" id="reset" class="btn btn-ghost">Reset</button></div>
-      </form>
-
-      <div id="result" class="result">
-        <div class="pill" id="riskBadge">Risk: —</div>
-        <p id="summary" style="margin:.6rem 0 0"></p>
-        <p class="muted" style="margin-top:.4rem">This is informational only. If you feel unwell, seek care.</p>
-      </div>
-    </section>
-  </main>
-
-  <footer class="wrap">© <span id="yr"></span> PredictWell Health — All rights reserved.</footer>
-
-  <script>
-    document.getElementById('yr').textContent=new Date().getFullYear();
-    const BASE_API='https://predictwell-backend-ai.onrender.com';
-
-    const form=document.getElementById('form'),
-          resultBox=document.getElementById('result'),
-          badge=document.getElementById('riskBadge'),
-          summary=document.getElementById('summary');
-
-    document.getElementById('reset').onclick=()=>{form.reset();resultBox.style.display='none';};
-
-    form.addEventListener('submit',async e=>{
-      e.preventDefault();
-      const p={
-        age:num('age'),
-        spo2_avg:num('spo2'),
-        steps:num('steps'),
-        sleep_hours:num('sleep'),
-        falls_last_30d:val('falls'),
-        dizziness:val('dizzy'),
-        meds_change:val('meds'),
-        pain:val('pain'),
-        notes:val('notes')||null
-      };
-
-      let ok=false;
-      try{
-        const r=await fetch(`${BASE_API}/eldercare/checkin`,{
-          method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(p)
-        });
-        if(r.ok){
-          const d=await r.json();
-          const lvl=d.level||lvlFrom(d.risk_score);
-          render(lvl,d.message||autoMsg(p,lvl)); ok=true;
-        }
-      }catch(_){}
-      if(!ok){
-        const l=localEstimate(p);
-        render(l,autoMsg(p,l)+' (quick estimate)');
-      }
-    });
-
-    function val(id){return document.getElementById(id).value.trim();}
-    function num(id){const v=document.getElementById(id).value;return v===""?null:Number(v);}
-    function lvlFrom(s){if(s==null)return'Unknown';if(s>=.66)return'High';if(s>=.33)return'Moderate';return'Low';}
-    function localEstimate(p){
-      let s=0;
-      if(p.falls_last_30d==='yes') s+=.4;
-      if(p.dizziness==='yes') s+=.25;
-      if(p.meds_change==='yes') s+=.15;
-      if(p.pain==='yes') s+=.15;
-      if(p.spo2_avg!=null && p.spo2_avg<92) s+=.15;
-      if(p.steps!=null && p.steps<1500) s+=.1;
-      if(p.sleep_hours!=null && p.sleep_hours<5.5) s+=.1;
-      return s>=.66?'High':s>=.33?'Moderate':'Low';
-    }
-    function autoMsg(p,l){
-      const f=[];
-      if(p.falls_last_30d==='yes') f.push('recent fall');
-      if(p.dizziness==='yes') f.push('dizziness');
-      if(p.meds_change==='yes') f.push('medication change');
-      if(p.pain==='yes') f.push('pain');
-      if(p.spo2_avg!=null && p.spo2_avg<92) f.push('low SpO₂');
-      if(p.steps!=null && p.steps<1500) f.push('low activity');
-      if(p.sleep_hours!=null && p.sleep_hours<5.5) f.push('short sleep');
-      const because=f.length?` Because of ${f.join(', ')}.`:'';
-      return `Your quick risk looks **${l}**.${because}`;
-    }
-    function render(l,m){
-      badge.textContent=`Risk: ${l}`;
-      summary.innerHTML=m;
-      resultBox.style.display='block';
-      resultBox.scrollIntoView({behavior:'smooth',block:'start'});
-    }
-  </script>
+  <h1>Eldercare Patient Portal</h1>
+  <p>Enter your daily check-in details below.</p>
+  
+  <form id="eldercarePatientForm">
+    <input type="text" placeholder="Full Name" required><br>
+    <input type="number" placeholder="Age" required><br>
+    <select required>
+      <option value="">Select Health Status</option>
+      <option>Stable</option>
+      <option>Minor Concerns</option>
+      <option>Needs Attention</option>
+      <option>Emergency</option>
+    </select><br>
+    <textarea placeholder="Notes or symptoms"></textarea><br>
+    <button type="submit">Submit</button>
+  </form>
 </body>
 </html>

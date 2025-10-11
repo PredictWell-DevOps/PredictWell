@@ -1,222 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Athletics — Patient Portal | PredictWell Health.ai</title>
-  <meta name="description" content="Quick athlete self-check with a simple readiness and short-term injury-risk view." />
-  <link rel="icon" href="data:,">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Athletics Patient Portal | PredictWell Health.ai</title>
   <style>
-    :root{
-      --brand:#12e3b4;         /* mint */
-      --brand2:#5aa6ff;        /* blue */
-      --ink:#0b1322;           /* dark text */
-      --muted:#576779;
-      --card: rgba(255,255,255,.78);   /* MORE see-through bubble */
-      --line:#e6eef6;
-      --radius:18px;
-      --shadow:0 14px 38px rgba(0,0,0,.18);
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to bottom right, #002b5b, #0369a1);
+      color: white;
+      margin: 0;
+      padding: 20px;
+      text-align: center;
     }
-    *{box-sizing:border-box}
-    html,body{margin:0;height:100%;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--ink)}
-    a{color:inherit;text-decoration:none}
-
-    /* Background */
-    body::before{
-      content:"";position:fixed;inset:0;background-image:url("/static/images/predictwell_background.png");
-      background-size:cover;background-position:center;filter:brightness(.92) saturate(.98);z-index:-2;
+    h1 { color: #ffb703; }
+    form {
+      background: rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 20px;
+      display: inline-block;
+      width: 80%;
+      max-width: 500px;
     }
-    body::after{
-      content:"";position:fixed;inset:0;z-index:-1;
-      background:linear-gradient(180deg,rgba(255,255,255,.28)0%,rgba(255,255,255,.40)40%,rgba(255,255,255,.48)100%);
+    input, select, textarea, button {
+      width: 90%;
+      margin: 8px 0;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
     }
-
-    .wrap{max-width:1180px;margin:0 auto;padding:0 20px}
-
-    /* ===== SOLID WHITE HEADER ===== */
-    header{
-      position:sticky; top:0; z-index:10;
-      background:#fff; color:#0a1726;
-      box-shadow:0 6px 20px rgba(0,0,0,.12);
-      border-bottom:1px solid #e6eef6;
+    button {
+      background: #ffb703;
+      color: #002b5b;
+      font-weight: bold;
+      cursor: pointer;
     }
-    .nav{display:flex;align-items:center;gap:22px;padding:12px 0}
-    .brand{display:flex;align-items:center;gap:10px;font-weight:800;cursor:pointer}
-    .logo{height:22px;width:22px;border-radius:8px;background:linear-gradient(135deg,var(--brand),var(--brand2));box-shadow:0 6px 18px rgba(18,227,180,.35)}
-    .nav ul{display:flex;gap:20px;list-style:none;margin:0;padding:0}
-    .nav a{color:#0a1726;font-weight:600}
-    .spacer{flex:1}
-    .email a{font-weight:800}
-
-    /* ===== Cards / Buttons ===== */
-    main{padding:26px 0 40px}
-    .card{
-      background:var(--card);
-      border:1px solid var(--line);
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
-      padding:26px;
-      backdrop-filter:saturate(1.1) blur(1px);
+    button:hover {
+      background: #ffd166;
     }
-    h1{margin:6px 0 6px;font-size:1.85rem}
-    .muted{color:var(--muted)}
-    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-    @media (max-width:1000px){.grid-2{grid-template-columns:1fr}}
-
-    label{font-weight:700;font-size:.95rem}
-    input,select,textarea{width:100%;padding:11px;border-radius:12px;border:1px solid #e1e7ef;background:#fafcff;color:#0b1322}
-    textarea{min-height:90px;resize:vertical}
-    .full{grid-column:1/-1}
-    .row{display:flex;gap:10px;flex-wrap:wrap}
-
-    .btn{display:inline-flex;align-items:center;justify-content:center;padding:12px 16px;border-radius:14px;border:1px solid transparent;
-         font-weight:800;cursor:pointer;text-decoration:none;transition:transform .04s ease, box-shadow .2s ease}
-    .btn:active{transform:translateY(1px)}
-    .btn-primary{background:linear-gradient(135deg,var(--brand2),var(--brand));color:#07111f;box-shadow:0 10px 24px rgba(90,166,255,.25)}
-    .btn-ghost{background:#f7fafc;border:1px solid #e1e7ef;color:#0f1b2b}
-
-    .pill{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:#f3f7fb;border:1px solid #e1e7ef;font-weight:800}
-    .result{display:none;margin-top:14px}
-
-    footer{color:#2b3a48;padding:18px 0 40px;text-align:center}
   </style>
 </head>
 <body>
-  <!-- HEADER -->
-  <header>
-    <div class="wrap">
-      <nav class="nav" aria-label="Primary">
-        <a class="brand" href="/" aria-label="Go to PredictWell Health home">
-          <div class="logo" aria-hidden="true"></div><span>PredictWell Health.ai</span>
-        </a>
-        <ul>
-          <li><a href="/#about">About</a></li>
-          <li><a href="/#how">How It Works</a></li>
-          <li><a href="/#services">Services</a></li>
-          <li><a href="/#contact">Contact</a></li>
-          <li><a href="/eldercare.html">Eldercare (Doctors)</a></li>
-          <li><a href="/athletics.html">Athletics (Doctors)</a></li>
-        </ul>
-        <div class="spacer"></div>
-        <div class="email">Email: <a href="mailto:hello@predictwellhealth.ai">hello@predictwellhealth.ai</a></div>
-      </nav>
-    </div>
-  </header>
-
-  <main class="wrap">
-    <!-- Intro -->
-    <section class="card">
-      <h1>Athletics — Patient Portal</h1>
-      <p class="muted">Quick self-check to estimate today’s readiness and short-term injury risk.</p>
-      <div class="row" style="margin-top:10px">
-        <a class="btn btn-ghost" href="/">← Back to Home</a>
-        <a class="btn btn-primary" href="/athletics.html">Doctor Portal</a>
-      </div>
-    </section>
-
-    <!-- Form -->
-    <section style="margin-top:18px" class="card">
-      <form id="form" class="grid-2">
-        <div><label>Sport / Position</label><input id="position" placeholder="e.g., Baseball — Pitcher"></div>
-        <div><label>Age</label><input type="number" id="age" min="10" max="60" placeholder="e.g., 17"></div>
-        <div><label>Throws today (count)</label><input type="number" id="throwsToday" min="0" max="400" placeholder="e.g., 35"></div>
-        <div><label>Last 7-day total throws</label><input type="number" id="throws7d" min="0" max="1500" placeholder="e.g., 220"></div>
-        <div><label>Pain today</label><select id="pain"><option>none</option><option>mild</option><option>moderate</option><option>severe</option></select></div>
-        <div><label>Fatigue today</label><select id="fatigue"><option>low</option><option>moderate</option><option>high</option></select></div>
-        <div><label>Sleep last night (hours)</label><input type="number" step="0.1" id="sleep" min="0" max="14" placeholder="e.g., 7.2"></div>
-        <div><label>Wellness (RPE 1–10)</label><input type="number" id="rpe" min="1" max="10" placeholder="e.g., 6"></div>
-        <div class="full"><label>Notes (optional)</label><textarea id="notes" placeholder="Any tightness, travel, illness, workload spike, etc."></textarea></div>
-        <div class="full row" style="margin-top:6px">
-          <button type="submit" class="btn btn-primary">Get My Result</button>
-          <button type="button" id="reset" class="btn btn-ghost">Reset</button>
-        </div>
-      </form>
-
-      <div id="result" class="result">
-        <div class="pill" id="riskBadge">Risk: —</div>
-        <p id="summary" style="margin:.6rem 0 0"></p>
-        <p class="muted" style="margin-top:.4rem">Informational only. If pain worsens, stop activity and seek care.</p>
-      </div>
-    </section>
-  </main>
-
-  <footer class="wrap">© <span id="yr"></span> PredictWell Health — All rights reserved.</footer>
-
-  <script>
-    document.getElementById('yr').textContent = new Date().getFullYear();
-    const BASE_API = 'https://predictwell-backend-ai.onrender.com';
-
-    const form = document.getElementById('form');
-    const resultBox = document.getElementById('result');
-    const badge = document.getElementById('riskBadge');
-    const summary = document.getElementById('summary');
-
-    document.getElementById('reset').onclick = () => { form.reset(); resultBox.style.display='none'; };
-
-    form.addEventListener('submit', async (e)=>{
-      e.preventDefault();
-      const p = {
-        domain:'athletics',
-        position: val('position') || null,
-        age: num('age'),
-        throws_today: num('throwsToday'),
-        throws_7d: num('throws7d'),
-        pain: val('pain'),
-        fatigue: val('fatigue'),
-        sleep_hours: num('sleep'),
-        rpe: num('rpe'),
-        notes: val('notes') || null
-      };
-
-      let ok = false;
-      try{
-        const res = await fetch(`${BASE_API}/risk`,{
-          method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(p)
-        });
-        if(res.ok){
-          const data = await res.json(); // {risk_score, level, message}
-          const level = data.level || levelFromScore(data.risk_score);
-          render(level, data.message || autoMsg(p, level));
-          ok = true;
-        }
-      }catch(_){}
-
-      if(!ok){
-        const level = localEstimate(p);
-        render(level, autoMsg(p, level) + ' (quick estimate)');
-      }
-    });
-
-    function val(id){ return document.getElementById(id).value.trim(); }
-    function num(id){ const v = document.getElementById(id).value; return v===""?null:Number(v); }
-    function levelFromScore(s){ if(s==null) return 'Unknown'; if(s>=0.66) return 'High'; if(s>=0.33) return 'Moderate'; return 'Low'; }
-
-    function localEstimate(p){
-      let score=0;
-      if(p.throws_7d!=null && p.throws_today!=null && p.throws_today > Math.max(25, 0.35*p.throws_7d)) score+=0.25;
-      if(p.pain==='moderate') score+=0.25; if(p.pain==='severe') score+=0.5;
-      if(p.fatigue==='moderate') score+=0.15; if(p.fatigue==='high') score+=0.3;
-      if(p.sleep_hours!=null && p.sleep_hours<6) score+=0.15;
-      if(p.rpe!=null && p.rpe>=8) score+=0.15;
-      if(score>=0.66) return 'High'; if(score>=0.33) return 'Moderate'; return 'Low';
-    }
-
-    function autoMsg(p, level){
-      const bits=[];
-      if(p.pain==='moderate'||p.pain==='severe') bits.push('current pain');
-      if(p.fatigue!=='low') bits.push('fatigue');
-      if(p.sleep_hours!=null && p.sleep_hours<6) bits.push('short sleep');
-      if(p.throws_today!=null && p.throws_7d!=null && p.throws_today > Math.max(25,0.35*p.throws_7d)) bits.push('workload spike');
-      const because = bits.length?` Because of ${bits.join(', ')}.`:'';
-      return `Your quick risk looks **${level}**.${because} Adjust workload/recovery and alert your coach/clinician if symptoms persist.`;
-    }
-
-    function render(level,msg){
-      badge.textContent = `Risk: ${level}`;
-      summary.innerHTML = msg;
-      resultBox.style.display='block';
-      resultBox.scrollIntoView({behavior:'smooth',block:'start'});
-    }
-  </script>
+  <h1>Athletics Patient Portal</h1>
+  <p>Enter your daily workload and recovery metrics below.</p>
+  
+  <form id="athleticsPatientForm">
+    <input type="text" placeholder="Full Name" required><br>
+    <input type="number" placeholder="Pitch Count (if applicable)"><br>
+    <input type="number" placeholder="Hours Slept"><br>
+    <select required>
+      <option value="">Select Pain Level</option>
+      <option>None</option>
+      <option>Mild</option>
+      <option>Moderate</option>
+      <option>Severe</option>
+    </select><br>
+    <textarea placeholder="Additional Notes"></textarea><br>
+    <button type="submit">Submit</button>
+  </form>
 </body>
 </html>
