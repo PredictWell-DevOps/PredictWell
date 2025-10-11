@@ -26,11 +26,6 @@
     .brand-title .hi { color: #111827; } .brand-title .ai { color: #000000; }
     .brand-tagline { font-size: 12px; color: #4b5563; }
     .spacer { flex: 1; }
-
-    /* Added: email link style */
-    .header-email { font-size: 14px; color: #111827; text-decoration: none; margin-right: 12px; font-weight: 600; cursor: pointer; }
-    .header-email:hover { text-decoration: underline; }
-
     .hamburger { border: none; background: #fff; border-radius: 999px; width: 36px; height: 36px; display: grid; place-items: center; box-shadow: 0 10px 30px rgba(0,0,0,0.18); cursor: pointer; }
     .hamburger:after{ content: "≡"; font-size: 20px; color: #111827; position: relative; top: -1px; }
     .menu { position: absolute; right: 18px; top: 58px; background: rgba(255,255,255,0.78); backdrop-filter: blur(10px); border-radius: 14px; box-shadow: 0 10px 30px rgba(0,0,0,0.18); padding: 8px; display: none; }
@@ -86,6 +81,25 @@
     .pw-check-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
     .pw-btn-submit { background: linear-gradient(135deg,#2563eb,#60a5fa); color: #fff; border: 0; border-radius: 999px; padding: 10px 18px; font-weight: 800; cursor: pointer; box-shadow: 0 10px 24px rgba(37,99,235,0.22); }
     .pw-legal { font-size: 11px; color: #6b7280; }
+
+    /* ===== Added minimal styles for the email provider picker ===== */
+    .email-wrap { position: relative; display: inline-block; }
+    .header-email { font-size: 14px; color: #111827; text-decoration: none; margin-right: 12px; font-weight: 600; cursor: pointer; }
+    .header-email:hover { text-decoration: underline; }
+    .email-menu {
+      position: absolute; right: 0; top: 120%;
+      background: rgba(255,255,255,0.96);
+      backdrop-filter: blur(6px);
+      border: 1px solid rgba(17,24,39,0.08);
+      border-radius: 10px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.18);
+      padding: 6px; min-width: 230px; display: none; z-index: 60;
+    }
+    .email-menu a {
+      display: block; padding: 8px 10px; border-radius: 8px;
+      text-decoration: none; color: #111827; font-size: 14px;
+    }
+    .email-menu a:hover { background: rgba(17,24,39,0.06); }
   </style>
 </head>
 <body>
@@ -100,8 +114,18 @@
         </div>
       </a>
       <div class="spacer"></div>
-      <!-- Added: email link (left of hamburger) -->
-      <a href="mailto:info@predictwellhealth.ai" class="header-email" id="emailLink">info@predictwellhealth.ai</a>
+
+      <!-- ===== Added: universal email link with provider picker (Gmail/Outlook/Yahoo/Default) ===== -->
+      <div class="email-wrap">
+        <a href="mailto:info@predictwellhealth.ai" class="header-email" id="emailLink">info@predictwellhealth.ai</a>
+        <div class="email-menu" id="emailMenu" role="menu" aria-label="Email options">
+          <a role="menuitem" target="_blank" rel="noopener" href="https://mail.google.com/mail/?view=cm&fs=1&to=info@predictwellhealth.ai">Open in Gmail</a>
+          <a role="menuitem" target="_blank" rel="noopener" href="https://outlook.live.com/mail/0/deeplink/compose?to=info@predictwellhealth.ai">Open in Outlook.com</a>
+          <a role="menuitem" target="_blank" rel="noopener" href="https://compose.mail.yahoo.com/?to=info@predictwellhealth.ai">Open in Yahoo Mail</a>
+          <a role="menuitem" href="mailto:info@predictwellhealth.ai">Use default mail app</a>
+        </div>
+      </div>
+
       <button class="hamburger" id="menuBtn"></button>
       <nav class="menu" id="menu">
         <a href="#eldercare">Eldercare — Doctors</a>
@@ -318,14 +342,27 @@
       if (e.key === 'Escape') menu.style.display = 'none';
     });
 
-    // Ensure mailto opens correctly across browsers
-    const emailLink = document.getElementById('emailLink');
-    if (emailLink) {
-      emailLink.addEventListener('click', function(e) {
+    // ===== Added: email provider picker behavior =====
+    (function () {
+      const emailLink = document.getElementById('emailLink');
+      const emailMenu = document.getElementById('emailMenu');
+      if (!emailLink || !emailMenu) return;
+
+      emailLink.addEventListener('click', function (e) {
         e.preventDefault();
-        window.location.href = 'mailto:info@predictwellhealth.ai';
+        emailMenu.style.display = (emailMenu.style.display === 'block') ? 'none' : 'block';
       });
-    }
+
+      document.addEventListener('click', function (e) {
+        if (!emailMenu.contains(e.target) && e.target !== emailLink) {
+          emailMenu.style.display = 'none';
+        }
+      });
+
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') emailMenu.style.display = 'none';
+      });
+    })();
 
     function leadSubmit(){
       const status = document.getElementById('leadStatus');
