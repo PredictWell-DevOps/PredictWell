@@ -8,47 +8,78 @@
   <link rel="icon" href="data:,">
   <style>
     :root{
-      --brand:#12e3b4; --brand2:#5aa6ff; --ink:#0b1322; --muted:#5b6b7a;
-      --card:#ffffffee; --line:#e8eef4; --radius:18px; --shadow:0 14px 38px rgba(0,0,0,.18);
+      --brand:#12e3b4;         /* mint */
+      --brand2:#5aa6ff;        /* blue */
+      --ink:#0b1322;           /* dark text */
+      --muted:#576779;
+      --card: rgba(255,255,255,.78);   /* MORE see-through bubble */
+      --line:#e6eef6;
+      --radius:18px;
+      --shadow:0 14px 38px rgba(0,0,0,.18);
     }
     *{box-sizing:border-box}
     html,body{margin:0;height:100%;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--ink)}
     a{color:inherit;text-decoration:none}
-    /* Background matches site */
+
+    /* Background */
     body::before{
       content:"";position:fixed;inset:0;background-image:url("/static/images/predictwell_background.png");
-      background-size:cover;background-position:center;filter:brightness(.92) saturate(.98);z-index:-2
+      background-size:cover;background-position:center;filter:brightness(.92) saturate(.98);z-index:-2;
     }
     body::after{
-      content:"";position:fixed;inset:0;background:linear-gradient(180deg, rgba(255,255,255,.35) 0%, rgba(255,255,255,.45) 40%, rgba(255,255,255,.55) 100%);z-index:-1
+      content:"";position:fixed;inset:0;z-index:-1;
+      background:linear-gradient(180deg,rgba(255,255,255,.28)0%,rgba(255,255,255,.40)40%,rgba(255,255,255,.48)100%);
     }
+
     .wrap{max-width:1180px;margin:0 auto;padding:0 20px}
-    /* Combined header */
-    header{position:sticky;top:0;z-index:10;background:linear-gradient(90deg,var(--brand) 0%,var(--brand2) 60%, #7aa4ff 100%);color:#062033;box-shadow:0 6px 20px rgba(0,0,0,.15)}
+
+    /* ===== SOLID WHITE HEADER ===== */
+    header{
+      position:sticky; top:0; z-index:10;
+      background:#fff; color:#0a1726;
+      box-shadow:0 6px 20px rgba(0,0,0,.12);
+      border-bottom:1px solid #e6eef6;
+    }
     .nav{display:flex;align-items:center;gap:22px;padding:12px 0}
     .brand{display:flex;align-items:center;gap:10px;font-weight:800;cursor:pointer}
     .logo{height:22px;width:22px;border-radius:8px;background:linear-gradient(135deg,var(--brand),var(--brand2));box-shadow:0 6px 18px rgba(18,227,180,.35)}
     .nav ul{display:flex;gap:20px;list-style:none;margin:0;padding:0}
+    .nav a{color:#0a1726;font-weight:600}
     .spacer{flex:1}
     .email a{font-weight:800}
-    /* Cards & form */
+
+    /* ===== Cards / Buttons ===== */
     main{padding:26px 0 40px}
-    .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:26px}
-    h1{margin:6px 0 6px;font-size:1.85rem}
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:26px;
+      backdrop-filter:saturate(1.1) blur(1px);
+    }
+    h1{margin:6px 0 6px;font-size:1.9rem}
     .muted{color:var(--muted)}
+    .row{display:flex;gap:10px;flex-wrap:wrap}
+
     .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
     @media (max-width:1000px){.grid-3{grid-template-columns:1fr}}
+
     label{font-weight:700;font-size:.95rem}
     input,select,textarea{width:100%;padding:11px;border-radius:12px;border:1px solid #e1e7ef;background:#fafcff;color:#0b1322}
     textarea{min-height:90px;resize:vertical}
     .full{grid-column:1/-1}
-    .row{display:flex;gap:10px;flex-wrap:wrap}
-    .btn{display:inline-flex;align-items:center;justify-content:center;padding:12px 16px;border-radius:14px;border:1px solid transparent;font-weight:800;cursor:pointer;text-decoration:none}
+
+    .btn{display:inline-flex;align-items:center;justify-content:center;padding:12px 16px;border-radius:14px;border:1px solid transparent;font-weight:800;cursor:pointer;text-decoration:none;transition:transform .04s ease, box-shadow .2s ease}
     .btn:active{transform:translateY(1px)}
     .btn-primary{background:linear-gradient(135deg,var(--brand2),var(--brand));color:#07111f;box-shadow:0 10px 24px rgba(90,166,255,.25)}
-    .btn-ghost{background:#f6f9fc;border:1px solid #e1e7ef;color:#0f1b2b}
+    /* Distinct Patient Portal color (NOT red) */
+    .btn-alt{background:linear-gradient(135deg,#99e7ff,#bfc8ff);color:#07111f;box-shadow:0 10px 24px rgba(95,150,255,.22)}
+    .btn-ghost{background:#f7fafc;border:1px solid #e1e7ef;color:#0f1b2b}
+
     .pill{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:#f3f7fb;border:1px solid #e1e7ef;font-weight:800}
     .result{display:none;margin-top:14px}
+
     footer{color:#2b3a48;padding:18px 0 40px;text-align:center}
   </style>
 </head>
@@ -80,7 +111,7 @@
       <p class="muted">Coach/clinician intake for a quick readiness & injury-risk orientation with explain-why factors.</p>
       <div class="row" style="margin-top:10px">
         <a class="btn btn-ghost" href="/">← Back to Home</a>
-        <a class="btn btn-ghost" href="/athletics-patient.html">Open Patient Portal</a>
+        <a class="btn btn-alt" href="/athletics-patient.html">Open Patient Portal</a>
       </div>
     </section>
 
