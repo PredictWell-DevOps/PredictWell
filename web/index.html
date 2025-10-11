@@ -312,7 +312,6 @@
       } else {
         btn.setAttribute('aria-expanded', 'true');
         panel.hidden = false;
-        // close on outside click or ESC
         setTimeout(() => {
           document.addEventListener('click', outside);
           document.addEventListener('keydown', esc);
@@ -321,9 +320,7 @@
     });
 
     // Close menu when a link is clicked
-    panel.querySelectorAll('a').forEach(a => {
-      a.addEventListener('click', closeMenu);
-    });
+    panel.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMenu));
   </script>
 </body>
 </html>
