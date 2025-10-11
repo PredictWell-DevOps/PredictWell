@@ -8,39 +8,78 @@
   <link rel="icon" href="data:,">
   <style>
     :root{
-      --brand:#12e3b4; --brand2:#5aa6ff; --ink:#0b1322; --muted:#5b6b7a;
-      --card:#ffffffee; --line:#e8eef4; --radius:18px; --shadow:0 14px 38px rgba(0,0,0,.18);
+      --brand:#12e3b4;         /* mint */
+      --brand2:#5aa6ff;        /* blue */
+      --ink:#0b1322;           /* dark text */
+      --muted:#576779;
+      --card: rgba(255,255,255,.78);   /* MORE see-through bubble */
+      --line:#e6eef6;
+      --radius:18px;
+      --shadow:0 14px 38px rgba(0,0,0,.18);
     }
     *{box-sizing:border-box}
     html,body{margin:0;height:100%;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--ink)}
     a{color:inherit;text-decoration:none}
-    body::before{content:"";position:fixed;inset:0;background-image:url("/static/images/predictwell_background.png");background-size:cover;background-position:center;filter:brightness(.92) saturate(.98);z-index:-2}
-    body::after{content:"";position:fixed;inset:0;background:linear-gradient(180deg, rgba(255,255,255,.35) 0%, rgba(255,255,255,.45) 40%, rgba(255,255,255,.55) 100%);z-index:-1}
+
+    /* Background */
+    body::before{
+      content:"";position:fixed;inset:0;background-image:url("/static/images/predictwell_background.png");
+      background-size:cover;background-position:center;filter:brightness(.92) saturate(.98);z-index:-2;
+    }
+    body::after{
+      content:"";position:fixed;inset:0;z-index:-1;
+      background:linear-gradient(180deg,rgba(255,255,255,.28)0%,rgba(255,255,255,.40)40%,rgba(255,255,255,.48)100%);
+    }
+
     .wrap{max-width:1180px;margin:0 auto;padding:0 20px}
-    header{position:sticky;top:0;z-index:10;background:linear-gradient(90deg,var(--brand) 0%,var(--brand2) 60%, #7aa4ff 100%);color:#062033;box-shadow:0 6px 20px rgba(0,0,0,.15)}
+
+    /* ===== SOLID WHITE HEADER ===== */
+    header{
+      position:sticky; top:0; z-index:10;
+      background:#fff; color:#0a1726;
+      box-shadow:0 6px 20px rgba(0,0,0,.12);
+      border-bottom:1px solid #e6eef6;
+    }
     .nav{display:flex;align-items:center;gap:22px;padding:12px 0}
     .brand{display:flex;align-items:center;gap:10px;font-weight:800;cursor:pointer}
     .logo{height:22px;width:22px;border-radius:8px;background:linear-gradient(135deg,var(--brand),var(--brand2));box-shadow:0 6px 18px rgba(18,227,180,.35)}
     .nav ul{display:flex;gap:20px;list-style:none;margin:0;padding:0}
+    .nav a{color:#0a1726;font-weight:600}
     .spacer{flex:1}
     .email a{font-weight:800}
+
+    /* ===== Cards / Buttons ===== */
     main{padding:26px 0 40px}
-    .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:26px}
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:26px;
+      backdrop-filter:saturate(1.1) blur(1px);
+    }
     h1{margin:6px 0 6px;font-size:1.85rem}
     .muted{color:var(--muted)}
     .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
     @media (max-width:1000px){.grid-2{grid-template-columns:1fr}}
+
     label{font-weight:700;font-size:.95rem}
     input,select,textarea{width:100%;padding:11px;border-radius:12px;border:1px solid #e1e7ef;background:#fafcff;color:#0b1322}
     textarea{min-height:90px;resize:vertical}
     .full{grid-column:1/-1}
     .row{display:flex;gap:10px;flex-wrap:wrap}
-    .btn{display:inline-flex;align-items:center;justify-content:center;padding:12px 16px;border-radius:14px;border:1px solid transparent;font-weight:800;cursor:pointer;text-decoration:none}
+
+    .btn{display:inline-flex;align-items:center;justify-content:center;padding:12px 16px;border-radius:14px;border:1px solid transparent;
+         font-weight:800;cursor:pointer;text-decoration:none;transition:transform .04s ease, box-shadow .2s ease}
     .btn:active{transform:translateY(1px)}
     .btn-primary{background:linear-gradient(135deg,var(--brand),var(--brand2));color:#07111f;box-shadow:0 10px 24px rgba(90,166,255,.25)}
-    .btn-ghost{background:#f6f9fc;border:1px solid #e1e7ef;color:#0f1b2b}
+    .btn-ghost{background:#f7fafc;border:1px solid #e1e7ef;color:#0f1b2b}
+    /* Extra alt gradient if needed elsewhere */
+    .btn-alt{background:linear-gradient(135deg,#99e7ff,#bfc8ff);color:#07111f;box-shadow:0 10px 24px rgba(95,150,255,.22)}
+
     .pill{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:#f3f7fb;border:1px solid #e1e7ef;font-weight:800}
     .result{display:none;margin-top:14px}
+
     footer{color:#2b3a48;padding:18px 0 40px;text-align:center}
   </style>
 </head>
@@ -72,7 +111,7 @@
       <p class="muted">A quick 1-minute check-in to help spot early changes in your health and daily activity.</p>
       <div class="row" style="margin-top:10px">
         <a class="btn btn-ghost" href="/">← Back to Home</a>
-        <a class="btn btn-ghost" href="/eldercare.html">Doctor Portal</a>
+        <a class="btn btn-primary" href="/eldercare.html">Doctor Portal</a>
       </div>
     </section>
 
@@ -103,31 +142,77 @@
   <script>
     document.getElementById('yr').textContent=new Date().getFullYear();
     const BASE_API='https://predictwell-backend-ai.onrender.com';
-    const form=document.getElementById('form'),resultBox=document.getElementById('result'),
-          badge=document.getElementById('riskBadge'),summary=document.getElementById('summary');
+
+    const form=document.getElementById('form'),
+          resultBox=document.getElementById('result'),
+          badge=document.getElementById('riskBadge'),
+          summary=document.getElementById('summary');
+
     document.getElementById('reset').onclick=()=>{form.reset();resultBox.style.display='none';};
+
     form.addEventListener('submit',async e=>{
       e.preventDefault();
-      const p={age:num('age'),spo2_avg:num('spo2'),steps:num('steps'),sleep_hours:num('sleep'),
-               falls_last_30d:val('falls'),dizziness:val('dizzy'),meds_change:val('meds'),
-               pain:val('pain'),notes:val('notes')||null};
+      const p={
+        age:num('age'),
+        spo2_avg:num('spo2'),
+        steps:num('steps'),
+        sleep_hours:num('sleep'),
+        falls_last_30d:val('falls'),
+        dizziness:val('dizzy'),
+        meds_change:val('meds'),
+        pain:val('pain'),
+        notes:val('notes')||null
+      };
+
+      let ok=false;
       try{
-        const r=await fetch(`${BASE_API}/eldercare/checkin`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(p)});
-        if(r.ok){const d=await r.json(),lvl=d.level||lvlFrom(d.risk_score);rend(lvl,d.message||autoMsg(p,lvl));return;}
+        const r=await fetch(`${BASE_API}/eldercare/checkin`,{
+          method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(p)
+        });
+        if(r.ok){
+          const d=await r.json();
+          const lvl=d.level||lvlFrom(d.risk_score);
+          render(lvl,d.message||autoMsg(p,lvl)); ok=true;
+        }
       }catch(_){}
-      const l=localEstimate(p);rend(l,autoMsg(p,l)+' (quick estimate)');
+      if(!ok){
+        const l=localEstimate(p);
+        render(l,autoMsg(p,l)+' (quick estimate)');
+      }
     });
+
     function val(id){return document.getElementById(id).value.trim();}
     function num(id){const v=document.getElementById(id).value;return v===""?null:Number(v);}
     function lvlFrom(s){if(s==null)return'Unknown';if(s>=.66)return'High';if(s>=.33)return'Moderate';return'Low';}
-    function localEstimate(p){let s=0;if(p.falls_last_30d==='yes')s+=.4;if(p.dizziness==='yes')s+=.25;if(p.meds_change==='yes')s+=.15;
-      if(p.pain==='yes')s+=.15;if(p.spo2_avg&&p.spo2_avg<92)s+=.15;if(p.steps&&p.steps<1500)s+=.1;if(p.sleep_hours&&p.sleep_hours<5.5)s+=.1;
-      return s>=.66?'High':s>=.33?'Moderate':'Low';}
-    function autoMsg(p,l){const f=[];if(p.falls_last_30d==='yes')f.push('recent fall');if(p.dizziness==='yes')f.push('dizziness');
-      if(p.meds_change==='yes')f.push('medication change');if(p.pain==='yes')f.push('pain');if(p.spo2_avg&&p.spo2_avg<92)f.push('low SpO₂');
-      if(p.steps&&p.steps<1500)f.push('low activity');if(p.sleep_hours&&p.sleep_hours<5.5)f.push('short sleep');
-      const because=f.length?` Because of ${f.join(', ')}.`:'';return`Your quick risk looks **${l}**.${because}`;}
-    function rend(l,m){badge.textContent=`Risk: ${l}`;summary.innerHTML=m;resultBox.style.display='block';resultBox.scrollIntoView({behavior:'smooth'});}
+    function localEstimate(p){
+      let s=0;
+      if(p.falls_last_30d==='yes') s+=.4;
+      if(p.dizziness==='yes') s+=.25;
+      if(p.meds_change==='yes') s+=.15;
+      if(p.pain==='yes') s+=.15;
+      if(p.spo2_avg!=null && p.spo2_avg<92) s+=.15;
+      if(p.steps!=null && p.steps<1500) s+=.1;
+      if(p.sleep_hours!=null && p.sleep_hours<5.5) s+=.1;
+      return s>=.66?'High':s>=.33?'Moderate':'Low';
+    }
+    function autoMsg(p,l){
+      const f=[];
+      if(p.falls_last_30d==='yes') f.push('recent fall');
+      if(p.dizziness==='yes') f.push('dizziness');
+      if(p.meds_change==='yes') f.push('medication change');
+      if(p.pain==='yes') f.push('pain');
+      if(p.spo2_avg!=null && p.spo2_avg<92) f.push('low SpO₂');
+      if(p.steps!=null && p.steps<1500) f.push('low activity');
+      if(p.sleep_hours!=null && p.sleep_hours<5.5) f.push('short sleep');
+      const because=f.length?` Because of ${f.join(', ')}.`:'';
+      return `Your quick risk looks **${l}**.${because}`;
+    }
+    function render(l,m){
+      badge.textContent=`Risk: ${l}`;
+      summary.innerHTML=m;
+      resultBox.style.display='block';
+      resultBox.scrollIntoView({behavior:'smooth',block:'start'});
+    }
   </script>
 </body>
 </html>
