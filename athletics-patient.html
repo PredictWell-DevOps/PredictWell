@@ -14,16 +14,19 @@
     *{box-sizing:border-box}
     html,body{margin:0;height:100%;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--ink)}
     a{color:inherit;text-decoration:none}
+    /* Background matches site */
     body::before{content:"";position:fixed;inset:0;background-image:url("/static/images/predictwell_background.png");background-size:cover;background-position:center;filter:brightness(.92) saturate(.98);z-index:-2}
     body::after{content:"";position:fixed;inset:0;background:linear-gradient(180deg, rgba(255,255,255,.35) 0%, rgba(255,255,255,.45) 40%, rgba(255,255,255,.55) 100%);z-index:-1}
     .wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+    /* Combined header */
     header{position:sticky;top:0;z-index:10;background:linear-gradient(90deg,var(--brand) 0%,var(--brand2) 60%, #7aa4ff 100%);color:#062033;box-shadow:0 6px 20px rgba(0,0,0,.15)}
     .nav{display:flex;align-items:center;gap:22px;padding:12px 0}
-    .brand{display:flex;align-items:center;gap:10px;font-weight:800}
+    .brand{display:flex;align-items:center;gap:10px;font-weight:800;cursor:pointer}
     .logo{height:22px;width:22px;border-radius:8px;background:linear-gradient(135deg,var(--brand),var(--brand2));box-shadow:0 6px 18px rgba(18,227,180,.35)}
     .nav ul{display:flex;gap:20px;list-style:none;margin:0;padding:0}
     .spacer{flex:1}
     .email a{font-weight:800}
+    /* Cards & form */
     main{padding:26px 0 40px}
     .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:26px}
     h1{margin:6px 0 6px;font-size:1.85rem}
@@ -45,10 +48,13 @@
   </style>
 </head>
 <body>
+  <!-- HEADER -->
   <header>
     <div class="wrap">
       <nav class="nav" aria-label="Primary">
-        <div class="brand"><div class="logo" aria-hidden="true"></div><span>PredictWell Health.ai</span></div>
+        <a class="brand" href="/" aria-label="Go to PredictWell Health home">
+          <div class="logo" aria-hidden="true"></div><span>PredictWell Health.ai</span>
+        </a>
         <ul>
           <li><a href="/#about">About</a></li>
           <li><a href="/#how">How It Works</a></li>
@@ -64,53 +70,28 @@
   </header>
 
   <main class="wrap">
+    <!-- Intro -->
     <section class="card">
       <h1>Athletics — Patient Portal</h1>
       <p class="muted">Quick self-check to estimate today’s readiness and short-term injury risk.</p>
       <div class="row" style="margin-top:10px">
         <a class="btn btn-ghost" href="/">← Back to Home</a>
-        <a class="btn btn-ghost" href="/athletics.html">Go to Doctor Portal</a>
+        <a class="btn btn-ghost" href="/athletics.html">Doctor Portal</a>
       </div>
     </section>
 
+    <!-- Form -->
     <section style="margin-top:18px" class="card">
       <form id="form" class="grid-2">
-        <div>
-          <label>Sport / Position</label>
-          <input id="position" placeholder="e.g., Baseball — Pitcher">
-        </div>
-        <div>
-          <label>Age</label>
-          <input type="number" id="age" min="10" max="60" placeholder="e.g., 17">
-        </div>
-        <div>
-          <label>Throws today (count)</label>
-          <input type="number" id="throwsToday" min="0" max="400" placeholder="e.g., 35">
-        </div>
-        <div>
-          <label>Last 7-day total throws</label>
-          <input type="number" id="throws7d" min="0" max="1500" placeholder="e.g., 220">
-        </div>
-        <div>
-          <label>Pain today</label>
-          <select id="pain"><option>none</option><option>mild</option><option>moderate</option><option>severe</option></select>
-        </div>
-        <div>
-          <label>Fatigue today</label>
-          <select id="fatigue"><option>low</option><option>moderate</option><option>high</option></select>
-        </div>
-        <div>
-          <label>Sleep last night (hours)</label>
-          <input type="number" step="0.1" id="sleep" min="0" max="14" placeholder="e.g., 7.2">
-        </div>
-        <div>
-          <label>Wellness (RPE 1–10)</label>
-          <input type="number" id="rpe" min="1" max="10" placeholder="e.g., 6">
-        </div>
-        <div class="full">
-          <label>Notes (optional)</label>
-          <textarea id="notes" placeholder="Any tightness, travel, illness, workload spike, etc."></textarea>
-        </div>
+        <div><label>Sport / Position</label><input id="position" placeholder="e.g., Baseball — Pitcher"></div>
+        <div><label>Age</label><input type="number" id="age" min="10" max="60" placeholder="e.g., 17"></div>
+        <div><label>Throws today (count)</label><input type="number" id="throwsToday" min="0" max="400" placeholder="e.g., 35"></div>
+        <div><label>Last 7-day total throws</label><input type="number" id="throws7d" min="0" max="1500" placeholder="e.g., 220"></div>
+        <div><label>Pain today</label><select id="pain"><option>none</option><option>mild</option><option>moderate</option><option>severe</option></select></div>
+        <div><label>Fatigue today</label><select id="fatigue"><option>low</option><option>moderate</option><option>high</option></select></div>
+        <div><label>Sleep last night (hours)</label><input type="number" step="0.1" id="sleep" min="0" max="14" placeholder="e.g., 7.2"></div>
+        <div><label>Wellness (RPE 1–10)</label><input type="number" id="rpe" min="1" max="10" placeholder="e.g., 6"></div>
+        <div class="full"><label>Notes (optional)</label><textarea id="notes" placeholder="Any tightness, travel, illness, workload spike, etc."></textarea></div>
         <div class="full row" style="margin-top:6px">
           <button type="submit" class="btn btn-primary">Get My Result</button>
           <button type="button" id="reset" class="btn btn-ghost">Reset</button>
@@ -159,7 +140,7 @@
           method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(p)
         });
         if(res.ok){
-          const data = await res.json();
+          const data = await res.json(); // {risk_score, level, message}
           const level = data.level || levelFromScore(data.risk_score);
           render(level, data.message || autoMsg(p, level));
           ok = true;
@@ -173,7 +154,7 @@
     });
 
     function val(id){ return document.getElementById(id).value.trim(); }
-    function num(id){ const v=document.getElementById(id).value; return v===""?null:Number(v); }
+    function num(id){ const v = document.getElementById(id).value; return v===""?null:Number(v); }
     function levelFromScore(s){ if(s==null) return 'Unknown'; if(s>=0.66) return 'High'; if(s>=0.33) return 'Moderate'; return 'Low'; }
 
     function localEstimate(p){
