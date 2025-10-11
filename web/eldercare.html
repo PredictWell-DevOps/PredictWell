@@ -1,11 +1,11 @@
-<!-- ====== eldercare.html (Doctor Portal — Header unified + FULL INTAKE with Analysis & Results) ====== -->
+<!-- ====== eldercare.html (Doctor Portal — Optional subsections collapsed by default) ====== -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>PredictWell Health.ai — Eldercare Doctor Portal</title>
-  <meta name="description" content="Modernized clinical intake for seniors. Submit vitals, meds, labs, cognition, and activity; we’ll compute risk signals and suggested micro-actions." />
+  <meta name="description" content="Modernized clinical intake for seniors. Submit vitals, meds, labs, cognition, function, and fall details; we’ll compute risk signals and suggested micro-actions." />
   <link rel="icon" href="data:,">
 
   <style>
@@ -69,7 +69,7 @@
       line-height: 1;
     }
     .brand-title .hi { color: #111827; }
-    .brand-title .ai { color: #000000; } /* .ai is black */
+    .brand-title .ai { color: #000000; }
 
     .brand-tagline {
       font-size: 12px;
@@ -189,6 +189,35 @@
       white-space: pre-wrap;
       word-break: break-word;
     }
+
+    /* Collapsible (details) styling */
+    details.fold {
+      background: rgba(255,255,255,0.62);
+      border: 1px dashed var(--line);
+      border-radius: 14px;
+      padding: 0;
+      margin-top: 12px;
+      overflow: hidden;
+    }
+    details.fold > summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 12px 14px;
+      font-weight: 800;
+      color: #0b1020;
+      display: flex; align-items: center; gap: 10px;
+      background: rgba(255,255,255,0.85);
+    }
+    details.fold > summary::marker { display: none; }
+    details.fold > summary:before {
+      content: "▸";
+      transform: translateY(-1px);
+      font-size: 14px;
+      opacity: 0.75;
+    }
+    details.fold[open] > summary:before { content: "▾"; }
+    .fold-body { padding: 14px; border-top: 1px dashed var(--line); }
+    .hint { font-size: 12px; color: #64748b; margin-top: 6px; }
   </style>
 </head>
 <body>
@@ -229,57 +258,25 @@
 
     <!-- ========= FULL DOCTOR INTAKE ========= -->
     <form id="doctorIntakeForm" class="intake" onsubmit="event.preventDefault(); saveIntake();">
-      <!-- Section A: Patient / Identification Data -->
+      <!-- Section A: Patient / Identification Data (ESSENTIAL — OPEN) -->
       <section class="section">
         <h2>Section A — Patient / Identification Data</h2>
         <div class="grid-3">
-          <div class="field">
-            <label for="pt_name">Full name</label>
-            <input id="pt_name" type="text" placeholder="e.g., Jane Q. Doe" />
-          </div>
-          <div class="field">
-            <label for="pt_dob">Date of birth</label>
-            <input id="pt_dob" type="date" />
-          </div>
-          <div class="field">
-            <label for="pt_age">Age</label>
-            <input id="pt_age" type="number" min="0" step="1" placeholder="e.g., 79" />
-          </div>
+          <div class="field"><label for="pt_name">Full name</label><input id="pt_name" type="text" placeholder="e.g., Jane Q. Doe" /></div>
+          <div class="field"><label for="pt_dob">Date of birth</label><input id="pt_dob" type="date" /></div>
+          <div class="field"><label for="pt_age">Age</label><input id="pt_age" type="number" min="0" step="1" placeholder="e.g., 79" /></div>
         </div>
         <div class="grid-3" style="margin-top:12px;">
-          <div class="field">
-            <label for="sex">Sex / Gender</label>
-            <select id="sex">
-              <option value="">Select…</option>
-              <option>Female</option>
-              <option>Male</option>
-              <option>Non-binary</option>
-              <option>Prefer not to say</option>
-              <option>Other</option>
-            </select>
+          <div class="field"><label for="sex">Sex / Gender</label>
+            <select id="sex"><option value="">Select…</option><option>Female</option><option>Male</option><option>Non-binary</option><option>Prefer not to say</option><option>Other</option></select>
           </div>
-          <div class="field">
-            <label for="weight_lb">Weight (lb)</label>
-            <input id="weight_lb" type="number" step="0.1" placeholder="e.g., 160" />
-          </div>
-          <div class="field">
-            <label for="height_in">Height (in)</label>
-            <input id="height_in" type="number" step="0.1" placeholder="e.g., 64" />
-          </div>
+          <div class="field"><label for="weight_lb">Weight (lb)</label><input id="weight_lb" type="number" step="0.1" placeholder="e.g., 160" /></div>
+          <div class="field"><label for="height_in">Height (in)</label><input id="height_in" type="number" step="0.1" placeholder="e.g., 64" /></div>
         </div>
         <div class="grid-3" style="margin-top:12px;">
-          <div class="field">
-            <label for="addr_street">Primary address</label>
-            <input id="addr_street" type="text" placeholder="4000 Mullan Rd Apt F130" />
-          </div>
-          <div class="field">
-            <label for="addr_city">City</label>
-            <input id="addr_city" type="text" placeholder="Missoula" />
-          </div>
-          <div class="field">
-            <label for="addr_state">State & ZIP</label>
-            <input id="addr_state" type="text" placeholder="MT 59808" />
-          </div>
+          <div class="field"><label for="addr_street">Primary address</label><input id="addr_street" type="text" placeholder="4000 Mullan Rd Apt F130" /></div>
+          <div class="field"><label for="addr_city">City</label><input id="addr_city" type="text" placeholder="Missoula" /></div>
+          <div class="field"><label for="addr_state">State & ZIP</label><input id="addr_state" type="text" placeholder="MT 59808" /></div>
         </div>
         <div class="grid-3" style="margin-top:12px;">
           <div class="field"><label for="phone_home">Phone (home)</label><input id="phone_home" type="text" placeholder="(406) 555-0123" /></div>
@@ -298,7 +295,7 @@
         </div>
       </section>
 
-      <!-- Section B: Incident / Fall Event Details -->
+      <!-- Section B: Incident / Fall Event Details (ESSENTIAL — OPEN) -->
       <section class="section">
         <h2>Section B — Incident / Fall Event Details</h2>
         <div class="grid-3">
@@ -307,41 +304,23 @@
           <div class="field"><label for="fall_discovered">Time discovered / help summoned</label><input id="fall_discovered" type="text" placeholder="Found at 18:20; 911 called" /></div>
         </div>
         <div class="grid-3" style="margin-top:12px;">
-          <div class="field">
-            <label for="fall_location">Location of fall</label>
-            <select id="fall_location">
-              <option value="">Select…</option>
-              <option>Home—Bathroom</option><option>Home—Bedroom</option><option>Home—Kitchen</option><option>Home—Stairs</option>
-              <option>Care facility</option><option>Outdoors</option><option>Other</option>
-            </select>
+          <div class="field"><label for="fall_location">Location of fall</label>
+            <select id="fall_location"><option value="">Select…</option><option>Home—Bathroom</option><option>Home—Bedroom</option><option>Home—Kitchen</option><option>Home—Stairs</option><option>Care facility</option><option>Outdoors</option><option>Other</option></select>
           </div>
-          <div class="field">
-            <label for="fall_surface">Surface / ground type</label>
-            <select id="fall_surface">
-              <option value="">Select…</option>
-              <option>Hard floor</option><option>Carpet</option><option>Tile (wet)</option><option>Gravel</option><option>Ice / snow</option><option>Other</option>
-            </select>
+          <div class="field"><label for="fall_surface">Surface / ground type</label>
+            <select id="fall_surface"><option value="">Select…</option><option>Hard floor</option><option>Carpet</option><option>Tile (wet)</option><option>Gravel</option><option>Ice / snow</option><option>Other</option></select>
           </div>
           <div class="field"><label for="fall_height">Height / distance of fall</label><input id="fall_height" type="text" placeholder="From standing, bed, ladder…" /></div>
         </div>
         <div class="grid-3" style="margin-top:12px;">
-          <div class="field">
-            <label for="fall_direction">Direction / first impact</label>
-            <select id="fall_direction">
-              <option value="">Select…</option><option>Forward</option><option>Backward</option><option>Side</option><option>Unknown</option>
-            </select>
+          <div class="field"><label for="fall_direction">Direction / first impact</label>
+            <select id="fall_direction"><option value="">Select…</option><option>Forward</option><option>Backward</option><option>Side</option><option>Unknown</option></select>
           </div>
-          <div class="field">
-            <label for="fall_loc">Loss of consciousness?</label>
-            <select id="fall_loc">
-              <option value="">Select…</option><option>No</option><option>Yes — brief</option><option>Yes — prolonged</option><option>Unknown</option>
-            </select>
+          <div class="field"><label for="fall_loc">Loss of consciousness?</label>
+            <select id="fall_loc"><option value="">Select…</option><option>No</option><option>Yes — brief</option><option>Yes — prolonged</option><option>Unknown</option></select>
           </div>
-          <div class="field">
-            <label for="fall_witnessed">Witnessed?</label>
-            <select id="fall_witnessed">
-              <option value="">Select…</option><option>No</option><option>Yes</option>
-            </select>
+          <div class="field"><label for="fall_witnessed">Witnessed?</label>
+            <select id="fall_witnessed"><option value="">Select…</option><option>No</option><option>Yes</option></select>
           </div>
         </div>
         <div class="grid-2" style="margin-top:12px;">
@@ -357,6 +336,8 @@
       <!-- Section C: Medical History & Risk Factors -->
       <section class="section">
         <h2>Section C — Medical History & Risk Factors</h2>
+
+        <!-- Prior Falls (open) -->
         <div class="grid-3">
           <div class="field"><label for="falls_12m">Prior falls (past 12 months)</label>
             <select id="falls_12m"><option value="">Select…</option><option>0</option><option>1</option><option>2+</option></select>
@@ -373,6 +354,7 @@
           <textarea id="prior_fall_details" placeholder="Cause(s), injuries, need for care…"></textarea>
         </div>
 
+        <!-- Comorbid (open) -->
         <hr class="div" />
         <h3 style="margin:6px 0 8px 0;font-size:14px;color:#374151;">Comorbid conditions / diagnoses (check all)</h3>
         <div class="grid-4">
@@ -395,88 +377,105 @@
         </div>
         <div class="field" style="margin-top:12px;"><label for="dx_other">Other diagnoses</label><input id="dx_other" type="text" placeholder="Thyroid disease, anemia, etc." /></div>
 
-        <hr class="div" />
-        <div class="grid-2">
-          <div class="field">
-            <label for="med_list">Medications (name — dose — frequency)</label>
-            <textarea id="med_list" placeholder="e.g., Amlodipine 5 mg — daily&#10;Sertraline 50 mg — daily"></textarea>
+        <!-- OPTIONAL: Medication details -->
+        <details class="fold">
+          <summary>Medication details (optional)</summary>
+          <div class="fold-body">
+            <div class="grid-2">
+              <div class="field">
+                <label for="med_list">Medications (name — dose — frequency)</label>
+                <textarea id="med_list" placeholder="e.g., Amlodipine 5 mg — daily&#10;Sertraline 50 mg — daily"></textarea>
+                <div class="hint">Highlight fall-risk meds (sedatives, antihypertensives, diuretics, antidepressants).</div>
+              </div>
+              <div class="field">
+                <label for="allergies">Allergies / adverse drug reactions</label>
+                <textarea id="allergies" placeholder="e.g., Penicillin — rash; Codeine — nausea"></textarea>
+              </div>
+            </div>
+            <div class="grid-2" style="margin-top:12px;">
+              <div class="field"><label for="med_changes">Medication changes since last visit</label><textarea id="med_changes" placeholder="New starts, dose changes, discontinuations…"></textarea></div>
+              <div class="field"><label for="supplements">Supplements / OTC</label><textarea id="supplements" placeholder="Vitamins, herbals, OTC pain meds, sleep aids…"></textarea></div>
+            </div>
+            <div class="grid-3" style="margin-top:12px;">
+              <div class="field"><label for="adherence">Adherence issues</label>
+                <select id="adherence"><option value="">Select…</option><option>No issues</option><option>Occasional misses</option><option>Frequent misses</option><option>Cannot afford meds</option><option>Side effects</option></select>
+              </div>
+              <div class="field"><label for="high_risk_meds">High-risk meds (Beers / anticoagulants / sedatives)</label>
+                <select id="high_risk_meds"><option value="">Select…</option><option>None</option><option>Yes — review needed</option></select>
+              </div>
+              <div class="field"><label for="polypharm">Polypharmacy (≥5 meds)</label>
+                <select id="polypharm"><option value="">Select…</option><option>No</option><option>Yes</option></select>
+              </div>
+            </div>
           </div>
-          <div class="field">
-            <label for="allergies">Allergies / adverse drug reactions</label>
-            <textarea id="allergies" placeholder="e.g., Penicillin — rash; Codeine — nausea"></textarea>
-          </div>
-        </div>
-        <div class="grid-2" style="margin-top:12px;">
-          <div class="field"><label for="med_changes">Medication changes since last visit</label><textarea id="med_changes" placeholder="New starts, dose changes, discontinuations…"></textarea></div>
-          <div class="field"><label for="supplements">Supplements / OTC</label><textarea id="supplements" placeholder="Vitamins, herbals, OTC pain meds, sleep aids…"></textarea></div>
-        </div>
-        <div class="grid-3" style="margin-top:12px;">
-          <div class="field"><label for="adherence">Adherence issues</label>
-            <select id="adherence"><option value="">Select…</option><option>No issues</option><option>Occasional misses</option><option>Frequent misses</option><option>Cannot afford meds</option><option>Side effects</option></select>
-          </div>
-          <div class="field"><label for="high_risk_meds">High-risk meds (Beers / anticoagulants / sedatives)</label>
-            <select id="high_risk_meds"><option value="">Select…</option><option>None</option><option>Yes — review needed</option></select>
-          </div>
-          <div class="field"><label for="polypharm">Polypharmacy (≥5 meds)</label>
-            <select id="polypharm"><option value="">Select…</option><option>No</option><option>Yes</option></select>
-          </div>
-        </div>
+        </details>
 
-        <hr class="div" />
-        <div class="field"><label for="surgical_history">Surgical history / fractures / orthopedic history</label><textarea id="surgical_history" placeholder="Joint replacements, fractures, spine surgery…"></textarea></div>
+        <!-- OPTIONAL: Surgical history -->
+        <details class="fold">
+          <summary>Surgical / orthopedic history (optional)</summary>
+          <div class="fold-body">
+            <div class="field"><label for="surgical_history">History</label><textarea id="surgical_history" placeholder="Joint replacements, fractures, spine surgery…"></textarea></div>
+          </div>
+        </details>
 
-        <hr class="div" />
-        <h3 style="margin:6px 0 8px 0;font-size:14px;color:#374151;">Baseline functional status / mobility</h3>
-        <div class="grid-3">
-          <div class="field"><label for="assist_device">Assistive devices</label>
-            <select id="assist_device"><option value="">Select…</option><option>None</option><option>Cane</option><option>Walker</option><option>Wheelchair</option></select>
-          </div>
-          <div class="field"><label for="gait_status">Gait</label>
-            <select id="gait_status"><option value="">Select…</option><option>Steady</option><option>Unsteady</option><option>Requires support</option></select>
-          </div>
-          <div class="field"><label for="transfer_level">Transfers</label>
-            <select id="transfer_level"><option value="">Select…</option><option>Independent</option><option>Minimal assist</option><option>Moderate assist</option><option>Maximal assist</option></select>
-          </div>
-        </div>
-        <div class="field" style="margin-top:12px;"><label for="adls_detail">ADLs</label><textarea id="adls_detail" placeholder="Bathing, dressing, toileting, eating, ambulation, grooming…"></textarea></div>
-        <div class="field" style="margin-top:12px;"><label for="iadls_detail">IADLs</label><textarea id="iadls_detail" placeholder="Shopping, cooking, housekeeping, transportation…"></textarea></div>
+        <!-- OPTIONAL: Functional & sensory details -->
+        <details class="fold">
+          <summary>Baseline function & sensory details (optional)</summary>
+          <div class="fold-body">
+            <div class="grid-3">
+              <div class="field"><label for="assist_device">Assistive devices</label>
+                <select id="assist_device"><option value="">Select…</option><option>None</option><option>Cane</option><option>Walker</option><option>Wheelchair</option></select>
+              </div>
+              <div class="field"><label for="gait_status">Gait</label>
+                <select id="gait_status"><option value="">Select…</option><option>Steady</option><option>Unsteady</option><option>Requires support</option></select>
+              </div>
+              <div class="field"><label for="transfer_level">Transfers</label>
+                <select id="transfer_level"><option value="">Select…</option><option>Independent</option><option>Minimal assist</option><option>Moderate assist</option><option>Maximal assist</option></select>
+              </div>
+            </div>
+            <div class="field" style="margin-top:12px;"><label for="adls_detail">ADLs</label><textarea id="adls_detail" placeholder="Bathing, dressing, toileting, eating, ambulation, grooming…"></textarea></div>
+            <div class="field" style="margin-top:12px;"><label for="iadls_detail">IADLs</label><textarea id="iadls_detail" placeholder="Shopping, cooking, housekeeping, transportation…"></textarea></div>
 
-        <div class="grid-2" style="margin-top:12px;">
-          <div class="field"><label for="vision_last_exam">Vision — last exam / corrective lenses</label><input id="vision_last_exam" type="text" placeholder="Eye exam 2024; wears bifocals" /></div>
-          <div class="field"><label for="hearing_last_test">Hearing — last test / hearing aid use</label><input id="hearing_last_test" type="text" placeholder="Audiology 2023; right hearing aid" /></div>
-        </div>
+            <div class="grid-2" style="margin-top:12px;">
+              <div class="field"><label for="vision_last_exam">Vision — last exam / corrective lenses</label><input id="vision_last_exam" type="text" placeholder="Eye exam 2024; wears bifocals" /></div>
+              <div class="field"><label for="hearing_last_test">Hearing — last test / hearing aid use</label><input id="hearing_last_test" type="text" placeholder="Audiology 2023; right hearing aid" /></div>
+            </div>
 
-        <div class="grid-3" style="margin-top:12px;">
-          <div class="field"><label for="cognitive_status">Cognitive status</label>
-            <select id="cognitive_status"><option value="">Select…</option><option>None known</option><option>Memory impairment</option><option>Dementia diagnosis</option><option>Episodes of delirium</option></select>
+            <div class="grid-3" style="margin-top:12px;">
+              <div class="field"><label for="cognitive_status">Cognitive status</label>
+                <select id="cognitive_status"><option value="">Select…</option><option>None known</option><option>Memory impairment</option><option>Dementia diagnosis</option><option>Episodes of delirium</option></select>
+              </div>
+              <div class="field"><label for="mood_status">Mood</label>
+                <select id="mood_status"><option value="">Select…</option><option>Stable</option><option>Depression</option><option>Anxiety</option></select>
+              </div>
+              <div class="field"><label for="orthostatic_known">Orthostatic hypotension</label>
+                <select id="orthostatic_known"><option value="">Select…</option><option>No</option><option>Yes — known</option><option>Suspected</option></select>
+              </div>
+              <div class="field"><label for="arrhythmias">Arrhythmias</label>
+                <select id="arrhythmias"><option value="">Select…</option><option>No</option><option>Yes — known</option></select>
+              </div>
+              <div class="field"><label for="cardiac_device">Pacemaker / ICD</label>
+                <select id="cardiac_device"><option value="">Select…</option><option>None</option><option>Pacemaker</option><option>ICD</option></select>
+              </div>
+            </div>
           </div>
-          <div class="field"><label for="mood_status">Mood</label>
-            <select id="mood_status"><option value="">Select…</option><option>Stable</option><option>Depression</option><option>Anxiety</option></select>
-          </div>
-          <div class="field"><label for="orthostatic_known">Orthostatic hypotension</label>
-            <select id="orthostatic_known"><option value="">Select…</option><option>No</option><option>Yes — known</option><option>Suspected</option></select>
-          </div>
-          <div class="field"><label for="arrhythmias">Arrhythmias</label>
-            <select id="arrhythmias"><option value="">Select…</option><option>No</option><option>Yes — known</option></select>
-          </div>
-          <div class="field"><label for="cardiac_device">Pacemaker / ICD</label>
-            <select id="cardiac_device"><option value="">Select…</option><option>None</option><option>Pacemaker</option><option>ICD</option></select>
-          </div>
-        </div>
+        </details>
 
-        <hr class="div" />
-        <h3 style="margin:6px 0 8px 0;font-size:14px;color:#374151;">Other risk factors</h3>
-        <div class="grid-4">
-          <label class="inline"><input type="checkbox" id="risk_incontinence" /> Incontinence/urgency</label>
-          <label class="inline"><input type="checkbox" id="risk_foot" /> Foot problems</label>
-          <label class="inline"><input type="checkbox" id="risk_vitd" /> Vitamin D deficiency</label>
-          <label class="inline"><input type="checkbox" id="risk_nutrition" /> Nutritional issues / wt loss</label>
-          <label class="inline"><input type="checkbox" id="risk_alcohol" /> Alcohol use</label>
-          <label class="inline"><input type="checkbox" id="risk_substance" /> Substance use</label>
-        </div>
+        <!-- OPTIONAL: Other risk factors -->
+        <details class="fold">
+          <summary>Other risk factors (optional)</summary>
+          <div class="fold-body grid-4">
+            <label class="inline"><input type="checkbox" id="risk_incontinence" /> Incontinence/urgency</label>
+            <label class="inline"><input type="checkbox" id="risk_foot" /> Foot problems</label>
+            <label class="inline"><input type="checkbox" id="risk_vitd" /> Vitamin D deficiency</label>
+            <label class="inline"><input type="checkbox" id="risk_nutrition" /> Nutritional issues / wt loss</label>
+            <label class="inline"><input type="checkbox" id="risk_alcohol" /> Alcohol use</label>
+            <label class="inline"><input type="checkbox" id="risk_substance" /> Substance use</label>
+          </div>
+        </details>
       </section>
 
-      <!-- Section D: Vital Signs & Immediate Assessment -->
+      <!-- Section D: Vital Signs & Immediate Assessment (ESSENTIAL core open + OPTIONAL tests folded) -->
       <section class="section">
         <h2>Section D — Vital Signs & Immediate Assessment</h2>
         <div class="grid-4">
@@ -505,23 +504,25 @@
         <div class="field" style="margin-top:12px;"><label for="skin_exam">Skin (abrasions, lacerations, bruising)</label><textarea id="skin_exam" placeholder="Ecchymosis over left hip; abrasion on elbow"></textarea></div>
         <div class="field" style="margin-top:12px;"><label for="neurovascular">Neurovascular checks</label><textarea id="neurovascular" placeholder="DP/PT 2+; sensation intact; normal motor"></textarea></div>
 
-        <hr class="div" />
-        <h3 style="margin:6px 0 8px 0;font-size:14px;color:#374151;">Special tests (optional)</h3>
-        <div class="grid-3">
-          <div class="field"><label for="tug_time">Timed Up & Go (sec)</label><input id="tug_time" type="number" step="0.1" placeholder="11.5" /></div>
-          <div class="field"><label for="chair_30s">30-sec chair stands</label><input id="chair_30s" type="number" step="1" placeholder="8" /></div>
-          <div class="field"><label for="balance_stage">Four-stage balance</label><input id="balance_stage" type="text" placeholder="Tandem 10s; single-leg 3s" /></div>
-          <div class="field"><label for="gait_speed">Gait speed (m/s)</label><input id="gait_speed" type="number" step="0.01" placeholder="0.8" /></div>
-          <div class="field"><label for="postural_drops">Postural drops noted?</label>
-            <select id="postural_drops"><option value="">Select…</option><option>No</option><option>Yes</option></select>
+        <!-- OPTIONAL: Special tests -->
+        <details class="fold">
+          <summary>Special tests (optional)</summary>
+          <div class="fold-body grid-3">
+            <div class="field"><label for="tug_time">Timed Up & Go (sec)</label><input id="tug_time" type="number" step="0.1" placeholder="11.5" /></div>
+            <div class="field"><label for="chair_30s">30-sec chair stands</label><input id="chair_30s" type="number" step="1" placeholder="8" /></div>
+            <div class="field"><label for="balance_stage">Four-stage balance</label><input id="balance_stage" type="text" placeholder="Tandem 10s; single-leg 3s" /></div>
+            <div class="field"><label for="gait_speed">Gait speed (m/s)</label><input id="gait_speed" type="number" step="0.01" placeholder="0.8" /></div>
+            <div class="field"><label for="postural_drops">Postural drops noted?</label>
+              <select id="postural_drops"><option value="">Select…</option><option>No</option><option>Yes</option></select>
+            </div>
+            <div class="field"><label for="orthostat_sympt">Orthostatic symptoms</label>
+              <select id="orthostat_sympt"><option value="">Select…</option><option>None</option><option>Dizziness</option><option>Lightheadedness</option><option>Syncope</option></select>
+            </div>
           </div>
-          <div class="field"><label for="orthostat_sympt">Orthostatic symptoms</label>
-            <select id="orthostat_sympt"><option value="">Select…</option><option>None</option><option>Dizziness</option><option>Lightheadedness</option><option>Syncope</option></select>
-          </div>
-        </div>
+        </details>
       </section>
 
-      <!-- Section E: Interventions & Pre-Hospital / On-Site Care -->
+      <!-- Section E: Interventions & Pre-Hospital / On-Site Care (OPEN) -->
       <section class="section">
         <h2>Section E — Interventions & Pre-Hospital / On-Site Care</h2>
         <div class="grid-3">
@@ -548,45 +549,55 @@
         </div>
       </section>
 
-      <!-- Section F: Environmental & Home Safety Assessment -->
+      <!-- Section F: Environmental & Home Safety (OPTIONAL — COLLAPSED) -->
       <section class="section">
         <h2>Section F — Environmental & Home Safety Assessment</h2>
-        <div class="grid-3">
-          <div class="field"><label for="home_type">Home type</label>
-            <select id="home_type"><option value="">Select…</option><option>Single-level</option><option>Multi-level</option><option>Care facility</option></select>
+        <details class="fold">
+          <summary>Open environmental & home safety fields</summary>
+          <div class="fold-body">
+            <div class="grid-3">
+              <div class="field"><label for="home_type">Home type</label>
+                <select id="home_type"><option value="">Select…</option><option>Single-level</option><option>Multi-level</option><option>Care facility</option></select>
+              </div>
+              <div class="field"><label for="home_stairs">Stairs / ramps / handrails</label><input id="home_stairs" type="text" placeholder="2 steps at entry; handrail right" /></div>
+              <div class="field"><label for="home_flooring">Flooring</label><input id="home_flooring" type="text" placeholder="Throw rugs in hallway; tile in bath" /></div>
+            </div>
+            <div class="grid-3" style="margin-top:12px;">
+              <div class="field"><label for="home_lighting">Lighting</label><input id="home_lighting" type="text" placeholder="Night lights in bedroom/hallway" /></div>
+              <div class="field"><label for="home_bathroom">Bathroom safety</label><input id="home_bathroom" type="text" placeholder="Grab bars; shower chair" /></div>
+              <div class="field"><label for="home_heights">Chair / bed height</label><input id="home_heights" type="text" placeholder="Low bed; difficult to rise" /></div>
+            </div>
+            <div class="grid-3" style="margin-top:12px;">
+              <div class="field"><label for="home_clutter">Clutter / obstacles</label><input id="home_clutter" type="text" placeholder="Clutter near bedside; cords crossing path" /></div>
+              <div class="field"><label for="home_footwear">Footwear</label><input id="home_footwear" type="text" placeholder="Slippers indoors; sneakers outdoors" /></div>
+              <div class="field"><label for="home_devices">Assistive devices (type & condition)</label><input id="home_devices" type="text" placeholder="Walker—good; cane—worn tip" /></div>
+            </div>
+            <div class="grid-3" style="margin-top:12px;">
+              <div class="field"><label for="home_mobility_aids">Mobility aids present</label><input id="home_mobility_aids" type="text" placeholder="Walker, cane" /></div>
+              <div class="field"><label for="home_access">Accessibility of needed items</label><input id="home_access" type="text" placeholder="Frequently used items placed high" /></div>
+              <div class="field"><label for="home_alert">Emergency alert system</label>
+                <select id="home_alert"><option value="">Select…</option><option>None</option><option>Wearable alert</option><option>Smart speaker routine</option></select>
+              </div>
+            </div>
           </div>
-          <div class="field"><label for="home_stairs">Stairs / ramps / handrails</label><input id="home_stairs" type="text" placeholder="2 steps at entry; handrail right" /></div>
-          <div class="field"><label for="home_flooring">Flooring</label><input id="home_flooring" type="text" placeholder="Throw rugs in hallway; tile in bath" /></div>
-        </div>
-        <div class="grid-3" style="margin-top:12px;">
-          <div class="field"><label for="home_lighting">Lighting</label><input id="home_lighting" type="text" placeholder="Night lights in bedroom/hallway" /></div>
-          <div class="field"><label for="home_bathroom">Bathroom safety</label><input id="home_bathroom" type="text" placeholder="Grab bars; shower chair" /></div>
-          <div class="field"><label for="home_heights">Chair / bed height</label><input id="home_heights" type="text" placeholder="Low bed; difficult to rise" /></div>
-        </div>
-        <div class="grid-3" style="margin-top:12px;">
-          <div class="field"><label for="home_clutter">Clutter / obstacles</label><input id="home_clutter" type="text" placeholder="Clutter near bedside; cords crossing path" /></div>
-          <div class="field"><label for="home_footwear">Footwear</label><input id="home_footwear" type="text" placeholder="Slippers indoors; sneakers outdoors" /></div>
-          <div class="field"><label for="home_devices">Assistive devices (type & condition)</label><input id="home_devices" type="text" placeholder="Walker—good; cane—worn tip" /></div>
-        </div>
-        <div class="grid-3" style="margin-top:12px;">
-          <div class="field"><label for="home_mobility_aids">Mobility aids present</label><input id="home_mobility_aids" type="text" placeholder="Walker, cane" /></div>
-          <div class="field"><label for="home_access">Accessibility of needed items</label><input id="home_access" type="text" placeholder="Frequently used items placed high" /></div>
-          <div class="field"><label for="home_alert">Emergency alert system</label>
-            <select id="home_alert"><option value="">Select…</option><option>None</option><option>Wearable alert</option><option>Smart speaker routine</option></select>
-          </div>
-        </div>
+        </details>
       </section>
 
-      <!-- Section G: Subjective / Narrative -->
+      <!-- Section G: Subjective / Narrative (OPTIONAL — COLLAPSED) -->
       <section class="section">
         <h2>Section G — Subjective / Patient & Caregiver Narrative</h2>
-        <div class="field"><label for="narr_patient">Patient’s words</label><textarea id="narr_patient" placeholder="What they felt before/during/after; what they were doing…"></textarea></div>
-        <div class="field" style="margin-top:12px;"><label for="narr_caregiver">Caregiver observations</label><textarea id="narr_caregiver" placeholder="Observed imbalance, new confusion, etc."></textarea></div>
-        <div class="field" style="margin-top:12px;"><label for="narr_cause">Perceived cause / contributing factors</label><textarea id="narr_cause" placeholder="Slippery floor; stood up too quickly; medication timing…"></textarea></div>
-        <div class="field" style="margin-top:12px;"><label for="narr_changes">Changes since fall</label><textarea id="narr_changes" placeholder="Pain worsening; limited mobility; swelling increasing…"></textarea></div>
+        <details class="fold">
+          <summary>Open narrative fields</summary>
+          <div class="fold-body">
+            <div class="field"><label for="narr_patient">Patient’s words</label><textarea id="narr_patient" placeholder="What they felt before/during/after; what they were doing…"></textarea></div>
+            <div class="field" style="margin-top:12px;"><label for="narr_caregiver">Caregiver observations</label><textarea id="narr_caregiver" placeholder="Observed imbalance, new confusion, etc."></textarea></div>
+            <div class="field" style="margin-top:12px;"><label for="narr_cause">Perceived cause / contributing factors</label><textarea id="narr_cause" placeholder="Slippery floor; stood up too quickly; medication timing…"></textarea></div>
+            <div class="field" style="margin-top:12px;"><label for="narr_changes">Changes since fall</label><textarea id="narr_changes" placeholder="Pain worsening; limited mobility; swelling increasing…"></textarea></div>
+          </div>
+        </details>
       </section>
 
-      <!-- Section H: Consent, Privacy & Follow-up -->
+      <!-- Section H: Consent, Privacy & Follow-up (OPEN core; follow-ups collapsed) -->
       <section class="section">
         <h2>Section H — Consent, Privacy & Follow-up</h2>
         <div class="grid-3">
@@ -596,86 +607,99 @@
           <div class="field"><label for="consent_date">Date of submission</label><input id="consent_date" type="date" /></div>
           <div class="field"><label for="consent_signature">Signature (type full name)</label><input id="consent_signature" type="text" placeholder="Jane Q. Doe" /></div>
         </div>
-        <hr class="div" />
-        <h3 style="margin:6px 0 8px 0;font-size:14px;color:#374151;">Follow-up (check all that apply)</h3>
-        <div class="grid-4">
-          <label class="inline"><input type="checkbox" id="fu_pt" /> PT / balance training</label>
-          <label class="inline"><input type="checkbox" id="fu_home_safety" /> Home safety evaluation</label>
-          <label class="inline"><input type="checkbox" id="fu_med_review" /> Medication review</label>
-          <label class="inline"><input type="checkbox" id="fu_cv_workup" /> Cardiovascular / arrhythmia workup</label>
-          <label class="inline"><input type="checkbox" id="fu_bone_vitd" /> Vitamin D / bone health</label>
-          <label class="inline"><input type="checkbox" id="fu_cognitive" /> Cognitive assessment</label>
-          <label class="inline"><input type="checkbox" id="fu_vision_hearing" /> Vision / hearing referral</label>
-          <label class="inline"><input type="checkbox" id="fu_orthostatics" /> Orthostatic vitals follow-up</label>
-        </div>
-        <div class="field" style="margin-top:12px;"><label for="fu_notes">Notes / additional comments</label><textarea id="fu_notes" placeholder="Any other instructions, referrals, or safety plans…"></textarea></div>
+
+        <details class="fold">
+          <summary>Follow-ups & notes (optional)</summary>
+          <div class="fold-body">
+            <div class="grid-4">
+              <label class="inline"><input type="checkbox" id="fu_pt" /> PT / balance training</label>
+              <label class="inline"><input type="checkbox" id="fu_home_safety" /> Home safety evaluation</label>
+              <label class="inline"><input type="checkbox" id="fu_med_review" /> Medication review</label>
+              <label class="inline"><input type="checkbox" id="fu_cv_workup" /> Cardiovascular / arrhythmia workup</label>
+              <label class="inline"><input type="checkbox" id="fu_bone_vitd" /> Vitamin D / bone health</label>
+              <label class="inline"><input type="checkbox" id="fu_cognitive" /> Cognitive assessment</label>
+              <label class="inline"><input type="checkbox" id="fu_vision_hearing" /> Vision / hearing referral</label>
+              <label class="inline"><input type="checkbox" id="fu_orthostatics" /> Orthostatic vitals follow-up</label>
+            </div>
+            <div class="field" style="margin-top:12px;"><label for="fu_notes">Notes / additional comments</label><textarea id="fu_notes" placeholder="Any other instructions, referrals, or safety plans…"></textarea></div>
+          </div>
+        </details>
       </section>
 
-      <!-- Existing areas retained -->
+      <!-- Labs (OPTIONAL — COLLAPSED) -->
       <section class="section">
         <h2>Key Labs</h2>
-        <div class="grid-4">
-          <div class="field"><label for="a1c">A1c (%)</label><input id="a1c" type="number" step="0.1" /></div>
-          <div class="field"><label for="ldl">LDL (mg/dL)</label><input id="ldl" type="number" /></div>
-          <div class="field"><label for="egfr">eGFR</label><input id="egfr" type="number" /></div>
-          <div class="field"><label for="creatinine">Creatinine</label><input id="creatinine" type="number" step="0.01" /></div>
-        </div>
-        <div class="grid-3" style="margin-top:12px;">
-          <div class="field"><label for="na">Na</label><input id="na" type="number" step="0.1" /></div>
-          <div class="field"><label for="k">K</label><input id="k" type="number" step="0.1" /></div>
-          <div class="field"><label for="hgb">Hgb</label><input id="hgb" type="number" step="0.1" /></div>
-        </div>
+        <details class="fold">
+          <summary>Open lab fields</summary>
+          <div class="fold-body">
+            <div class="grid-4">
+              <div class="field"><label for="a1c">A1c (%)</label><input id="a1c" type="number" step="0.1" /></div>
+              <div class="field"><label for="ldl">LDL (mg/dL)</label><input id="ldl" type="number" /></div>
+              <div class="field"><label for="egfr">eGFR</label><input id="egfr" type="number" /></div>
+              <div class="field"><label for="creatinine">Creatinine</label><input id="creatinine" type="number" step="0.01" /></div>
+            </div>
+            <div class="grid-3" style="margin-top:12px;">
+              <div class="field"><label for="na">Na</label><input id="na" type="number" step="0.1" /></div>
+              <div class="field"><label for="k">K</label><input id="k" type="number" step="0.1" /></div>
+              <div class="field"><label for="hgb">Hgb</label><input id="hgb" type="number" step="0.1" /></div>
+            </div>
+          </div>
+        </details>
       </section>
 
-      <section class="section">
-        <h2>Cognition &amp; Mood</h2>
-        <div class="grid-3">
-          <div class="field"><label for="moca">MoCA / MMSE score</label><input id="moca" type="number" min="0" max="30" placeholder="e.g., 24" /></div>
-          <div class="field"><label for="depr_screen">Depression screening</label><select id="depr_screen"><option value="">Select…</option><option>Negative</option><option>Positive — mild</option><option>Positive — moderate/severe</option></select></div>
-          <div class="field"><label for="anxiety">Anxiety</label><select id="anxiety"><option value="">Select…</option><option>None/minimal</option><option>Mild</option><option>Moderate/severe</option></select></div>
-        </div>
-        <div class="grid-2" style="margin-top:12px;">
-          <div class="field"><label for="delirium_risk">Delirium risk factors</label><select id="delirium_risk"><option value="">Select…</option><option>None known</option><option>Recent infection / dehydration</option><option>Polypharmacy / sedatives</option><option>Hearing/vision impairment</option></select></div>
-          <div class="field"><label for="hearing_vision">Hearing / vision issues</label><select id="hearing_vision"><option value="">Select…</option><option>No issues</option><option>Hearing impaired</option><option>Vision impaired</option><option>Both</option></select></div>
-        </div>
-      </section>
-
+      <!-- Sleep & Activity (OPTIONAL — COLLAPSED) -->
       <section class="section">
         <h2>Sleep &amp; Activity</h2>
-        <div class="grid-3">
-          <div class="field"><label for="sleep_hours">Avg sleep (hrs)</label><input id="sleep_hours" type="number" step="0.1" /></div>
-          <div class="field"><label for="sleep_quality">Sleep quality</label><select id="sleep_quality"><option value="">Select…</option><option>Good</option><option>Fair</option><option>Poor</option></select></div>
-          <div class="field"><label for="activity_level">Activity level</label><select id="activity_level"><option value="">Select…</option><option>Sedentary</option><option>Light</option><option>Moderate</option><option>Vigorous</option></select></div>
-        </div>
-        <div class="grid-3" style="margin-top:12px;">
-          <div class="field"><label for="wearable">Wearable used</label><select id="wearable"><option value="">Select…</option><option>None</option><option>Apple Watch</option><option>Fitbit</option><option>Garmin</option><option>Oura</option><option>Other</option></select></div>
-          <div class="field"><label for="steps_day">Avg steps/day</label><input id="steps_day" type="number" step="1" placeholder="e.g., 4500" /></div>
-          <div class="field"><label for="hrv_rmssd">HRV (RMSSD, ms)</label><input id="hrv_rmssd" type="number" step="1" placeholder="e.g., 20" /></div>
-        </div>
+        <details class="fold">
+          <summary>Open sleep & activity fields</summary>
+          <div class="fold-body">
+            <div class="grid-3">
+              <div class="field"><label for="sleep_hours">Avg sleep (hrs)</label><input id="sleep_hours" type="number" step="0.1" /></div>
+              <div class="field"><label for="sleep_quality">Sleep quality</label><select id="sleep_quality"><option value="">Select…</option><option>Good</option><option>Fair</option><option>Poor</option></select></div>
+              <div class="field"><label for="activity_level">Activity level</label><select id="activity_level"><option value="">Select…</option><option>Sedentary</option><option>Light</option><option>Moderate</option><option>Vigorous</option></select></div>
+            </div>
+            <div class="grid-3" style="margin-top:12px;">
+              <div class="field"><label for="wearable">Wearable used</label><select id="wearable"><option value="">Select…</option><option>None</option><option>Apple Watch</option><option>Fitbit</option><option>Garmin</option><option>Oura</option><option>Other</option></select></div>
+              <div class="field"><label for="steps_day">Avg steps/day</label><input id="steps_day" type="number" step="1" placeholder="e.g., 4500" /></div>
+              <div class="field"><label for="hrv_rmssd">HRV (RMSSD, ms)</label><input id="hrv_rmssd" type="number" step="1" placeholder="e.g., 20" /></div>
+            </div>
+          </div>
+        </details>
       </section>
 
+      <!-- Pain & Symptoms (OPTIONAL — COLLAPSED) -->
       <section class="section">
         <h2>Pain &amp; Symptoms</h2>
-        <div class="grid-3">
-          <div class="field"><label for="pain_today">Pain today (0–10)</label><input id="pain_today" type="number" min="0" max="10" /></div>
-          <div class="field"><label for="sob">Shortness of breath</label><select id="sob"><option value="">Select…</option><option>No</option><option>With exertion</option><option>At rest</option></select></div>
-          <div class="field"><label for="edema">Edema</label><select id="edema"><option value="">Select…</option><option>None</option><option>Mild</option><option>Moderate</option><option>Severe</option></select></div>
-        </div>
-        <div class="grid-3" style="margin-top:12px;">
-          <div class="field"><label for="dizziness">Dizziness</label><select id="dizziness"><option value="">Select…</option><option>No</option><option>Occasional</option><option>Frequent</option></select></div>
-          <div class="field"><label for="appetite">Appetite / weight change</label><select id="appetite"><option value="">Select…</option><option>Stable</option><option>Decreased appetite / weight loss</option><option>Increased appetite / weight gain</option></select></div>
-          <div class="field"><label for="hydration">Hydration (cups/day)</label><input id="hydration" type="number" step="1" placeholder="e.g., 6" /></div>
-        </div>
-        <div class="field" style="margin-top:12px;"><label for="symptoms_other">Other concerning symptoms</label><textarea id="symptoms_other" placeholder="Describe notable symptoms, onset, triggers, duration…"></textarea></div>
+        <details class="fold">
+          <summary>Open pain & symptom fields</summary>
+          <div class="fold-body">
+            <div class="grid-3">
+              <div class="field"><label for="pain_today">Pain today (0–10)</label><input id="pain_today" type="number" min="0" max="10" /></div>
+              <div class="field"><label for="sob">Shortness of breath</label><select id="sob"><option value="">Select…</option><option>No</option><option>With exertion</option><option>At rest</option></select></div>
+              <div class="field"><label for="edema">Edema</label><select id="edema"><option value="">Select…</option><option>None</option><option>Mild</option><option>Moderate</option><option>Severe</option></select></div>
+            </div>
+            <div class="grid-3" style="margin-top:12px;">
+              <div class="field"><label for="dizziness">Dizziness</label><select id="dizziness"><option value="">Select…</option><option>No</option><option>Occasional</option><option>Frequent</option></select></div>
+              <div class="field"><label for="appetite">Appetite / weight change</label><select id="appetite"><option value="">Select…</option><option>Stable</option><option>Decreased appetite / weight loss</option><option>Increased appetite / weight gain</option></select></div>
+              <div class="field"><label for="hydration">Hydration (cups/day)</label><input id="hydration" type="number" step="1" placeholder="e.g., 6" /></div>
+            </div>
+            <div class="field" style="margin-top:12px;"><label for="symptoms_other">Other concerning symptoms</label><textarea id="symptoms_other" placeholder="Describe notable symptoms, onset, triggers, duration…"></textarea></div>
+          </div>
+        </details>
       </section>
 
-      <!-- Clinician Notes (unchanged) -->
+      <!-- Clinician Notes (OPTIONAL — COLLAPSED) -->
       <section class="section">
         <h2>Clinician Notes</h2>
-        <div class="field">
-          <label for="clinician_notes">Assessment &amp; plan</label>
-          <textarea id="clinician_notes" placeholder="Summarize key problems, risk flags, and next steps (micro-actions, referrals, med changes, labs, follow-up)."></textarea>
-        </div>
+        <details class="fold">
+          <summary>Open clinician notes</summary>
+          <div class="fold-body">
+            <div class="field">
+              <label for="clinician_notes">Assessment &amp; plan</label>
+              <textarea id="clinician_notes" placeholder="Summarize key problems, risk flags, and next steps (micro-actions, referrals, med changes, labs, follow-up)."></textarea>
+            </div>
+          </div>
+        </details>
 
         <div class="actions">
           <button type="button" class="btn btn-gold" id="runAnalysisBtn">Run Analysis</button>
@@ -755,7 +779,7 @@
         'language','comm_needs','caregiver_primary','emerg_name','emerg_rel','emerg_phone',
         // Section B
         'fall_date','fall_time','fall_discovered','fall_location','fall_surface','fall_height','fall_direction','fall_loc','fall_witnessed','fall_witness_contact','fall_symptoms','fall_narrative',
-        // Section C
+        // Section C (core + optional)
         'falls_12m','prior_fall_injury','prior_fall_hosp','prior_fall_details',
         'dx_other','med_list','allergies','med_changes','supplements','adherence','high_risk_meds','polypharm',
         'surgical_history','assist_device','gait_status','transfer_level','adls_detail','iadls_detail',
@@ -771,9 +795,8 @@
         'narr_patient','narr_caregiver','narr_cause','narr_changes',
         // Section H
         'consent_share','consent_date','consent_signature','fu_notes',
-        // Existing areas
+        // Labs / Sleep / Pain / Notes
         'a1c','ldl','egfr','creatinine','na','k','hgb',
-        'moca','depr_screen','anxiety','delirium_risk','hearing_vision',
         'sleep_hours','sleep_quality','activity_level','wearable','steps_day','hrv_rmssd',
         'pain_today','sob','edema','dizziness','appetite','hydration','symptoms_other',
         'clinician_notes'
@@ -782,12 +805,11 @@
       ids.forEach(id=>{
         const el = document.getElementById(id);
         if(!el) return;
-        // return numeric for number inputs, raw for others
         if (el.type === 'number') out[id] = el.value === '' ? null : Number(el.value);
         else out[id] = el.value;
       });
 
-      // Checkboxes
+      // Checkbox groups
       out.conditions = {
         htn_cad_arr: document.getElementById('dx_htn_cad_arr')?.checked || false,
         dm: document.getElementById('dx_dm')?.checked || false,
@@ -835,7 +857,7 @@
       return out;
     }
 
-    // Ping backend (show status)
+    // Backend status badge
     async function pingBackend() {
       const badge = document.getElementById('backendStatus');
       try {
