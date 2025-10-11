@@ -4,43 +4,77 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Eldercare — Doctor Portal | PredictWell Health.ai</title>
-  <meta name="description" content="Clinician-facing Eldercare Sentinel intake with quick risk, explain-why, and summary." />
+  <meta name="description" content="Comprehensive clinician intake for Eldercare Sentinel with quick risk, explain-why, and summary." />
   <link rel="icon" href="data:,">
   <style>
     :root{
-      --brand:#12e3b4; --brand2:#5aa6ff; --ink:#0b1322; --muted:#5b6b7a;
-      --card:#ffffffee; --line:#e8eef4; --radius:18px; --shadow:0 14px 38px rgba(0,0,0,.18);
+      --brand:#12e3b4;         /* mint */
+      --brand2:#5aa6ff;        /* blue */
+      --ink:#0b1322;           /* dark text */
+      --muted:#576779;
+      --card: rgba(255,255,255,.78);   /* MORE see-through bubble */
+      --line:#e6eef6;
+      --radius:18px;
+      --shadow:0 14px 38px rgba(0,0,0,.18);
     }
     *{box-sizing:border-box}
     html,body{margin:0;height:100%;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--ink)}
     a{color:inherit;text-decoration:none}
-    body::before{content:"";position:fixed;inset:0;background-image:url("/static/images/predictwell_background.png");background-size:cover;background-position:center;filter:brightness(.92) saturate(.98);z-index:-2}
-    body::after{content:"";position:fixed;inset:0;background:linear-gradient(180deg, rgba(255,255,255,.35) 0%, rgba(255,255,255,.45) 40%, rgba(255,255,255,.55) 100%);z-index:-1}
+
+    /* Background */
+    body::before{
+      content:"";position:fixed;inset:0;background-image:url("/static/images/predictwell_background.png");
+      background-size:cover;background-position:center;filter:brightness(.92) saturate(.98);z-index:-2;
+    }
+    body::after{
+      content:"";position:fixed;inset:0;z-index:-1;
+      background:linear-gradient(180deg,rgba(255,255,255,.28)0%,rgba(255,255,255,.40)40%,rgba(255,255,255,.48)100%);
+    }
+
     .wrap{max-width:1180px;margin:0 auto;padding:0 20px}
-    header{position:sticky;top:0;z-index:10;background:linear-gradient(90deg,var(--brand) 0%,var(--brand2) 60%, #7aa4ff 100%);color:#062033;box-shadow:0 6px 20px rgba(0,0,0,.15)}
+
+    /* ===== SOLID WHITE HEADER ===== */
+    header{
+      position:sticky; top:0; z-index:10;
+      background:#fff; color:#0a1726;
+      box-shadow:0 6px 20px rgba(0,0,0,.12);
+      border-bottom:1px solid #e6eef6;
+    }
     .nav{display:flex;align-items:center;gap:22px;padding:12px 0}
     .brand{display:flex;align-items:center;gap:10px;font-weight:800;cursor:pointer}
     .logo{height:22px;width:22px;border-radius:8px;background:linear-gradient(135deg,var(--brand),var(--brand2));box-shadow:0 6px 18px rgba(18,227,180,.35)}
     .nav ul{display:flex;gap:20px;list-style:none;margin:0;padding:0}
+    .nav a{color:#0a1726;font-weight:600}
     .spacer{flex:1}
     .email a{font-weight:800}
+
+    /* ===== Page / cards / buttons ===== */
     main{padding:26px 0 40px}
-    .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:26px}
-    h1{margin:6px 0 6px;font-size:1.85rem}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:26px;backdrop-filter:saturate(1.1) blur(1px)}
+    h1{margin:6px 0 6px;font-size:1.9rem}
+    h2{margin:8px 0 10px;font-size:1.15rem}
     .muted{color:var(--muted)}
-    .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-    @media (max-width:1000px){.grid-3{grid-template-columns:1fr}}
+    .row{display:flex;gap:10px;flex-wrap:wrap}
+
+    .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+    .full{grid-column:1/-1}
+    @media (max-width:1100px){.grid-4{grid-template-columns:1fr 1fr}}
+    @media (max-width:640px){.grid-4{grid-template-columns:1fr}}
+
     label{font-weight:700;font-size:.95rem}
     input,select,textarea{width:100%;padding:11px;border-radius:12px;border:1px solid #e1e7ef;background:#fafcff;color:#0b1322}
-    textarea{min-height:90px;resize:vertical}
-    .full{grid-column:1/-1}
-    .row{display:flex;gap:10px;flex-wrap:wrap}
-    .btn{display:inline-flex;align-items:center;justify-content:center;padding:12px 16px;border-radius:14px;border:1px solid transparent;font-weight:800;cursor:pointer;text-decoration:none}
+    textarea{min-height:96px;resize:vertical}
+
+    .btn{display:inline-flex;align-items:center;justify-content:center;padding:12px 16px;border-radius:14px;border:1px solid transparent;font-weight:800;cursor:pointer;text-decoration:none;transition:transform .04s ease, box-shadow .2s ease}
     .btn:active{transform:translateY(1px)}
     .btn-primary{background:linear-gradient(135deg,var(--brand),var(--brand2));color:#07111f;box-shadow:0 10px 24px rgba(90,166,255,.25)}
-    .btn-ghost{background:#f6f9fc;border:1px solid #e1e7ef;color:#0f1b2b}
+    /* Distinct Patient Portal color (NOT red) */
+    .btn-alt{background:linear-gradient(135deg,#99e7ff,#bfc8ff);color:#07111f;box-shadow:0 10px 24px rgba(95,150,255,.22)}
+    .btn-ghost{background:#f7fafc;border:1px solid #e1e7ef;color:#0f1b2b}
+
     .pill{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:#f3f7fb;border:1px solid #e1e7ef;font-weight:800}
     .result{display:none;margin-top:14px}
+
     footer{color:#2b3a48;padding:18px 0 40px;text-align:center}
   </style>
 </head>
@@ -66,34 +100,98 @@
   </header>
 
   <main class="wrap">
+    <!-- Intro card -->
     <section class="card">
       <h1>Eldercare — Doctor Portal</h1>
-      <p class="muted">Quick clinician intake. Compute risk orientation and contributing factors. Shareable summary included.</p>
+      <p class="muted">Comprehensive clinician intake. We’ll compute a quick risk orientation and list contributing factors. A shareable summary is included.</p>
       <div class="row" style="margin-top:10px">
         <a class="btn btn-ghost" href="/">← Back to Home</a>
-        <a class="btn btn-ghost" href="/eldercare-patient.html">Open Patient Portal</a>
+        <a class="btn btn-alt" href="/eldercare-patient.html">Open Patient Portal</a>
       </div>
     </section>
 
-    <section style="margin-top:18px" class="card">
-      <form id="form" class="grid-3">
-        <div class="full"><strong>Patient Info</strong></div>
-        <div><label>Age</label><input type="number" id="age" min="40" max="110" placeholder="e.g., 79" required></div>
-        <div><label>Sex</label><select id="sex"><option>female</option><option>male</option><option>other</option></select></div>
-        <div><label>Avg nightly SpO₂ (%)</label><input type="number" id="spo2" min="70" max="100" placeholder="e.g., 94"></div>
-        <div><label>Resting HR (bpm)</label><input type="number" id="rest_hr" min="30" max="180" placeholder="e.g., 72"></div>
-        <div><label>HRV/RMSSD (ms)</label><input type="number" id="hrv" min="5" max="200" placeholder="e.g., 18"></div>
-        <div><label>Steps yesterday</label><input type="number" id="steps" min="0" max="50000" placeholder="e.g., 3200"></div>
-        <div><label>Sleep last night (h)</label><input type="number" step="0.1" id="sleep" min="0" max="14" placeholder="e.g., 6.5"></div>
-        <div><label>SBP (mmHg)</label><input type="number" id="sbp" min="70" max="220" placeholder="e.g., 132"></div>
+    <!-- ===== LONG CLINICIAN INTAKE ===== -->
+    <section class="card" style="margin-top:18px">
+      <form id="form" class="grid-4">
+        <!-- Demographics -->
+        <div class="full"><h2>Patient</h2></div>
+        <div><label>First name</label><input id="first" placeholder="e.g., Maria"></div>
+        <div><label>Last name</label><input id="last" placeholder="e.g., Lopez"></div>
+        <div><label>Age</label><input type="number" id="age" min="40" max="110" placeholder="79" required></div>
+        <div><label>Sex</label>
+          <select id="sex"><option>female</option><option>male</option><option>other</option></select>
+        </div>
+        <div><label>Height (cm)</label><input type="number" id="height" min="120" max="220" placeholder="163"></div>
+        <div><label>Weight (kg)</label><input type="number" id="weight" min="35" max="200" placeholder="64"></div>
+        <div><label>MRN / ID</label><input id="mrn" placeholder="A123456"></div>
+        <div class="full"><label>Primary diagnosis / reason for monitoring</label><input id="reason" placeholder="e.g., Post-discharge, falls risk, frailty, CHF, COPD"></div>
+
+        <!-- Vitals / wearables -->
+        <div class="full"><h2>Recent Signals</h2></div>
+        <div><label>Average nightly SpO₂ (%)</label><input type="number" id="spo2" min="70" max="100" placeholder="94"></div>
+        <div><label>Resting HR (bpm)</label><input type="number" id="rest_hr" min="30" max="180" placeholder="72"></div>
+        <div><label>HRV / RMSSD (ms)</label><input type="number" id="hrv" min="5" max="200" placeholder="18"></div>
+        <div><label>SBP (mmHg)</label><input type="number" id="sbp" min="70" max="220" placeholder="132"></div>
+        <div><label>DBP (mmHg)</label><input type="number" id="dbp" min="40" max="130" placeholder="78"></div>
+        <div><label>Steps yesterday</label><input type="number" id="steps" min="0" max="50000" placeholder="3200"></div>
+        <div><label>Sleep last night (h)</label><input type="number" step="0.1" id="sleep" min="0" max="14" placeholder="6.5"></div>
+        <div><label>Weight change (kg, ~2w)</label><input type="number" step="0.1" id="wt_delta" placeholder="-0.8"></div>
+
+        <!-- Medications -->
+        <div class="full"><h2>Medications</h2></div>
+        <div><label>Medication change last 30d?</label><select id="meds"><option>no</option><option>yes</option></select></div>
+        <div><label>High-risk meds (benzo/opioid/anticholinergic)?</label><select id="highrisk_meds"><option>no</option><option>yes</option></select></div>
+        <div class="full"><label>Medication list (optional)</label><textarea id="med_list" placeholder="e.g., Metoprolol 25mg qd, Furosemide 20mg qAM, Sertraline 50mg qd…"></textarea></div>
+
+        <!-- Comorbidities -->
+        <div class="full"><h2>Comorbidities</h2></div>
+        <div><label>Diabetes</label><select id="co_dm"><option>no</option><option>yes</option></select></div>
+        <div><label>CHF</label><select id="co_chf"><option>no</option><option>yes</option></select></div>
+        <div><label>COPD/Asthma</label><select id="co_copd"><option>no</option><option>yes</option></select></div>
+        <div><label>CKD</label><select id="co_ckd"><option>no</option><option>yes</option></select></div>
+        <div><label>Depression/Anxiety</label><select id="co_mood"><option>no</option><option>yes</option></select></div>
+        <div><label>Dementia/MCI</label><select id="co_cog"><option>no</option><option>yes</option></select></div>
+
+        <!-- Safety / symptoms -->
+        <div class="full"><h2>Flags & Symptoms</h2></div>
         <div><label>Fall in last 30 days?</label><select id="falls"><option>no</option><option>yes</option></select></div>
-        <div><label>Dizziness?</label><select id="dizzy"><option>no</option><option>yes</option></select></div>
-        <div><label>Medication change?</label><select id="meds"><option>no</option><option>yes</option></select></div>
-        <div><label>New pain?</label><select id="pain"><option>no</option><option>yes</option></select></div>
-        <div class="full"><label>Notes</label><textarea id="notes"></textarea></div>
-        <div class="full row"><button type="submit" class="btn btn-primary">Compute Risk</button><button type="button" id="reset" class="btn btn-ghost">Reset</button></div>
+        <div><label>Dizziness / unsteady?</label><select id="dizzy"><option>no</option><option>yes</option></select></div>
+        <div><label>New pain (mod+)?</label><select id="pain"><option>no</option><option>yes</option></select></div>
+        <div><label>Short of breath?</label><select id="sob"><option>no</option><option>yes</option></select></div>
+        <div><label>Edema?</label><select id="edema"><option>no</option><option>yes</option></select></div>
+        <div><label>Infection concerns?</label><select id="infect"><option>no</option><option>yes</option></select></div>
+
+        <!-- Function / cognition / mood -->
+        <div class="full"><h2>Function, Cognition & Mood</h2></div>
+        <div><label>ADL concerns</label><select id="adl"><option>none</option><option>mild</option><option>moderate</option><option>severe</option></select></div>
+        <div><label>Mobility aid</label><select id="aid"><option>none</option><option>cane</option><option>walker</option><option>wheelchair</option></select></div>
+        <div><label>Mini-Cog or MoCA available?</label><select id="cog_test"><option>no</option><option>yes</option></select></div>
+        <div><label>PHQ-2 (0–6)</label><input type="number" id="phq2" min="0" max="6" placeholder="1"></div>
+
+        <!-- Social / environment -->
+        <div class="full"><h2>Social & Environment</h2></div>
+        <div><label>Lives alone?</label><select id="alone"><option>no</option><option>yes</option></select></div>
+        <div><label>Caregiver support</label><select id="care"><option>good</option><option>limited</option><option>none</option></select></div>
+        <div><label>Home safety issues?</label><select id="home"><option>no</option><option>yes</option></select></div>
+        <div><label>Alcohol / substance risk?</label><select id="substance"><option>no</option><option>yes</option></select></div>
+
+        <!-- Labs / devices -->
+        <div class="full"><h2>Labs & Devices (optional)</h2></div>
+        <div><label>eGFR</label><input type="number" id="egfr" min="5" max="110" step="1" placeholder="62"></div>
+        <div><label>A1c (%)</label><input type="number" id="a1c" min="4" max="15" step="0.1" placeholder="7.1"></div>
+        <div><label>BNP (pg/mL)</label><input type="number" id="bnp" min="0" max="20000" step="1" placeholder="180"></div>
+        <div><label>Device connected?</label><select id="device"><option>none</option><option>O₂</option><option>BP cuff</option><option>Wearable</option></select></div>
+
+        <!-- Notes -->
+        <div class="full"><label>Clinician notes</label><textarea id="notes" placeholder="Context: discharge date, exacerbations, social changes, goals of care…"></textarea></div>
+
+        <div class="full row" style="margin-top:6px">
+          <button type="submit" class="btn btn-primary">Compute Risk</button>
+          <button type="button" id="reset" class="btn btn-ghost">Reset</button>
+        </div>
       </form>
 
+      <!-- Result -->
       <div id="result" class="result">
         <div class="pill" id="riskBadge">Risk: —</div>
         <p id="summary" style="margin:.6rem 0 0"></p>
@@ -102,34 +200,112 @@
   </main>
 
   <footer class="wrap">© <span id="yr"></span> PredictWell Health — All rights reserved.</footer>
+
   <script>
     document.getElementById('yr').textContent = new Date().getFullYear();
     const BASE_API = 'https://predictwell-backend-ai.onrender.com';
-    const form=document.getElementById('form'),resultBox=document.getElementById('result'),
-          badge=document.getElementById('riskBadge'),summary=document.getElementById('summary');
-    document.getElementById('reset').onclick=()=>{form.reset();resultBox.style.display='none';};
-    form.addEventListener('submit',async e=>{
+
+    const $ = id => document.getElementById(id);
+    const form = $('form');
+    const resultBox = $('result');
+    const badge = $('riskBadge');
+    const summary = $('summary');
+    $('reset').onclick = () => { form.reset(); resultBox.style.display='none'; };
+
+    form.addEventListener('submit', async (e)=>{
       e.preventDefault();
-      const p={age:num('age'),sex:val('sex'),spo2_avg:num('spo2'),resting_hr:num('rest_hr'),
-      hrv_rmssd:num('hrv'),steps:num('steps'),sleep_hours:num('sleep'),sbp:num('sbp'),
-      falls_last_30d:val('falls'),dizziness:val('dizzy'),meds_change:val('meds'),
-      pain:val('pain'),notes:val('notes')||null};
+      const p = {
+        // identity
+        first: v('first')||null, last: v('last')||null, mrn: v('mrn')||null, reason: v('reason')||null,
+        // demo
+        age: n('age'), sex: v('sex'), height_cm: n('height'), weight_kg: n('weight'),
+        // signals
+        spo2_avg: n('spo2'), resting_hr: n('rest_hr'), hrv_rmssd: n('hrv'),
+        sbp: n('sbp'), dbp: n('dbp'), steps: n('steps'), sleep_hours: n('sleep'), weight_delta_kg: n('wt_delta'),
+        // meds
+        meds_change: v('meds'), highrisk_meds: v('highrisk_meds'), med_list: v('med_list')||null,
+        // comorbid
+        co_dm: v('co_dm'), co_chf: v('co_chf'), co_copd: v('co_copd'), co_ckd: v('co_ckd'), co_mood: v('co_mood'), co_cog: v('co_cog'),
+        // flags
+        falls_last_30d: v('falls'), dizziness: v('dizzy'), pain: v('pain'), sob: v('sob'), edema: v('edema'), infection: v('infect'),
+        // function / mood
+        adl_level: v('adl'), mobility_aid: v('aid'), cog_test: v('cog_test'), phq2: n('phq2'),
+        // social
+        lives_alone: v('alone'), caregiver: v('care'), home_issues: v('home'), substance: v('substance'),
+        // labs / device
+        egfr: n('egfr'), a1c: n('a1c'), bnp: n('bnp'), device: v('device'),
+        // notes
+        notes: v('notes')||null
+      };
+
+      let ok=false;
       try{
-        const res=await fetch(`${BASE_API}/eldercare/checkin`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(p)});
+        const res = await fetch(`${BASE_API}/eldercare/checkin`,{
+          method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(p)
+        });
         if(res.ok){
-          const d=await res.json(),level=d.level||levelFromScore(d.risk_score);
-          render(level,d.message||'Review key risks and follow-up needs.');return;
+          const data = await res.json(); // {risk_score, level, message}
+          const level = data.level || fromScore(data.risk_score);
+          render(level, data.message || autoMsg(p, level));
+          ok = true;
         }
       }catch(_){}
-      const lvl=localEstimate(p);render(lvl,`Quick estimate (${lvl})`);
+      if(!ok){
+        const level = localEstimate(p);
+        render(level, autoMsg(p, level) + ' (quick estimate)');
+      }
     });
-    function val(id){return document.getElementById(id).value.trim();}
-    function num(id){const v=document.getElementById(id).value;return v===""?null:Number(v);}
-    function levelFromScore(s){if(s==null)return'Unknown';if(s>=0.66)return'High';if(s>=0.33)return'Moderate';return'Low';}
-    function localEstimate(p){let s=0;if(p.falls_last_30d==='yes')s+=.4;if(p.dizziness==='yes')s+=.25;
-      if(p.meds_change==='yes')s+=.15;if(p.pain==='yes')s+=.15;if(p.spo2_avg&&p.spo2_avg<92)s+=.15;
-      if(p.steps&&p.steps<1500)s+=.1;if(p.sleep_hours&&p.sleep_hours<5.5)s+=.1;return s>=.66?'High':s>=.33?'Moderate':'Low';}
-    function render(l,m){badge.textContent=`Risk: ${l}`;summary.textContent=m;resultBox.style.display='block';resultBox.scrollIntoView({behavior:'smooth'});}
+
+    function v(id){ return $(id).value.trim(); }
+    function n(id){ const x = $(id).value; return x===""?null:Number(x); }
+    function fromScore(s){ if(s==null) return 'Unknown'; if(s>=0.66) return 'High'; if(s>=0.33) return 'Moderate'; return 'Low'; }
+
+    // quick local orientation if backend is cold
+    function localEstimate(p){
+      let s=0;
+      if(p.falls_last_30d==='yes') s+=0.4;
+      if(p.dizziness==='yes') s+=0.25;
+      if(p.meds_change==='yes') s+=0.15;
+      if(p.highrisk_meds==='yes') s+=0.15;
+      if(p.pain==='yes') s+=0.15;
+      if(p.spo2_avg!=null && p.spo2_avg<92) s+=0.15;
+      if(p.resting_hr!=null && p.resting_hr>95) s+=0.1;
+      if(p.hrv_rmssd!=null && p.hrv_rmssd<15) s+=0.1;
+      if(p.steps!=null && p.steps<1500) s+=0.1;
+      if(p.sleep_hours!=null && p.sleep_hours<5.5) s+=0.1;
+      if(p.sbp!=null && p.sbp>=150) s+=0.1;
+      if(p.egfr!=null && p.egfr<45) s+=0.1;
+      if(p.bnp!=null && p.bnp>500) s+=0.15;
+      if(p.adl_level==='moderate' || p.adl_level==='severe') s+=0.15;
+      if(p.caregiver==='limited' || p.caregiver==='none') s+=0.1;
+      return s>=0.66?'High':(s>=0.33?'Moderate':'Low');
+    }
+
+    function autoMsg(p, level){
+      const f=[];
+      if(p.falls_last_30d==='yes') f.push('recent fall');
+      if(p.dizziness==='yes') f.push('dizziness/unstable');
+      if(p.meds_change==='yes') f.push('medication change');
+      if(p.highrisk_meds==='yes') f.push('high-risk medications');
+      if(p.pain==='yes') f.push('new pain');
+      if(p.spo2_avg!=null && p.spo2_avg<92) f.push('low SpO₂');
+      if(p.hrv_rmssd!=null && p.hrv_rmssd<15) f.push('low HRV');
+      if(p.steps!=null && p.steps<1500) f.push('very low activity');
+      if(p.sleep_hours!=null && p.sleep_hours<5.5) f.push('short sleep');
+      if(p.sbp!=null && p.sbp>=150) f.push('elevated SBP');
+      if(p.egfr!=null && p.egfr<45) f.push('low eGFR');
+      if(p.bnp!=null && p.bnp>500) f.push('elevated BNP');
+      if(p.adl_level==='moderate'||p.adl_level==='severe') f.push('ADL limitations');
+      const because = f.length?` Because of ${f.join(', ')}.`:'';
+      return `Orientation: **${level}**.${because} Review meds, balance, hydration, safety and follow-up; escalate for persistent symptoms.`;
+    }
+
+    function render(level,msg){
+      badge.textContent = `Risk: ${level}`;
+      summary.innerHTML = msg;
+      resultBox.style.display='block';
+      resultBox.scrollIntoView({behavior:'smooth',block:'start'});
+    }
   </script>
 </body>
 </html>
