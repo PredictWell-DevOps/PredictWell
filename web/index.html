@@ -13,13 +13,14 @@
       --muted:#5b6b7c;
       --card: rgba(255,255,255,0.90);
       --shadow: 0 10px 30px rgba(0,0,0,0.20);
-      --radius: 18px;
+      --radius: 22px;
 
-      /* Gradients */
+      /* Button gradients */
       --grad-blue-1:#0b5fff;
       --grad-blue-2:#0aa0ff;
       --grad-orange-1:#ff7a00;
       --grad-orange-2:#ffb24d;
+
       --chip:#edf2ff;
     }
 
@@ -34,8 +35,9 @@
       background-attachment:fixed;
       min-height:100vh;
     }
-    /* Slight light overlay for readability */
-    .overlay{ position:fixed; inset:0; pointer-events:none;
+    /* light overlay for readability */
+    .overlay{
+      position:fixed; inset:0; pointer-events:none;
       background: radial-gradient(1200px 800px at 65% 25%, rgba(255,255,255,0.18), rgba(255,255,255,0.02));
     }
 
@@ -69,18 +71,18 @@
     .big-banner{
       background: var(--card);
       box-shadow: var(--shadow);
-      border-radius: 22px;
-      padding: 22px 22px;
+      border-radius: var(--radius);
+      padding: 22px;
       margin-bottom: 18px;
     }
     .big-banner h1{ margin:4px 0 10px 0; font-size:24px }
     .big-banner p{ margin:0; color:var(--text); line-height:1.6; }
 
-    /* Four option cards */
+    /* Option cards */
     .grid{ display:grid; grid-template-columns:1fr 1fr; gap:18px; }
     .card{
       background: var(--card);
-      border-radius: 22px;
+      border-radius: var(--radius);
       padding: 18px;
       box-shadow: var(--shadow);
     }
@@ -94,9 +96,6 @@
     }
     .btn-doc{ background:linear-gradient(135deg, var(--grad-blue-1), var(--grad-blue-2)); }
     .btn-patient{ background:linear-gradient(135deg, var(--grad-orange-1), var(--grad-orange-2)); }
-
-    /* Little chip style (unused but handy) */
-    .chip{ display:inline-block; padding:6px 10px; background:var(--chip); border-radius:999px; font-size:12px; margin-right:6px; }
 
     /* Mobile */
     @media (max-width:900px){
@@ -119,8 +118,8 @@
 
       <button id="hamburger" class="menu-btn" aria-label="Open menu"><span class="menu-dot"></span></button>
       <div id="menu" class="menu" role="menu" aria-label="Site menu">
-        <a href="/eldercare-doctor.html">Eldercare Doctors <small>Doctor portal</small></a>
-        <a href="/eldercare.html">Eldercare Patients <small>Quick check-in</small></a>
+        <a href="/eldercare.html">Eldercare Doctors <small>Doctor portal</small></a>
+        <a href="/eldercare-patient.html">Eldercare Patients <small>Quick check-in</small></a>
         <a href="/athletics.html">Athletics Doctors <small>Pitching risk</small></a>
         <a href="/athletics-patient.html">Athletics Patients <small>Quick risk</small></a>
       </div>
@@ -128,30 +127,30 @@
   </header>
 
   <main class="wrap">
-    <!-- ONE BIG BANNER (combines the 3 small banners into one paragraph) -->
+    <!-- ONE BIG BANNER -->
     <section class="big-banner">
       <h1>Easier Setup, Lower Burden, Actionable Results</h1>
       <p>
-        PredictWell gets you up and running fast—connect wearables in minutes or use our phone-only mode if that’s easier.
-        Weekly check-ins take just 60 to 90 seconds, boosted by friendly reminders so nothing slips through the cracks.
-        Behind the scenes, our AI turns signals into simple, actionable guidance with clear flags, trend views, and suggested next steps.
-        Clinicians get a crisp picture of risk and progression, while families see plain-English summaries that actually make sense.
-        The result is a calmer, smarter workflow where everyone stays informed and proactive without adding more work to the day.
+        PredictWell gets you up and running fast—connect wearables in minutes or choose our phone-only mode if that’s simpler.
+        Weekly check-ins take just 60–90 seconds, helped by friendly reminders so nothing slips through the cracks.
+        Behind the scenes, our AI converts raw signals into clear flags, trend views, and practical next steps that are easy to act on.
+        Clinicians see a crisp picture of risk and progression, while families get plain-English summaries that actually make sense.
+        The result is a calmer, smarter workflow where everyone stays informed and proactive—without adding more work to the day.
       </p>
     </section>
 
-    <!-- Four option cards with gradient buttons -->
+    <!-- Four option cards -->
     <section class="grid">
       <article class="card">
         <h2>Eldercare — Doctors</h2>
         <p>Clinician form & results for falls, frailty, cognition, and hospitalization risk.</p>
-        <a class="btn btn-doc" href="/eldercare-doctor.html">Open Doctor Portal</a>
+        <a class="btn btn-doc" href="/eldercare.html">Open Doctor Portal</a>
       </article>
 
       <article class="card">
         <h2>Eldercare — Patients</h2>
         <p>Fast weekly check-in and an easy-to-read summary.</p>
-        <a class="btn btn-patient" href="/eldercare.html">Open Patient Check-In</a>
+        <a class="btn btn-patient" href="/eldercare-patient.html">Open Patient Check-In</a>
       </article>
 
       <article class="card">
