@@ -1,219 +1,490 @@
+<!-- ====== eldercare.html — DOCTOR PORTAL (Modern, 2-col, collapsible) ====== -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>PredictWell — Eldercare Doctor Portal</title>
-  <meta name="description" content="Clinician inputs and results for falls, frailty, cognition and hospitalization risk." />
-  <link rel="icon" href="data:," />
+  <title>PredictWell Health.ai — Eldercare Doctor Portal</title>
+  <meta name="description" content="Eldercare Sentinel — Doctor intake with vitals, meds, labs, cognition, and activity for AI risk insights." />
+  <link rel="icon" href="data:,">
+
   <style>
-    *{box-sizing:border-box}
-    html,body{margin:0;padding:0;overflow-x:hidden}
-    body{
-      background-image:url("/static/images/predictwell_background.png");
-      background-size:cover;background-position:center;background-attachment:fixed;
-      min-height:100vh;color:#0b1b2b;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
-      font-size:clamp(14px,2vw,16px);
-    }
     :root{
-      --brand:#0b4c8c; --accent:#ff7a00;
-      --card-bg:rgba(255,255,255,.75); --card-border:rgba(0,0,0,.06);
-      --radius:18px; --shadow:0 10px 30px rgba(0,0,0,.16); --blur:8px;
+      --bg: rgba(0,0,0,0.45);
+      --card: rgba(255,255,255,0.92);
+      --shadow: 0 10px 30px rgba(0,0,0,0.20);
+      --radius: 18px;
+      --space: 16px;
+      --brand: #0b5fff;
+      --brand2:#0aa0ff;
+      --accent:#ff7a00;
+      --accent2:#ffb24d;
+      --text:#0b1b2b;
+      --muted:#5b6b7c;
+      --ok:#10b981;
+      --err:#ef4444;
+      --chip:#edf2ff;
     }
-    .overlay{position:fixed;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.12),rgba(0,0,0,.10));pointer-events:none}
-    .container{width:min(1100px,100%);margin:0 auto;padding:clamp(16px,3vw,28px)}
-    .card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:var(--radius);box-shadow:var(--shadow);backdrop-filter:blur(var(--blur));padding:clamp(16px,3vw,22px)}
-    h2,h3{margin:0 0 8px 0}
 
-    /* Header (same as index) */
-    .header{position:relative;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:8px 0}
-    .brand{display:inline-flex;align-items:center;gap:10px;color:inherit;text-decoration:none;flex:1 1 auto;min-width:200px}
-    .logo{width:clamp(32px,7vw,44px);height:clamp(32px,7vw,44px);border-radius:12px;background:linear-gradient(135deg,var(--brand),#143e66);box-shadow:var(--shadow)}
-    .brand h1{margin:0;line-height:1.1;font-size:clamp(18px,5.5vw,26px);white-space:nowrap}
-    .tagline{margin:2px 0 0 0;font-size:clamp(12px,3.2vw,14px);opacity:.9}
-    @media(max-width:420px){.tagline{display:none}}
-    .hamburger{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:10px;border:1px solid rgba(0,0,0,.15);background:#fff;cursor:pointer}
-    .hamburger:focus{outline:2px solid #0f6cbc;outline-offset:2px}
-    .hamburger-bars{width:22px;height:16px;position:relative}
-    .hamburger-bars::before,.hamburger-bars::after,.hamburger-bars span{content:"";position:absolute;left:0;right:0;height:2px;background:#0b1b2b;border-radius:2px;transition:transform .2s ease,opacity .2s ease}
-    .hamburger-bars::before{top:0}.hamburger-bars span{top:7px}.hamburger-bars::after{bottom:0}
-    .hamburger[aria-expanded="true"] .hamburger-bars::before{transform:translateY(7px) rotate(45deg)}
-    .hamburger[aria-expanded="true"] .hamburger-bars span{opacity:0}
-    .hamburger[aria-expanded="true"] .hamburger-bars::after{transform:translateY(-7px) rotate(-45deg)}
-    .menu-panel{position:absolute;top:100%;right:0;z-index:20;padding-top:8px}
-    .menu-card{min-width:240px;margin:0 clamp(12px,3vw,24px);background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;box-shadow:var(--shadow);overflow:hidden;backdrop-filter:blur(var(--blur))}
-    .menu-list{list-style:none;margin:0;padding:6px;display:grid;gap:4px}
-    .menu-list a{display:block;padding:12px 14px;text-decoration:none;color:#0b1b2b;border-radius:10px;font-weight:600}
-    .menu-list a:hover,.menu-list a:focus{background:rgba(11,76,140,.08);outline:none}
-
-    /* Layout */
-    .hero{margin:clamp(10px,2vw,16px) 0}
-    .main{display:grid;gap:16px;grid-template-columns:1.2fr .8fr}
-    @media(max-width:980px){.main{grid-template-columns:1fr}}
-
-    /* Form */
-    form{display:grid;gap:14px}
-    .fieldset{display:grid;gap:10px;border:1px dashed rgba(11,76,140,.18);padding:12px;border-radius:12px;background:rgba(255,255,255,.72)}
-    .fieldset legend{font-weight:700;color:var(--brand);padding:0 6px}
-    .row{display:grid;gap:10px;grid-template-columns:repeat(4,1fr)}
-    @media(max-width:980px){.row{grid-template-columns:repeat(2,1fr)}}
-    @media(max-width:560px){.row{grid-template-columns:1fr}}
-    label{font-size:13px;opacity:.9}
-    input[type="text"],input[type="number"],textarea{
-      width:100%;min-height:40px;border-radius:10px;border:1px solid rgba(0,0,0,.18);
-      background:#fff;padding:8px 10px;font-size:14px;
+    /* Background */
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      color: var(--text);
+      background-image: url("/static/images/predictwell_background.png");
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      min-height: 100vh;
     }
-    textarea{min-height:110px;resize:vertical}
-    .checks{display:grid;gap:8px;grid-template-columns:repeat(2,1fr)}
-    @media(max-width:560px){.checks{grid-template-columns:1fr}}
+    /* Overlay to improve contrast */
+    .overlay{
+      position: fixed; inset:0; background: radial-gradient(1200px 800px at 70% 20%, rgba(255,255,255,0.06), rgba(0,0,0,0.45));
+      pointer-events:none;
+    }
 
-    /* Buttons (gradients) */
-    .btn{display:inline-block;text-decoration:none;text-align:center;font-weight:700;border:1px solid transparent;border-radius:999px;min-height:44px;line-height:44px;padding:0 18px;cursor:pointer}
-    .btn-primary{background:linear-gradient(135deg,#0b4c8c,#0f6cbc);color:#fff;box-shadow:0 8px 18px rgba(11,76,140,.28)}
-    .btn-accent{background:linear-gradient(135deg,#ff7a00,#ff9a3d);color:#1c1c1c;box-shadow:0 8px 18px rgba(255,122,0,.28)}
-    .btn-ghost{background:#fff;color:#0b4c8c;border-color:rgba(11,76,140,.25)}
+    /* Header */
+    .header{
+      position: sticky; top:0; z-index:10;
+      backdrop-filter: blur(10px);
+      background: rgba(255,255,255,0.65);
+      border-bottom: 1px solid rgba(255,255,255,0.4);
+    }
+    .nav{
+      max-width: 1100px; margin: 0 auto; padding: 14px 18px;
+      display:flex; align-items:center; justify-content:space-between;
+    }
+    .brand{ display:flex; gap:10px; align-items:center; text-decoration:none; color:inherit;}
+    .logo{
+      width:36px; height:36px; border-radius:10px;
+      background: linear-gradient(135deg, var(--brand), var(--brand2));
+      box-shadow: var(--shadow);
+    }
+    .title{ font-weight:700; font-size:18px; line-height:1.1}
+    .subtitle{ font-size:12px; color:var(--muted); margin-top:2px}
+    .menu-btn{
+      appearance:none; border:0; background:#fff; width:40px; height:40px; border-radius:12px;
+      display:grid; place-items:center; box-shadow:var(--shadow); cursor:pointer;
+    }
+    .menu-dot{ width:18px; height:2px; background:#111; position:relative; border-radius:2px}
+    .menu-dot::before,.menu-dot::after{ content:""; position:absolute; width:18px; height:2px; background:#111; left:0; border-radius:2px}
+    .menu-dot::before{ top:-6px } .menu-dot::after{ top:6px }
 
-    .result-card pre{margin:0;background:#0e1a2a;color:#d9e6ff;padding:12px;border-radius:10px;overflow:auto}
+    .menu{
+      position:absolute; right:18px; top:60px; background:#fff; border-radius:14px; box-shadow:var(--shadow);
+      display:none; min-width:240px; overflow:hidden;
+    }
+    .menu a{
+      display:flex; justify-content:space-between; align-items:center;
+      padding:12px 14px; text-decoration:none; color:#0b1b2b; font-weight:600;
+      border-bottom:1px solid #f1f5f9;
+    }
+    .menu a small{ color:var(--muted); font-weight:500}
+    .menu a:last-child{ border-bottom:0 }
+    .menu.show{ display:block }
 
-    footer{text-align:center;margin:24px 0 8px;font-size:clamp(12px,2.6vw,14px);color:rgba(0,0,0,.7)}
-    @media(prefers-reduced-motion:reduce){*{transition:none !important;animation:none !important}}
+    /* Page container */
+    .wrap{ max-width:1100px; margin:22px auto 80px; padding: 0 18px;}
+
+    /* Hero card */
+    .hero{
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 18px 20px;
+      display:flex; align-items:center; justify-content:space-between; gap:16px;
+    }
+    .hero h1{ margin:0; font-size:22px }
+    .hero p{ margin:6px 0 0; color:var(--muted) }
+
+    /* Grid layout */
+    .grid{
+      display:grid; grid-template-columns: 2fr 1fr; gap: 18px; margin-top:18px;
+    }
+    .card{
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 16px;
+    }
+
+    /* Collapsible sections */
+    details{
+      background:#fff; border-radius:14px; margin-bottom:12px; border: 1px solid #eef2f7; overflow:hidden;
+    }
+    details[open] { border-color:#dbeafe; box-shadow:0 8px 16px rgba(2,132,199,0.10) }
+    summary{
+      list-style:none; cursor:pointer; padding:14px 16px; font-weight:700; display:flex; align-items:center; justify-content:space-between;
+      background: linear-gradient(180deg,#ffffff,#f8fafc);
+    }
+    summary::-webkit-details-marker{ display:none }
+    .section-body{ padding: 14px 16px 16px; border-top:1px solid #eef2f7; background:#fff }
+
+    /* Form layout */
+    .row{ display:grid; grid-template-columns: repeat(12, 1fr); gap:12px; }
+    .col-6{ grid-column: span 6 } .col-4{ grid-column: span 4 } .col-3{ grid-column: span 3 } .col-12{ grid-column: span 12 }
+    label{ font-size:12px; color:var(--muted); display:block; margin-bottom:6px; }
+    input, select, textarea{
+      width:100%; padding:12px 12px; border:1px solid #e2e8f0; border-radius:12px; background:#fff; font-size:14px;
+    }
+    textarea{ min-height:110px; resize:vertical }
+    .chip{ font-size:12px; padding:4px 8px; background:var(--chip); border-radius:999px; display:inline-block; margin-right:8px; }
+
+    /* Right column results */
+    .results pre{
+      background:#0b1220; color:#eaf2ff; padding:14px; border-radius:12px; overflow:auto; font-size:12px; line-height:1.4;
+    }
+
+    /* Buttons */
+    .btn{
+      border:0; padding:12px 16px; border-radius:14px; font-weight:800; cursor:pointer; letter-spacing:.2px;
+      color:#fff; box-shadow: var(--shadow);
+    }
+    .btn-blue{ background: linear-gradient(135deg, var(--brand), var(--brand2)); }
+    .btn-orange{ background: linear-gradient(135deg, var(--accent), var(--accent2)); }
+    .btn-ghost{ background:#fff; color:#0b1b2b; border:1px solid #e2e8f0 }
+    .btn-row{ display:flex; flex-wrap:wrap; gap:10px; margin-top:12px }
+
+    .muted{ color:var(--muted) }
+    .ok{ color: var(--ok); font-weight:700 }
+    .err{ color: var(--err); font-weight:700 }
+
+    /* Mobile */
+    @media (max-width: 900px){
+      .grid{ grid-template-columns: 1fr }
+      .hero{ flex-direction:column; align-items:flex-start }
+    }
+    @media (max-width: 640px){
+      .row{ grid-template-columns: repeat(6, 1fr) }
+      .col-6{ grid-column: span 6 } .col-4{ grid-column: span 6 } .col-3{ grid-column: span 3 } .col-12{ grid-column: span 6 }
+    }
   </style>
 </head>
 <body>
   <div class="overlay" aria-hidden="true"></div>
 
-  <div class="container">
-    <!-- Header (brand links home) -->
-    <header class="header">
+  <!-- Header -->
+  <header class="header">
+    <nav class="nav">
       <a class="brand" href="/"><div class="logo" aria-hidden="true"></div>
-        <div><h1>PredictWell Health.ai</h1><div class="tagline">Proactive health insights for seniors & athletes</div></div>
+        <div>
+          <div class="title">PredictWell Health.ai</div>
+          <div class="subtitle">Proactive health insights for seniors & athletes</div>
+        </div>
       </a>
 
-      <button class="hamburger" id="menuBtn" aria-label="Open menu" aria-controls="menuPanel" aria-expanded="false">
-        <div class="hamburger-bars"><span></span></div>
-      </button>
-      <div class="menu-panel" id="menuPanel" hidden>
-        <div class="menu-card" role="dialog" aria-label="Site menu">
-          <ul class="menu-list">
-            <li><a href="/eldercare.html">Eldercare • Doctors</a></li>
-            <li><a href="/eldercare-patient.html">Eldercare • Patients</a></li>
-            <li><a href="/athletics.html">Athletics • Doctors</a></li>
-            <li><a href="/athletics-patient.html">Athletics • Patients</a></li>
-          </ul>
-        </div>
+      <button id="hamburger" class="menu-btn" aria-label="Open menu"><span class="menu-dot"></span></button>
+      <div id="menu" class="menu" role="menu" aria-label="Site menu">
+        <a href="/eldercare.html">Eldercare Doctors <small>Doctor portal</small></a>
+        <a href="/eldercare-patient.html">Eldercare Patients <small>Quick check-in</small></a>
+        <a href="/athletics.html">Athletics Doctors <small>Pitching risk</small></a>
+        <a href="/athletics-patient.html">Athletics Patients <small>Quick risk</small></a>
       </div>
-    </header>
+    </nav>
+  </header>
 
-    <!-- Title -->
-    <section class="card hero">
-      <h2>Eldercare Sentinel — Weekly Check-In</h2>
-      <p>Log wearable signals and notes. We’ll compute risk signals and suggested micro-actions.</p>
+  <main class="wrap">
+    <!-- Intro -->
+    <section class="hero">
+      <div>
+        <h1>Eldercare Sentinel — Doctor Intake</h1>
+        <p>Modernized clinical intake for seniors. Submit vitals, meds, labs, cognition, and activity; we’ll compute risk signals and suggested micro-actions.</p>
+      </div>
+      <div>
+        <span class="chip">Doctor Portal</span>
+        <span class="chip">AI Risk Engine</span>
+        <span class="chip">HIPAA-friendly design</span>
+      </div>
     </section>
 
-    <!-- Main -->
-    <section class="main">
-      <!-- Form column -->
-      <div class="card">
-        <form id="checkinForm">
-          <fieldset class="fieldset">
-            <legend>Patient</legend>
+    <!-- Content -->
+    <section class="grid">
+      <!-- LEFT: Form -->
+      <form id="doctorForm" class="card">
+        <!-- Patient & Visit -->
+        <details open>
+          <summary>Patient & Visit</summary>
+          <div class="section-body">
             <div class="row">
-              <div><label>Name</label><input type="text" name="name" placeholder="e.g., Pat Quinn"/></div>
-              <div><label>Age</label><input type="number" name="age" min="0" placeholder="79"/></div>
-              <div><label>Resting HR (bpm)</label><input type="number" name="resting_hr" min="0" placeholder="68"/></div>
-              <div><label>Avg nightly SpO₂ (%)</label><input type="number" name="spo2" min="0" max="100" step="0.1" placeholder="94.5"/></div>
+              <div class="col-6">
+                <label>Patient name</label>
+                <input name="name" placeholder="e.g., Pat Quinn" />
+              </div>
+              <div class="col-3">
+                <label>Age</label>
+                <input name="age" type="number" inputmode="numeric" placeholder="79" />
+              </div>
+              <div class="col-3">
+                <label>Sex</label>
+                <select name="sex">
+                  <option value="">Select</option>
+                  <option>Female</option>
+                  <option>Male</option>
+                  <option>Intersex / Other</option>
+                  <option>Prefer not to say</option>
+                </select>
+              </div>
+
+              <div class="col-4">
+                <label>Height (in)</label>
+                <input name="height_in" type="number" step="0.1" placeholder="66" />
+              </div>
+              <div class="col-4">
+                <label>Weight (lbs)</label>
+                <input name="weight_lbs" type="number" step="0.1" placeholder="168" />
+              </div>
+              <div class="col-4">
+                <label>Recent weight change (lbs)</label>
+                <input name="weight_change_lbs" type="number" step="0.1" placeholder="0" />
+              </div>
             </div>
-          </fieldset>
-
-          <fieldset class="fieldset">
-            <legend>Sleep & Activity</legend>
-            <div class="row">
-              <div><label>Avg sleep (hrs)</label><input type="number" name="sleep_hrs" min="0" step="0.1" placeholder="6.7"/></div>
-              <div><label>Avg daily steps</label><input type="number" name="steps" min="0" placeholder="4200"/></div>
-              <div><label>HRV (RMSSD, ms)</label><input type="number" name="hrv" min="0" placeholder="18"/></div>
-              <div><label>Weight change (lbs, ±)</label><input type="number" name="wt_delta" step="0.1" placeholder="0.0"/></div>
-            </div>
-          </fieldset>
-
-          <fieldset class="fieldset">
-            <legend>Balance, Mobility, Cognition</legend>
-            <div class="checks">
-              <label><input type="checkbox" name="flag_balance"/> Any recent balance, gait or dizziness concerns?</label>
-              <label><input type="checkbox" name="flag_cognition"/> Any memory, attention or mood flags?</label>
-              <label><input type="checkbox" name="flag_falls"/> Any falls in the last 7 days?</label>
-              <label><input type="checkbox" name="flag_hospital"/> Any ER/hospital visits?</label>
-            </div>
-          </fieldset>
-
-          <fieldset class="fieldset">
-            <legend>Notes</legend>
-            <textarea name="notes" placeholder="Any changes this week? New meds, colds, pain, falls, etc."></textarea>
-          </fieldset>
-
-          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
-            <button type="submit" class="btn btn-primary">Submit Check-In</button>
-            <button type="button" id="pingBtn" class="btn btn-ghost">Ping Backend</button>
-            <span id="backendStatus" class="card" style="padding:6px 10px;border-radius:999px;display:inline-block">Backend: <strong>…</strong></span>
           </div>
-        </form>
-      </div>
+        </details>
 
-      <!-- Results column -->
-      <aside class="card result-card" aria-label="Results">
-        <h3>Results</h3>
-        <pre id="results">{ "status": "ok" }</pre>
+        <!-- Vitals -->
+        <details open>
+          <summary>Vitals</summary>
+          <div class="section-body">
+            <div class="row">
+              <div class="col-3">
+                <label>Resting HR (bpm)</label>
+                <input name="resting_hr" type="number" placeholder="68" />
+              </div>
+              <div class="col-3">
+                <label>Avg nightly SpO₂ (%)</label>
+                <input name="spo2" type="number" step="0.1" placeholder="94.5" />
+              </div>
+              <div class="col-3">
+                <label>BP (systolic)</label>
+                <input name="bp_sys" type="number" placeholder="128" />
+              </div>
+              <div class="col-3">
+                <label>BP (diastolic)</label>
+                <input name="bp_dia" type="number" placeholder="78" />
+              </div>
+
+              <div class="col-3">
+                <label>Respiratory rate</label>
+                <input name="rr" type="number" step="0.1" placeholder="16" />
+              </div>
+              <div class="col-3">
+                <label>Temp (°F)</label>
+                <input name="temp_f" type="number" step="0.1" placeholder="98.2" />
+              </div>
+              <div class="col-3">
+                <label>Glucose (fasting)</label>
+                <input name="glucose" type="number" step="0.1" placeholder="92" />
+              </div>
+              <div class="col-3">
+                <label>A1c (%)</label>
+                <input name="a1c" type="number" step="0.1" placeholder="5.7" />
+              </div>
+            </div>
+          </div>
+        </details>
+
+        <!-- Sleep & Activity -->
+        <details>
+          <summary>Sleep & Activity</summary>
+          <div class="section-body">
+            <div class="row">
+              <div class="col-3">
+                <label>Avg sleep (hrs)</label>
+                <input name="sleep_hours" type="number" step="0.1" placeholder="6.7" />
+              </div>
+              <div class="col-3">
+                <label>Avg daily steps</label>
+                <input name="daily_steps" type="number" placeholder="4200" />
+              </div>
+              <div class="col-3">
+                <label>HRV rMSSD (ms)</label>
+                <input name="hrv_rmssd" type="number" placeholder="18" />
+              </div>
+              <div class="col-3">
+                <label>Sleep efficiency (%)</label>
+                <input name="sleep_eff" type="number" step="0.1" placeholder="84" />
+              </div>
+            </div>
+          </div>
+        </details>
+
+        <!-- Balance, Mobility, Cognition -->
+        <details>
+          <summary>Balance, Mobility & Cognition</summary>
+          <div class="section-body">
+            <div class="row">
+              <div class="col-12">
+                <label>Screening flags</label>
+                <div class="row">
+                  <div class="col-6"><label><input type="checkbox" name="flag_balance" /> Recent balance, gait, or dizziness issues</label></div>
+                  <div class="col-6"><label><input type="checkbox" name="flag_memory" /> Memory/attention/mood flags</label></div>
+                  <div class="col-6"><label><input type="checkbox" name="flag_falls" /> Fall in last 7 days</label></div>
+                  <div class="col-6"><label><input type="checkbox" name="flag_er" /> ER/hospital visit</label></div>
+                </div>
+              </div>
+              <div class="col-12">
+                <label>Notes (optional)</label>
+                <textarea name="cognition_notes" placeholder="Observations, MoCA/MMSE notes, functional changes…"></textarea>
+              </div>
+            </div>
+          </div>
+        </details>
+
+        <!-- Medications & Conditions -->
+        <details>
+          <summary>Medications & Conditions</summary>
+          <div class="section-body">
+            <div class="row">
+              <div class="col-12">
+                <label>Current medications</label>
+                <textarea name="medications" placeholder="Name, dose, frequency. Mark high-risk meds (e.g., benzos, anticholinergics), anticoagulants, insulin, etc."></textarea>
+              </div>
+              <div class="col-12">
+                <label>Chronic conditions</label>
+                <textarea name="conditions" placeholder="E.g., AFib, CHF, COPD, CKD, CAD, DM2, dementia, Parkinson’s, depression, osteoporosis…"></textarea>
+              </div>
+              <div class="col-12">
+                <label>Allergies</label>
+                <textarea name="allergies" placeholder="Allergen — reaction — severity"></textarea>
+              </div>
+            </div>
+          </div>
+        </details>
+
+        <!-- Key Labs -->
+        <details>
+          <summary>Key Labs</summary>
+          <div class="section-body">
+            <div class="row">
+              <div class="col-3"><label>Na (mEq/L)</label><input name="lab_na" type="number" step="0.1" /></div>
+              <div class="col-3"><label>K (mEq/L)</label><input name="lab_k" type="number" step="0.1" /></div>
+              <div class="col-3"><label>Creatinine</label><input name="lab_cr" type="number" step="0.01" /></div>
+              <div class="col-3"><label>eGFR</label><input name="lab_egfr" type="number" /></div>
+              <div class="col-3"><label>BNP/NT-proBNP</label><input name="lab_bnp" type="number" /></div>
+              <div class="col-3"><label>Hgb (g/dL)</label><input name="lab_hgb" type="number" step="0.1" /></div>
+              <div class="col-3"><label>TSH</label><input name="lab_tsh" type="number" step="0.1" /></div>
+              <div class="col-3"><label>CRP</label><input name="lab_crp" type="number" step="0.1" /></div>
+            </div>
+          </div>
+        </details>
+
+        <!-- Devices / Wearables -->
+        <details>
+          <summary>Devices & Wearables</summary>
+          <div class="section-body">
+            <div class="row">
+              <div class="col-6">
+                <label>Primary wearable</label>
+                <input name="wearable" placeholder="Apple Watch / Fitbit / Oura / Garmin / Other" />
+              </div>
+              <div class="col-6">
+                <label>CPAP / O₂</label>
+                <input name="cpap_o2" placeholder="e.g., CPAP nightly, 2 L O₂ PRN" />
+              </div>
+              <div class="col-12">
+                <label>Device notes</label>
+                <textarea name="device_notes" placeholder="Adherence, issues, sensor problems, data gaps…"></textarea>
+              </div>
+            </div>
+          </div>
+        </details>
+
+        <!-- Free-text Clinical Notes -->
+        <details>
+          <summary>Clinical Notes</summary>
+          <div class="section-body">
+            <div class="row">
+              <div class="col-12">
+                <label>Visit notes</label>
+                <textarea name="notes" placeholder="Chief concerns, ROS highlights, exam pearls, pending referrals, caregiver insights…"></textarea>
+              </div>
+            </div>
+          </div>
+        </details>
+
+        <div class="btn-row">
+          <button type="button" id="submitBtn" class="btn btn-blue">Submit to AI Risk Engine</button>
+          <a class="btn btn-orange" href="/eldercare-patient.html">Go to Patient Portal</a>
+          <button type="button" id="pingBtn" class="btn btn-ghost">Ping Backend</button>
+        </div>
+        <p id="statusMsg" class="muted" role="status" style="margin-top:8px;"></p>
+      </form>
+
+      <!-- RIGHT: Results -->
+      <aside class="card results">
+        <h3 style="margin-top:0">Results</h3>
+        <p class="muted" style="margin-top:-6px">Model response and suggested micro-actions will appear here.</p>
+        <pre id="resultBox">{ "status": "ok" }</pre>
+        <p class="muted" style="font-size:12px">Tip: keep sections collapsed you don’t need; everything saves in the same submission.</p>
       </aside>
     </section>
-
-    <footer>© <span id="y"></span> PredictWell Health.ai — Eldercare Sentinel</footer>
-  </div>
+  </main>
 
   <script>
-    // footer year
-    document.getElementById('y').textContent = new Date().getFullYear();
+    // ---- Config
+    const BASE_API = 'https://predictwell-backend-ai.onrender.com';
 
-    // hamburger
-    const btn = document.getElementById('menuBtn');
-    const panel = document.getElementById('menuPanel');
-    const closeMenu=()=>{btn.setAttribute('aria-expanded','false');panel.hidden=true;document.removeEventListener('click',outside);document.removeEventListener('keydown',esc);}
-    const outside=e=>{if(!panel.contains(e.target)&&e.target!==btn)closeMenu();}
-    const esc=e=>{if(e.key==='Escape')closeMenu();}
-    btn.addEventListener('click',()=>{const open=btn.getAttribute('aria-expanded')==='true'; if(open){closeMenu();} else {btn.setAttribute('aria-expanded','true');panel.hidden=false;setTimeout(()=>{document.addEventListener('click',outside);document.addEventListener('keydown',esc);},0);}});
-
-    // simple form handler: echo inputs + toy flags
-    const form = document.getElementById('checkinForm');
-    const out = document.getElementById('results');
-    form.addEventListener('submit', (e)=>{
-      e.preventDefault();
-      const data = Object.fromEntries(new FormData(form).entries());
-      // Convert checkbox string "on" to booleans
-      ['flag_balance','flag_cognition','flag_falls','flag_hospital'].forEach(k=>{data[k]=!!form.elements[k].checked;});
-      data.timestamp = new Date().toISOString();
-
-      // very simple toy risk flags (placeholder — integrate your real model/backend)
-      const risks = [];
-      if (Number(data.spo2) && Number(data.spo2) < 92) risks.push('Low SpO₂');
-      if (Number(data.hrv) && Number(data.hrv) < 15) risks.push('Low HRV');
-      if (Number(data.sleep_hrs) && Number(data.sleep_hrs) < 6) risks.push('Short sleep');
-      if (data.flag_balance) risks.push('Balance/Gait');
-      if (data.flag_cognition) risks.push('Cognition/Mood');
-      if (data.flag_falls) risks.push('Recent fall');
-      if (data.flag_hospital) risks.push('Recent ER/Hospital');
-
-      out.textContent = JSON.stringify({ ok:true, risks, input:data }, null, 2);
-      // TODO: POST to your API instead of echoing
+    // ---- Menu
+    const menuBtn = document.getElementById('hamburger');
+    const menu = document.getElementById('menu');
+    menuBtn.addEventListener('click', () => menu.classList.toggle('show'));
+    document.addEventListener('click', (e)=> {
+      if(!menu.contains(e.target) && !menuBtn.contains(e.target)) menu.classList.remove('show');
     });
 
-    // backend ping (best-effort; won’t break page if absent)
-    const pingBtn = document.getElementById('pingBtn');
-    const statusEl = document.getElementById('backendStatus').querySelector('strong');
-    pingBtn.addEventListener('click', async ()=>{
-      statusEl.textContent = '…';
+    // ---- Helpers
+    function formToJSON(form) {
+      const data = {};
+      new FormData(form).forEach((v, k) => {
+        if (data[k] !== undefined) {
+          if (!Array.isArray(data[k])) data[k] = [data[k]];
+          data[k].push(v);
+        } else {
+          data[k] = v;
+        }
+      });
+      // Convert checkboxes to booleans
+      ['flag_balance','flag_memory','flag_falls','flag_er'].forEach(key=>{
+        data[key] = !!form.querySelector(`[name="${key}"]`)?.checked;
+      });
+      return data;
+    }
+
+    const form = document.getElementById('doctorForm');
+    const statusMsg = document.getElementById('statusMsg');
+    const resultBox = document.getElementById('resultBox');
+
+    async function pingBackend(){
       try{
-        const res = await fetch('/api/health/ping').catch(()=>fetch('/ping'));
-        statusEl.textContent = res && res.ok ? 'ok' : 'offline';
-      }catch{ statusEl.textContent = 'offline'; }
-    });
+        statusMsg.textContent = 'Pinging backend…';
+        const r = await fetch(`${BASE_API}/healthz`);
+        const j = await r.json();
+        statusMsg.innerHTML = '<span class="ok">Backend online.</span>';
+        resultBox.textContent = JSON.stringify(j, null, 2);
+      }catch(e){
+        statusMsg.innerHTML = '<span class="err">Backend unreachable.</span>';
+      }
+    }
+
+    async function submitDoctor(){
+      statusMsg.textContent = 'Submitting…';
+      const payload = formToJSON(form);
+      try{
+        const r = await fetch(`${BASE_API}/eldercare/checkin`, {
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body: JSON.stringify(payload)
+        });
+        const j = await r.json();
+        resultBox.textContent = JSON.stringify(j, null, 2);
+        statusMsg.innerHTML = '<span class="ok">Submitted successfully.</span>';
+      }catch(e){
+        statusMsg.innerHTML = '<span class="err">Submission failed.</span>';
+      }
+    }
+
+    document.getElementById('pingBtn').addEventListener('click', pingBackend);
+    document.getElementById('submitBtn').addEventListener('click', submitDoctor);
   </script>
 </body>
 </html>
