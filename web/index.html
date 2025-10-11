@@ -32,10 +32,38 @@
     .menu a { display: block; padding: 10px 12px; border-radius: 10px; text-decoration: none; color: #111827; min-width: 220px; }
     .menu a:hover { background: rgba(17,24,39,0.06); }
 
-    /* Main hero */
+    /* Email provider picker (kept) */
+    .email-wrap { position: relative; display: inline-block; }
+    .header-email { font-size: 14px; color: #111827; text-decoration: none; margin-right: 12px; font-weight: 600; cursor: pointer; }
+    .header-email:hover { text-decoration: underline; }
+    .email-menu {
+      position: absolute; right: 0; top: 120%;
+      background: rgba(255,255,255,0.96);
+      backdrop-filter: blur(6px);
+      border: 1px solid rgba(17,24,39,0.08);
+      border-radius: 10px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.18);
+      padding: 6px; min-width: 230px; display: none; z-index: 60;
+    }
+    .email-menu a {
+      display: block; padding: 8px 10px; border-radius: 8px;
+      text-decoration: none; color: #111827; font-size: 14px;
+    }
+    .email-menu a:hover { background: rgba(17,24,39,0.06); }
+
+    /* Main hero (legacy) */
     .main { max-width: 1080px; margin: 40px auto; padding: 0 18px; }
     .hero { background: rgba(255,255,255,0.78); border-radius: 18px; box-shadow: 0 10px 30px rgba(0,0,0,0.18); padding: 22px 24px; margin-bottom: 18px; }
     .hero h1 { font-size: 26px; margin-top: 0; }
+
+    /* NEW: top landing hero (like your reference) */
+    .landing-hero { background: linear-gradient(120deg, rgba(255,255,255,0.9), rgba(240,247,255,0.92)); border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.18); padding: 32px 28px; margin-bottom: 22px; border: 1px solid rgba(17,24,39,0.06); }
+    .landing-hero h1 { margin: 0 0 10px 0; font-size: clamp(28px, 3vw, 40px); line-height: 1.2; color: #0b1020; }
+    .landing-hero p { margin: 0 0 16px 0; font-size: 16px; color: #1f2937; line-height: 1.65; max-width: 900px; }
+    .landing-cta-row { display: flex; gap: 12px; flex-wrap: wrap; }
+    .pw-btn { border: none; cursor: pointer; padding: 10px 16px; border-radius: 999px; font-weight: 700; color: #fff; box-shadow: 0 10px 24px rgba(0,0,0,0.12); }
+    .pw-btn-primary { background: linear-gradient(135deg,#2563eb,#60a5fa); }
+    .pw-btn-secondary { background: linear-gradient(135deg,#6b7280,#9ca3af); color: #0b1020; }
 
     /* Cards (two-column layout) */
     .cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
@@ -60,9 +88,6 @@
     .pw-card h3 { margin: 2px 0 6px 0; font-size: 20px; color: #0b1020; }
     .pw-card p { margin: 0; color: #374151; line-height: 1.55; font-size: 15px; }
     .pw-cta-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 22px; }
-    .pw-btn { border: none; cursor: pointer; padding: 10px 16px; border-radius: 999px; font-weight: 700; color: #fff; box-shadow: 0 10px 24px rgba(0,0,0,0.12); }
-    .pw-btn-primary { background: linear-gradient(135deg,#2563eb,#60a5fa); }
-    .pw-btn-secondary { background: linear-gradient(135deg,#6b7280,#9ca3af); color: #0b1020; }
 
     /* Lead form section */
     .pw-lead-section { margin: 26px auto 50px; padding: 0 18px; }
@@ -81,25 +106,6 @@
     .pw-check-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
     .pw-btn-submit { background: linear-gradient(135deg,#2563eb,#60a5fa); color: #fff; border: 0; border-radius: 999px; padding: 10px 18px; font-weight: 800; cursor: pointer; box-shadow: 0 10px 24px rgba(37,99,235,0.22); }
     .pw-legal { font-size: 11px; color: #6b7280; }
-
-    /* ===== Added minimal styles for the email provider picker ===== */
-    .email-wrap { position: relative; display: inline-block; }
-    .header-email { font-size: 14px; color: #111827; text-decoration: none; margin-right: 12px; font-weight: 600; cursor: pointer; }
-    .header-email:hover { text-decoration: underline; }
-    .email-menu {
-      position: absolute; right: 0; top: 120%;
-      background: rgba(255,255,255,0.96);
-      backdrop-filter: blur(6px);
-      border: 1px solid rgba(17,24,39,0.08);
-      border-radius: 10px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.18);
-      padding: 6px; min-width: 230px; display: none; z-index: 60;
-    }
-    .email-menu a {
-      display: block; padding: 8px 10px; border-radius: 8px;
-      text-decoration: none; color: #111827; font-size: 14px;
-    }
-    .email-menu a:hover { background: rgba(17,24,39,0.06); }
   </style>
 </head>
 <body>
@@ -115,7 +121,7 @@
       </a>
       <div class="spacer"></div>
 
-      <!-- ===== Added: universal email link with provider picker (Gmail/Outlook/Yahoo/Default) ===== -->
+      <!-- Universal email picker (kept) -->
       <div class="email-wrap">
         <a href="mailto:info@predictwellhealth.ai" class="header-email" id="emailLink">info@predictwellhealth.ai</a>
         <div class="email-menu" id="emailMenu" role="menu" aria-label="Email options">
@@ -135,14 +141,24 @@
     </div>
   </header>
 
-  <!-- Hero -->
+  <!-- Main -->
   <main class="main" id="top">
-    <section class="hero">
-      <h1>ABOUT</h1>
-      <p>PredictWell is a <strong>preventative health AI</strong> that turns everyday signals—wearables, quick weekly voice/gait check-ins, and simple phone-only inputs—into early warnings and clear next steps. By learning your baseline and spotting subtle changes in balance, mobility, cognition, sleep, and routines, PredictWell helps reduce the likelihood of adverse events <strong>such as falls</strong> and avoidable hospitalizations. You get timely, plain-English guidance (e.g., mobility exercises, hydration prompts, medication follow-ups) that fits seamlessly into daily life. The result is better day-to-day wellbeing, more confident independence, and a care team that can act early rather than react late.</p>
+
+    <!-- NEW TOP LANDING BANNER -->
+    <section class="landing-hero">
+      <h1>PredictWell Health.ai is Preventative Health AI</h1>
+      <p>
+        PredictWell continuously learns your normal patterns from wearables and quick check-ins, then spots subtle changes in
+        balance, mobility, sleep, and cognition to flag risk early. It turns everyday data into simple, timely guidance—helping
+        prevent events like <strong>falls</strong> and avoidable hospitalizations while supporting confident independence for users and
+        clearer decision-making for clinicians and families.
+      </p>
+      <div class="landing-cta-row">
+        <button class="pw-btn pw-btn-primary" onclick="location.href='#contact'">Start Here</button>
+      </div>
     </section>
 
-    <!-- Two-column cards -->
+    <!-- Two-column cards (unchanged) -->
     <div class="cards">
       <div class="column">
         <div class="card" id="eldercare">
@@ -174,7 +190,23 @@
     </div>
   </main>
 
-  <!-- Stay Ahead of Risk (FULL banner restored) -->
+  <!-- MOVED & RESIZED ABOUT SECTION (now same size as other banners) -->
+  <section class="pw-mobile-section">
+    <div class="pw-mobile-wrap">
+      <h2 class="pw-mobile-header" style="text-align:left;margin-bottom:8px;">ABOUT</h2>
+      <p class="pw-mobile-sub" style="text-align:left;max-width:100%;margin-top:0;">
+        <strong>PredictWell Health.ai</strong> is a <strong>preventative health AI</strong> that transforms everyday signals—wearables,
+        short weekly voice or gait check-ins, and simple phone-based inputs—into early alerts and personalized actions. By
+        continuously learning your normal patterns in mobility, balance, sleep, and cognition, PredictWell detects small changes
+        that may signal elevated risk. This allows for timely interventions to help <strong>prevent falls, hospitalizations, or sudden
+        declines</strong> before they occur. The result is a calmer, smarter way to stay ahead of health risks—helping individuals
+        maintain independence, families stay informed, and clinicians make proactive, data-driven decisions that improve wellbeing
+        and quality of life.
+      </p>
+    </div>
+  </section>
+
+  <!-- Stay Ahead of Risk (unchanged) -->
   <section class="pw-mobile-section">
     <div class="pw-mobile-wrap">
       <h2 class="pw-mobile-header">Stay Ahead of Risk — Smarter Monitoring with PredictWell</h2>
@@ -240,7 +272,7 @@
     </div>
   </section>
 
-  <!-- Athletics Performance (FULL banner restored) -->
+  <!-- Athletics Performance (unchanged) -->
   <section class="pw-mobile-section">
     <div class="pw-mobile-wrap">
       <h2 class="pw-mobile-header">PredictWell Performance — Smarter Insights for Every Athlete</h2>
@@ -266,7 +298,7 @@
     </div>
   </section>
 
-  <!-- Contact -->
+  <!-- Contact (unchanged) -->
   <section class="pw-lead-section" id="contact">
     <div class="pw-lead-wrap">
       <div class="pw-lead-grid">
@@ -342,7 +374,7 @@
       if (e.key === 'Escape') menu.style.display = 'none';
     });
 
-    // ===== Added: email provider picker behavior =====
+    // Email picker behavior (kept)
     (function () {
       const emailLink = document.getElementById('emailLink');
       const emailMenu = document.getElementById('emailMenu');
