@@ -1,365 +1,122 @@
-<!doctype html>
+<!-- ====== eldercare-patient.html (Patient Portal — 12-input + client-side score + visual badge) ====== -->
+<!-- ====== eldercare-patient.html (Patient Portal — 12-input + client-side score + visual badge + human-friendly results) ====== -->
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>PredictWell Health.ai — Eldercare Check-in</title>
-  <meta name="description" content="PredictWell Health.ai — proactive health insights for seniors." />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --bg: #0c0d10;
-      --card: #16181d;
-      --muted: #8b94a7;
-      --text: #e9eef7;
-      --brand: #4ea8ff;
-      --ok: #2ecc71;
-      --warn: #f1c40f;
-      --bad: #ff5e57;
-      --line: rgba(255,255,255,0.08);
-      --chip: rgba(78,168,255,0.15);
-    }
-    * { box-sizing: border-box; }
-    html, body { height: 100%; }
-    body {
-      margin: 0;
-      background: linear-gradient(180deg, #0b0c10 0%, #111318 100%);
-      color: var(--text);
-      font: 16px/1.45 Inter, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
-    }
-    a { color: var(--brand); text-decoration: none; }
-    .container { max-width: 1100px; margin: 0 auto; padding: 24px; }
-    header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
-    .logo { font-weight: 700; letter-spacing: .2px; }
-    .badge { background: var(--chip); color: var(--brand); padding: 4px 8px; border-radius: 999px; font-size: 12px; }
-    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-    @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
-    .card {
-      background: var(--card);
-      border: 1px solid var(--line);
+@@ -54,7 +54,46 @@
+.results-head{ display:flex; align-items:center; gap:12px; margin-bottom:10px; flex-wrap:wrap; }
+.badge{ display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px; font-weight:800; box-shadow:var(--shadow); background:#e5e7eb; color:#0b1020; }
+.badge .dot{ width:10px; height:10px; border-radius:999px; background:#9ca3af; }
+    pre.results{ margin:0; padding:14px; background:#0b1020; color:#c7d2fe; border-radius:14px; min-height:160px; overflow:auto; white-space:pre-wrap; word-break:break-word; }
+
+    /* Patient-friendly results card (NEW) */
+    .human-results{
+      background: linear-gradient(180deg, rgba(255,255,255,0.92), rgba(255,255,255,0.86));
+      border: 1px solid rgba(17,24,39,0.08);
       border-radius: 16px;
-      padding: 16px;
-      box-shadow: 0 10px 30px rgba(0,0,0,.35);
+      padding: 16px 18px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+      margin-bottom: 12px;
     }
-    .card h2, .card h3 { margin: 0 0 10px 0; }
-    .muted { color: var(--muted); }
-    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
-    .field label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 6px; }
-    .field input[type="number"],
-    .field input[type="text"],
-    .field input[type="range"],
-    .field select {
-      width: 100%; padding: 10px 12px; background: #0f1116; color: var(--text);
-      border: 1px solid var(--line); border-radius: 10px; outline: none;
+    .human-results .hr-title{
+      font-size: 20px;
+      font-weight: 900;
+      margin: 0 0 8px 0;
+      letter-spacing: .2px;
+      color: #0b1020;
     }
-    .switch {
-      display: inline-flex; align-items: center; gap: 8px; cursor: pointer; user-select: none;
-      padding: 8px 12px; border: 1px solid var(--line); border-radius: 10px; background: #0f1116;
+    .human-results .hr-row{
+      display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+      margin-bottom: 10px;
     }
-    .actions { display: flex; gap: 10px; margin-top: 10px; }
-    .btn {
-      appearance: none; border: 1px solid transparent; border-radius: 12px; padding: 10px 14px;
-      font-weight: 600; cursor: pointer;
-      background: var(--brand); color: #051119;
-      transition: transform .08s ease, filter .08s ease;
+    .human-results .pill{
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 8px 12px; border-radius: 999px; font-weight: 800;
+      background: #eef2ff;
+      border: 1px solid rgba(37,99,235,0.18);
+      color: #0b1020;
+      font-size: 16px;
     }
-    .btn:hover { filter: brightness(1.06); transform: translateY(-1px); }
-    .btn.secondary { background: #0f1116; color: var(--text); border-color: var(--line); }
-    .stack { display: grid; gap: 10px; }
-    .pill { display: inline-block; padding: 6px 10px; border-radius: 999px; background: #0f1116; border: 1px solid var(--line); }
-    .score {
-      display: inline-flex; gap: 8px; align-items: center; padding: 6px 10px; border-radius: 999px;
-      background: #0f1116; border: 1px solid var(--line); font-weight: 700;
+    .human-results .pill .dot{
+      width: 10px; height: 10px; border-radius: 999px; background: #9ca3af;
     }
-    .ok { color: var(--ok); } .warn { color: var(--warn); } .bad { color: var(--bad); }
-    pre {
-      background: #0a0c10; border: 1px solid var(--line); padding: 12px; border-radius: 12px; color: #b7c2d9; overflow: auto;
+    .human-results .hr-text{
+      font-size: 18px; line-height: 1.55; color: #0b1020;
     }
-    table { width: 100%; border-collapse: collapse; }
-    th, td { padding: 8px; text-align: left; }
-    thead { background: rgba(255,255,255,0.04); }
-    tbody tr + tr td { border-top: 1px solid var(--line); }
-    .footer { text-align: center; color: var(--muted); padding: 18px 0 6px; font-size: 13px; }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <header>
-      <div class="logo">PredictWell Health.ai</div>
-      <div class="badge">Eldercare Check-in</div>
-    </header>
+    .human-results ul{ margin: 10px 0 0 0; padding-left: 20px; }
+    .human-results li{ margin: 6px 0; font-size: 18px; line-height: 1.55; }
 
-    <div class="grid">
-      <!-- LEFT: Form -->
-      <section class="card">
-        <h2>Daily Check-in</h2>
-        <p class="muted" style="margin-top:6px">Answer a few quick questions. We’ll compute your **nowcast** and a **2–4 week outlook**.</p>
-        <form id="eldercareForm" class="stack" autocomplete="off">
-          <div class="row">
-            <div class="field">
-              <label for="patientId">Patient ID</label>
-              <input id="patientId" type="text" placeholder="e.g., TEST001" />
-            </div>
-            <div class="field">
-              <label for="stepsBaseline">Personal steps baseline (avg/day)</label>
-              <input id="stepsBaseline" type="number" min="0" step="1" placeholder="7000" />
-            </div>
-          </div>
+    /* Keep JSON for devs, slightly larger for readability */
+    pre.results{ margin:0; padding:14px; background:#0b1020; color:#c7d2fe; border-radius:14px; min-height:160px; overflow:auto; white-space:pre-wrap; word-break:break-word; font-size:14px; line-height:1.4; }
 
-          <div class="row">
-            <div class="field">
-              <label for="steps7d">Steps (last 7 days avg)</label>
-              <input id="steps7d" type="number" min="0" step="1" placeholder="5200" />
-            </div>
-            <div class="field">
-              <label for="sleepFrag">Sleep fragmentation (0–1)</label>
-              <input id="sleepFrag" type="number" min="0" max="1" step="0.01" placeholder="0.35" />
-            </div>
-          </div>
+.footer{ text-align:center; color:#374151; font-size:12px; margin-top:28px; text-shadow:0 1px 0 rgba(255,255,255,0.75); }
+</style>
+@@ -146,6 +185,19 @@ <h2>Your Quick Checkup</h2>
+</div>
+<h2 style="margin:0;">Your Results</h2>
+</div>
 
-          <div class="row-3">
-            <label class="switch">
-              <input type="radio" name="dizziness" value="1" /> Dizziness
-            </label>
-            <label class="switch">
-              <input type="radio" name="dizziness" value="0" checked /> No dizziness
-            </label>
-          </div>
-
-          <div class="row-3">
-            <label class="switch">
-              <input type="radio" name="orthostatics" value="1" /> Orthostatic drop
-            </label>
-            <label class="switch">
-              <input type="radio" name="orthostatics" value="0" checked /> No orthostatic drop
-            </label>
-          </div>
-
-          <div class="row-3">
-            <label class="switch">
-              <input type="radio" name="recentFall" value="1" /> Recent fall
-            </label>
-            <label class="switch">
-              <input type="radio" name="recentFall" value="0" checked /> No recent fall
-            </label>
-          </div>
-
-          <div class="row-3">
-            <label class="switch">
-              <input type="radio" name="gaitFlag" value="1" /> Gait issues
-            </label>
-            <label class="switch">
-              <input type="radio" name="gaitFlag" value="0" checked /> Gait OK
-            </label>
-          </div>
-
-          <div class="row-3">
-            <label class="switch">
-              <input type="radio" name="medChange" value="1" /> Med change
-            </label>
-            <label class="switch">
-              <input type="radio" name="medChange" value="0" checked /> No med change
-            </label>
-          </div>
-
-          <div class="row-3">
-            <label class="switch">
-              <input type="radio" name="hydrationLow" value="1" /> Low hydration
-            </label>
-            <label class="switch">
-              <input type="radio" name="hydrationLow" value="0" checked /> Hydration OK
-            </label>
-          </div>
-
-          <div class="actions">
-            <button id="getResultsBtn" class="btn" type="button">Get Results</button>
-            <button class="btn secondary" type="reset">Reset</button>
-            <span id="backendStatus" class="pill muted" aria-live="polite">Backend: checking…</span>
-          </div>
-        </form>
-      </section>
-
-      <!-- RIGHT: Results -->
-      <section class="card">
-        <h2>Your Results</h2>
-        <div id="scoreBand" class="score" style="margin-top:8px;">Waiting…</div>
-
-        <div id="topFactors" class="stack" style="margin-top:12px;">
-          <h3 style="margin:0;">Top Factors</h3>
-          <div id="factorsWrap" class="stack"></div>
+      <!-- NEW: Patient-friendly, plain-English summary -->
+      <div id="resultsHuman" class="human-results" style="display:none;">
+        <div class="hr-title">What this means for you</div>
+        <div class="hr-row">
+          <div class="pill"><span class="dot" id="hrDot"></span><span id="hrLevel">Level</span></div>
+          <div class="pill">Score: <span id="hrScore">0</span></div>
         </div>
+        <div class="hr-text" id="hrSummary">We’ll show your personalized summary here.</div>
+        <ul id="hrActions"></ul>
+      </div>
 
-        <div id="recommendWrap" class="stack" style="margin-top:12px;">
-          <h3 style="margin:0;">Recommended Actions</h3>
-          <ul id="recommendList" class="stack" style="padding-left:18px; margin: 6px 0 0 0;"></ul>
-        </div>
+      <!-- Original JSON output remains (unchanged) -->
+<pre class="results" id="resultsBox">{ "status": "ready" }</pre>
+</section>
 
-        <!-- ===== Forecast UI ===== -->
-        <section id="forecastSection" style="display:none; margin-top:16px;">
-          <h3 style="margin: 0 0 8px 0;">2–4 Week Outlook</h3>
-          <div id="trendLabel" style="font-weight:600; margin-bottom:6px;"></div>
-          <table id="forecastTable" style="width:100%; border-collapse:collapse; margin-top:6px; border: 1px solid var(--line);">
-            <thead>
-              <tr>
-                <th>Week</th>
-                <th>Predicted Risk</th>
-                <th>Low</th>
-                <th>High</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-          <div style="margin-top:8px;">
-            <strong>Signals:</strong>
-            <ul id="signalList" style="margin-top:4px; margin-bottom:0;"></ul>
-          </div>
-          <small class="muted" style="display:block; margin-top:6px;">Values are normalized risk (0–1). Higher is higher risk.</small>
-        </section>
-        <!-- ===== /Forecast UI ===== -->
+@@ -260,6 +312,38 @@ <h2 style="margin:0;">Your Results</h2>
+badge.style.color = '#0b1020';
+}
 
-        <h3 style="margin-top:16px;">Server JSON (debug)</h3>
-        <pre id="serverJson" aria-live="polite">{ }</pre>
-      </section>
-    </div>
-
-    <div class="footer">© 2025 PredictWell Health.ai — Proactive insights for seniors & athletes.</div>
-  </div>
-
-  <script>
-    // ===== Config: point this to your backend (Render URL or local) =====
-    // window.PREDICTWELL_API = 'https://predictwell-backend-ai.onrender.com';
-    window.PREDICTWELL_API = window.PREDICTWELL_API || 'http://127.0.0.1:8000';
-
-    // ===== Small helpers =====
-    function el(id){ return document.getElementById(id); }
-    function show(id){ const x=el(id); if(x) x.style.display='block'; }
-    function hide(id){ const x=el(id); if(x) x.style.display='none'; }
-    const pct = (x)=> Math.round(Number(x||0)*100);
-    const bandColor = (b)=> b === 'High' ? 'bad' : b === 'Moderate' ? 'warn' : 'ok';
-
-    // ===== Backend reachability ping =====
-    (async function ping(){
-      const badge = el('backendStatus');
-      try{
-        const r = await fetch(`${window.PREDICTWELL_API}/healthz`, { cache: 'no-store' });
-        badge.textContent = r.ok ? 'Backend: ok' : 'Backend: unreachable';
-        if(!r.ok) badge.style.color = '#ff6b6b';
-      }catch(_){
-        badge.textContent = 'Backend: unreachable';
-        badge.style.color = '#ff6b6b';
+    // ----- NEW: Plain-English renderer -----
+    function friendlySummary(level){
+      switch(level){
+        case 'Very High': return 'Your answers show a very high chance of falling or getting hurt soon. Please take action today and talk with your doctor.';
+        case 'High':      return 'You have several risk signs. Simple steps at home and a quick check-in with your doctor can lower your risk.';
+        case 'Moderate':  return 'You have a few risk signs. Small daily habits can make a big difference.';
+        default:          return 'Great news — your current answers suggest a low risk. Keep up your healthy habits.';
       }
-    })();
-
-    // ===== Submit handler =====
-    async function submitCheckin(payload){
-      const res = await fetch(`${window.PREDICTWELL_API}/eldercare/checkin`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-      if(!res.ok){
-        const text = await res.text().catch(()=> '');
-        throw new Error(`Server error ${res.status}: ${text}`);
-      }
-      return res.json();
     }
 
-    function buildPayloadFromForm(){
-      const q = (sel) => document.querySelector(sel);
-      return {
-        patient_id: (el('patientId')?.value || 'WEB-DEMO').trim(),
-        steps_7d: Number(el('steps7d')?.value || 0) || null,
-        steps_baseline: Number(el('stepsBaseline')?.value || 0) || null,
-        dizziness: Number(q('input[name="dizziness"]:checked')?.value || 0),
-        orthostatic_drop: Number(q('input[name="orthostatics"]:checked')?.value || 0),
-        recent_fall: Number(q('input[name="recentFall"]:checked')?.value || 0),
-        sleep_frag: el('sleepFrag')?.value ? Number(el('sleepFrag').value) : null,
-        gait_flag: Number(q('input[name="gaitFlag"]:checked')?.value || 0),
-        med_change: Number(q('input[name="medChange"]:checked')?.value || 0),
-        hydration_low: Number(q('input[name="hydrationLow"]:checked')?.value || 0),
-      };
-    }
+    function renderHumanResults(local, suggestions){
+      const card = document.getElementById('resultsHuman');
+      const hrDot = document.getElementById('hrDot');
+      const hrLevel = document.getElementById('hrLevel');
+      const hrScore = document.getElementById('hrScore');
+      const hrSummary = document.getElementById('hrSummary');
+      const hrActions = document.getElementById('hrActions');
 
-    // ===== Results rendering =====
-    function renderTopFactors(factors){
-      const wrap = el('factorsWrap'); wrap.innerHTML = '';
-      (factors || []).forEach(({factor, contribution})=>{
-        const div = document.createElement('div');
-        div.className = 'pill';
-        div.textContent = `${factor}  •  +${contribution}`;
-        wrap.appendChild(div);
+      card.style.display = 'block';
+      hrDot.style.background = local.color;
+      hrLevel.textContent = local.level;
+      hrScore.textContent = String(local.score);
+      hrSummary.textContent = friendlySummary(local.level);
+
+      hrActions.innerHTML = '';
+      suggestions.forEach(s => {
+        const li = document.createElement('li');
+        li.textContent = s;
+        hrActions.appendChild(li);
       });
     }
 
-    function renderRecommendations(list){
-      const ul = el('recommendList'); ul.innerHTML = '';
-      (list || []).forEach(s=>{
-        const li = document.createElement('li'); li.textContent = s; ul.appendChild(li);
-      });
-    }
+// Backend status
+async function pingBackend() {
+const badge = document.getElementById('backendStatus');
+@@ -283,6 +367,9 @@ <h2 style="margin:0;">Your Results</h2>
+};
 
-    function renderForecast(forecast){
-      const tbody = document.querySelector('#forecastTable tbody');
-      const trend = el('trendLabel');
-      const signals = el('signalList');
-      tbody.innerHTML = ''; signals.innerHTML = '';
+updateBadge(local);
+      // NEW: Show human-friendly summary
+      renderHumanResults(local, suggestions);
 
-      trend.textContent = `Trend: ${forecast.trend_label || '—'}`;
+resultsBox.textContent = JSON.stringify(localBlock, null, 2);
 
-      (forecast.weeks || []).forEach(w=>{
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>Week ${w.week_ahead}</td>
-          <td>${pct(w.pred)}%</td>
-          <td>${pct(w.low)}%</td>
-          <td>${pct(w.high)}%</td>
-        `;
-        tbody.appendChild(tr);
-      });
-
-      if(Array.isArray(forecast.signals) && forecast.signals.length){
-        forecast.signals.forEach(s=> {
-          const li = document.createElement('li'); li.textContent = s; signals.appendChild(li);
-        });
-      } else {
-        const li = document.createElement('li'); li.style.opacity = 0.7; li.textContent = 'No slowing signals detected.';
-        signals.appendChild(li);
-      }
-
-      show('forecastSection');
-    }
-
-    function renderNowcast(now){
-      const score = typeof now.risk_score === 'number' ? now.risk_score : 0;
-      const band = now.risk_band || 'Unknown';
-      const color = bandColor(band);
-      const chip = el('scoreBand');
-      chip.innerHTML = `<span class="${color}">${band}</span> • Score: ${pct(score)}%`;
-    }
-
-    function renderResults(resp){
-      if(!resp){ return; }
-      el('serverJson').textContent = JSON.stringify(resp, null, 2);
-      if(resp.nowcast){ renderNowcast(resp.nowcast); }
-      if(resp.nowcast?.top_factors){ renderTopFactors(resp.nowcast.top_factors); }
-      if(resp.recommended_actions){ renderRecommendations(resp.recommended_actions); }
-      if(resp.forecast){ renderForecast(resp.forecast); }
-    }
-
-    // Wire up button
-    el('getResultsBtn').addEventListener('click', async (e)=>{
-      e.preventDefault();
-      const payload = buildPayloadFromForm();
-      try {
-        const resp = await submitCheckin(payload);
-        renderResults(resp);
-      } catch (err) {
-        console.error(err);
-        alert('There was a problem submitting your check-in.');
-      }
-    });
-  </script>
-</body>
-</html>
+try{
