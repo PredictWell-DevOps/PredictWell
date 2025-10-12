@@ -1,13 +1,39 @@
-<!-- ====== eldercare-patient.html (Patient Portal — 12-input + client-side score + visual badge) ====== -->
 <!-- ====== eldercare-patient.html (Patient Portal — 12-input + client-side score + visual badge + human-friendly results) ====== -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-@@ -54,7 +54,46 @@
-.results-head{ display:flex; align-items:center; gap:12px; margin-bottom:10px; flex-wrap:wrap; }
-.badge{ display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px; font-weight:800; box-shadow:var(--shadow); background:#e5e7eb; color:#0b1020; }
-.badge .dot{ width:10px; height:10px; border-radius:999px; background:#9ca3af; }
-    pre.results{ margin:0; padding:14px; background:#0b1020; color:#c7d2fe; border-radius:14px; min-height:160px; overflow:auto; white-space:pre-wrap; word-break:break-word; }
+  <meta charset="utf-8" />
+  <title>PredictWell Health.ai — Eldercare Check-in</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root{
+      --bg:#0b0f14; --panel:#121821; --muted:#9aa3b2; --text:#e6ebf5; --line:rgba(255,255,255,0.08);
+      --brand:#70b7ff; --ok:#2ecc71; --warn:#f1c40f; --bad:#ff5e57; --shadow:0 12px 30px rgba(0,0,0,.35)
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;background:#0b0f14;color:var(--text);font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial}
+    .container{max-width:1080px;margin:0 auto;padding:22px}
+    header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+    .title{font-weight:800;letter-spacing:.2px}
+    .chip{padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,0.03);color:var(--muted);font-size:12px}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    @media (max-width:940px){.grid{grid-template-columns:1fr}}
+    .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:var(--shadow)}
+    h1,h2,h3{margin:.2rem 0 .6rem 0}
+    .muted{color:var(--muted)}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .row-3{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .field label{display:block;color:var(--muted);font-size:13px;margin-bottom:6px}
+    .field input[type="number"], .field input[type="text"]{
+      width:100%;padding:10px 12px;background:#0e141d;border:1px solid var(--line);border-radius:10px;color:var(--text);outline:none
+    }
+    .toggle{display:inline-flex;align-items:center;gap:8px;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:#0e141d}
+    .actions{display:flex;gap:10px;margin-top:10px}
+    .btn{appearance:none;border:1px solid transparent;border-radius:12px;padding:10px 14px;background:var(--brand);color:#04111d;font-weight:700;cursor:pointer}
+    .btn.secondary{background:#0e141d;color:var(--text);border-color:var(--line)}
+    .badge{ display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px; font-weight:800; box-shadow:var(--shadow); background:#e5e7eb; color:#0b1020; }
+    .badge .dot{ width:10px; height:10px; border-radius:999px; background:#9ca3af; }
 
     /* Patient-friendly results card (NEW) */
     .human-results{
@@ -17,6 +43,7 @@
       padding: 16px 18px;
       box-shadow: 0 8px 24px rgba(0,0,0,0.08);
       margin-bottom: 12px;
+      color:#0b1020;
     }
     .human-results .hr-title{
       font-size: 20px;
@@ -46,34 +73,134 @@
     .human-results ul{ margin: 10px 0 0 0; padding-left: 20px; }
     .human-results li{ margin: 6px 0; font-size: 18px; line-height: 1.55; }
 
-    /* Keep JSON for devs, slightly larger for readability */
+    /* Keep JSON for devs */
     pre.results{ margin:0; padding:14px; background:#0b1020; color:#c7d2fe; border-radius:14px; min-height:160px; overflow:auto; white-space:pre-wrap; word-break:break-word; font-size:14px; line-height:1.4; }
 
-.footer{ text-align:center; color:#374151; font-size:12px; margin-top:28px; text-shadow:0 1px 0 rgba(255,255,255,0.75); }
-</style>
-@@ -146,6 +185,19 @@
-</div>
-<h2 style="margin:0;">Your Results</h2>
-</div>
+    .footer{ text-align:center; color:#374151; font-size:12px; margin-top:28px; text-shadow:0 1px 0 rgba(255,255,255,0.75); }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="title">PredictWell Health.ai</div>
+      <span id="backendStatus" class="chip">Backend: checking…</span>
+    </header>
 
-      <!-- NEW: Patient-friendly, plain-English summary -->
-      <div id="resultsHuman" class="human-results" style="display:none;">
-        <div class="hr-title">What this means for you</div>
-        <div class="hr-row">
-          <div class="pill"><span class="dot" id="hrDot"></span><span id="hrLevel">Level</span></div>
-          <div class="pill">Score: <span id="hrScore">0</span></div>
+    <div class="grid">
+      <!-- LEFT: form -->
+      <section class="card">
+        <h2>Daily Check-in</h2>
+        <p class="muted" style="margin-top:6px">Answer a few quick questions to get your **nowcast**.</p>
+
+        <form id="form" class="form stack" autocomplete="off">
+          <div class="row">
+            <div class="field">
+              <label for="patientId">Patient ID</label>
+              <input id="patientId" type="text" placeholder="e.g., TEST001" />
+            </div>
+            <div class="field">
+              <label for="stepsBaseline">Personal steps baseline (avg/day)</label>
+              <input id="stepsBaseline" type="number" min="0" step="1" placeholder="7000" />
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="field">
+              <label for="steps7d">Steps (last 7 days avg)</label>
+              <input id="steps7d" type="number" min="0" step="1" placeholder="5200" />
+            </div>
+            <div class="field">
+              <label for="sleepFrag">Sleep fragmentation (0–1)</label>
+              <input id="sleepFrag" type="number" min="0" max="1" step="0.01" placeholder="0.35" />
+            </div>
+          </div>
+
+          <div class="row-3">
+            <label class="toggle"><input type="radio" name="dizziness" value="1" /> Dizziness</label>
+            <label class="toggle"><input type="radio" name="dizziness" value="0" checked /> No dizziness</label>
+          </div>
+
+          <div class="row-3">
+            <label class="toggle"><input type="radio" name="orthostatics" value="1" /> Orthostatic drop</label>
+            <label class="toggle"><input type="radio" name="orthostatics" value="0" checked /> No orthostatic drop</label>
+          </div>
+
+          <div class="row-3">
+            <label class="toggle"><input type="radio" name="recentFall" value="1" /> Recent fall</label>
+            <label class="toggle"><input type="radio" name="recentFall" value="0" checked /> No recent fall</label>
+          </div>
+
+          <div class="row-3">
+            <label class="toggle"><input type="radio" name="gaitFlag" value="1" /> Gait issues</label>
+            <label class="toggle"><input type="radio" name="gaitFlag" value="0" checked /> Gait OK</label>
+          </div>
+
+          <div class="row-3">
+            <label class="toggle"><input type="radio" name="medChange" value="1" /> Med change</label>
+            <label class="toggle"><input type="radio" name="medChange" value="0" checked /> No med change</label>
+          </div>
+
+          <div class="row-3">
+            <label class="toggle"><input type="radio" name="hydrationLow" value="1" /> Low hydration</label>
+            <label class="toggle"><input type="radio" name="hydrationLow" value="0" checked /> Hydration OK</label>
+          </div>
+
+          <div class="actions">
+            <button id="runBtn" type="button" class="btn">Get Results</button>
+            <button type="reset" class="btn secondary">Reset</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- RIGHT: results -->
+      <section class="card">
+        <div class="results-head">
+          <div class="badge"><span class="dot" id="badgeDot"></span> <span id="badgeText">Waiting…</span></div>
+          <h2 style="margin:0;">Your Results</h2>
         </div>
-        <div class="hr-text" id="hrSummary">We’ll show your personalized summary here.</div>
-        <ul id="hrActions"></ul>
-      </div>
 
-      <!-- Original JSON output remains (unchanged) -->
-<pre class="results" id="resultsBox">{ "status": "ready" }</pre>
-</section>
+        <!-- NEW: Patient-friendly, plain-English summary -->
+        <div id="resultsHuman" class="human-results" style="display:none;">
+          <div class="hr-title">What this means for you</div>
+          <div class="hr-row">
+            <div class="pill"><span class="dot" id="hrDot"></span><span id="hrLevel">Level</span></div>
+            <div class="pill">Score: <span id="hrScore">0</span></div>
+          </div>
+          <div class="hr-text" id="hrSummary">We’ll show your personalized summary here.</div>
+          <ul id="hrActions"></ul>
+        </div>
 
-@@ -260,6 +312,38 @@
-badge.style.color = '#0b1020';
-}
+        <!-- Original JSON output remains (unchanged) -->
+        <pre class="results" id="resultsBox">{ "status": "ready" }</pre>
+      </section>
+    </div>
+
+    <div class="footer">© 2025 PredictWell Health.ai — Proactive insights for seniors & athletes.</div>
+  </div>
+
+  <script>
+    // ==== Config ====
+    // Use your Render URL in production:
+    // window.BASE_API = 'https://predictwell-backend-ai.onrender.com';
+    window.BASE_API = window.BASE_API || 'http://127.0.0.1:8000';
+
+    // ==== Small helpers ====
+    const $ = (id)=>document.getElementById(id);
+    const pick = (sel)=>document.querySelector(sel);
+    const pct = (x)=>Math.round(Number(x||0)*100);
+    function band(score){
+      if(score >= 0.60) return 'High';
+      if(score >= 0.30) return 'Moderate';
+      return 'Low';
+    }
+    function bandColor(b){
+      return b==='High' ? '#ff5e57' : b==='Moderate' ? '#f1c40f' : '#2ecc71';
+    }
+    function updateBadge(local){
+      const bText = $('badgeText'), dot=$('badgeDot');
+      bText.textContent = `${local.level} • Score ${pct(local.score)}%`;
+      dot.style.background = local.color;
+    }
 
     // ----- NEW: Plain-English renderer -----
     function friendlySummary(level){
@@ -86,17 +213,17 @@ badge.style.color = '#0b1020';
     }
 
     function renderHumanResults(local, suggestions){
-      const card = document.getElementById('resultsHuman');
-      const hrDot = document.getElementById('hrDot');
-      const hrLevel = document.getElementById('hrLevel');
-      const hrScore = document.getElementById('hrScore');
-      const hrSummary = document.getElementById('hrSummary');
-      const hrActions = document.getElementById('hrActions');
+      const card = $('resultsHuman');
+      const hrDot = $('hrDot');
+      const hrLevel = $('hrLevel');
+      const hrScore = $('hrScore');
+      const hrSummary = $('hrSummary');
+      const hrActions = $('hrActions');
 
       card.style.display = 'block';
       hrDot.style.background = local.color;
       hrLevel.textContent = local.level;
-      hrScore.textContent = String(local.score);
+      hrScore.textContent = String(pct(local.score));
       hrSummary.textContent = friendlySummary(local.level);
 
       hrActions.innerHTML = '';
@@ -107,34 +234,109 @@ badge.style.color = '#0b1020';
       });
     }
 
-// Backend status
-async function pingBackend() {
-const badge = document.getElementById('backendStatus');
-@@ -283,24 +367,27 @@
-};
+    // Backend status
+    async function pingBackend() {
+      const badge = $('backendStatus');
+      try{
+        const r = await fetch(`${BASE_API}/healthz`, { cache:'no-store' });
+        badge.textContent = r.ok ? 'Backend: ok' : 'Backend: unreachable';
+        badge.style.color = r.ok ? '#9aa3b2' : '#ff6b6b';
+      }catch(_){
+        badge.textContent = 'Backend: unreachable';
+        badge.style.color = '#ff6b6b';
+      }
+    }
+    pingBackend();
 
-updateBadge(local);
-      // NEW: Show human-friendly summary
-      renderHumanResults(local, suggestions);
+    // Build payload
+    function buildPayload(){
+      return {
+        patient_id: ($('patientId')?.value || 'WEB-DEMO').trim(),
+        steps_7d: Number($('steps7d')?.value || 0) || null,
+        steps_baseline: Number($('stepsBaseline')?.value || 0) || null,
+        sleep_frag: $('sleepFrag')?.value ? Number($('sleepFrag').value) : null,
+        dizziness: Number(pick('input[name="dizziness"]:checked')?.value || 0),
+        orthostatic_drop: Number(pick('input[name="orthostatics"]:checked')?.value || 0),
+        recent_fall: Number(pick('input[name="recentFall"]:checked')?.value || 0),
+        gait_flag: Number(pick('input[name="gaitFlag"]:checked')?.value || 0),
+        med_change: Number(pick('input[name="medChange"]:checked')?.value || 0),
+        hydration_low: Number(pick('input[name="hydrationLow"]:checked')?.value || 0),
+      };
+    }
 
-resultsBox.textContent = JSON.stringify(localBlock, null, 2);
+    // Client-side feature engineering (mirror of backend)
+    function deriveFeatures(payload){
+      const weights = {
+        recent_fall:0.25, dizziness:0.12, orthostatic_drop:0.12,
+        steps_delta:0.16, sleep_frag:0.10, gait_flag:0.10, med_change:0.10, hydration_low:0.05
+      };
+      let baseline = payload.steps_baseline || null;
+      let stepsDelta = 0.0;
+      if(baseline && payload.steps_7d!=null){
+        const decline = Math.max(0, (baseline - payload.steps_7d)/Math.max(1, baseline));
+        stepsDelta = Math.max(0, Math.min(1, decline/0.25));
+      }
+      const f = {
+        recent_fall: payload.recent_fall ? 1:0,
+        dizziness: payload.dizziness ? 1:0,
+        orthostatic_drop: payload.orthostatic_drop ? 1:0,
+        steps_delta: stepsDelta,
+        sleep_frag: payload.sleep_frag!=null ? Math.max(0,Math.min(1,Number(payload.sleep_frag))) : 0,
+        gait_flag: payload.gait_flag ? 1:0,
+        med_change: payload.med_change ? 1:0,
+        hydration_low: payload.hydration_low ? 1:0
+      };
+      let s = 0;
+      Object.keys(weights).forEach(k=>{ s += weights[k]*f[k]; });
+      if(f.recent_fall>=1) s = Math.max(s, 0.75);
+      if(f.orthostatic_drop>=1 && f.dizziness>=1) s = Math.max(s, 0.70);
+      s = Math.max(0, Math.min(1, s));
+      return { features:f, score:s, level:band(s), color:bandColor(band(s)) };
+    }
 
-try{
-const res = await fetch(`${BASE_API}/eldercare/checkin`, {
-method: 'POST',
-headers: { 'Content-Type': 'application/json' },
-body: JSON.stringify({ ...payload, client_score: local.score, client_category: local.level })
-});
-const json = await res.json();
-const merged = { ...localBlock, server_response: json };
-resultsBox.textContent = JSON.stringify(merged, null, 2);
-}catch(e){
-const merged = { ...localBlock, server_error: 'Request failed or backend unreachable' };
-resultsBox.textContent = JSON.stringify(merged, null, 2);
-}
-}
+    function humanSuggestions(level){
+      if(level==='High') return [
+        'Discuss recent falls with your doctor; consider a falls clinic evaluation.',
+        'Start balance/strength exercises (sit-to-stand, heel-to-toe); ask about PT.',
+        'Practice safe chair rises; check chair height; consider PT for leg strength.'
+      ];
+      if(level==='Moderate') return [
+        'Add 5–10 minutes of daily balance exercises.',
+        'Hydration target 6–8 cups/day; stand slowly to avoid dizziness.'
+      ];
+      return [
+        'Keep up your healthy habits.',
+        'Stay hydrated and walk daily if able.'
+      ];
+    }
 
-document.getElementById('runBtn').addEventListener('click', runAnalysis);
-</script>
+    // Main click handler
+    async function runAnalysis(){
+      const resultsBox = $('resultsBox');
+      const payload = buildPayload();
+      const local = deriveFeatures(payload);
+      const localBlock = { payload, client_score:pct(local.score), client_category:local.level };
+
+      updateBadge(local);
+      renderHumanResults(local, humanSuggestions(local.level));
+
+      resultsBox.textContent = JSON.stringify(localBlock, null, 2);
+
+      try{
+        const res = await fetch(`${BASE_API}/eldercare/checkin`, {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ...payload, client_score: local.score, client_category: local.level })
+        });
+        const json = await res.json();
+        const merged = { ...localBlock, server_response: json };
+        resultsBox.textContent = JSON.stringify(merged, null, 2);
+      }catch(e){
+        const merged = { ...localBlock, server_error: 'Request failed or backend unreachable' };
+        resultsBox.textContent = JSON.stringify(merged, null, 2);
+      }
+    }
+
+    $('runBtn').addEventListener('click', runAnalysis);
+  </script>
 </body>
 </html>
