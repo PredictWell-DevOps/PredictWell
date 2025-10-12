@@ -92,6 +92,60 @@
     .card button { border: none; border-radius: 999px; padding: 10px 16px; font-weight: 700; cursor: pointer; color: #fff; box-shadow: 0 10px 20px rgba(0,0,0,0.15); }
     .blue { background: linear-gradient(135deg,#2563eb,#60a5fa); }
     .orange { background: linear-gradient(135deg,#f97316,#fb923c); }
+    /* ==== PATCH: PORTALS GRID (Eldercare | Athletics) ==== */
+.portals-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 28px;
+  max-width: 1100px;
+  margin: 40px auto;
+  padding: 0 16px;
+}
+@media (min-width: 900px) {
+  .portals-grid { grid-template-columns: 1fr 1fr; }
+}
+.portal-card {
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(16, 24, 40, .08);
+  padding: 22px 24px 26px;
+}
+.portal-card h2 {
+  margin: 0 0 18px 0;
+  font-weight: 700;
+  letter-spacing: .2px;
+  color: #0b1020;
+  font-size: 28px;
+}
+.portal-section { margin: 14px 0 20px 0; }
+.portal-section h3 {
+  margin: 0 0 8px 0;
+  font-size: 18px;
+  color: #0f172a;
+  font-weight: 700;
+}
+.portal-section p {
+  margin: 0 0 14px 0;
+  color: #475569;
+  line-height: 1.45;
+}
+.btn-row { display: flex; gap: 12px; flex-wrap: wrap; }
+.btn {
+  display: inline-block;
+  padding: 10px 16px;
+  border-radius: 999px;
+  font-weight: 600;
+  text-decoration: none;
+  box-shadow: 0 8px 22px rgba(2, 6, 23, .08);
+  transition: transform .06s ease, box-shadow .12s ease;
+}
+.btn:active {
+  transform: translateY(1px);
+  box-shadow: 0 6px 14px rgba(2, 6, 23, .12);
+}
+.btn-blue  { background: #2f6feb; color: #fff; }
+.btn-orange { background: #f97316; color: #fff; }
+/* ==== /PATCH END ==== */
 
     /* Shared predictive sections */
     .pw-mobile-section { margin: 26px auto 40px; padding: 0 18px; }
@@ -195,36 +249,54 @@
 
   <!-- Main (columns stay exactly as they are) -->
   <main class="main" id="top">
-    <div class="cards">
-      <div class="column">
-        <div class="card" id="eldercare">
-          <h3>Eldercare — Doctors</h3>
-          <p>Clinician form & results for falls, frailty, cognition, and hospitalization risk.</p>
-          <button class="blue" onclick="location.href='/eldercare.html'">Open Doctor Portal</button>
-        </div>
+    <!-- ==== PATCH: PORTALS GRID (Eldercare | Athletics) ==== -->
+<section id="choose-portals" aria-label="Choose your portal">
+  <div class="portals-grid">
+    <!-- Left bubble: Eldercare -->
+    <article class="portal-card" id="card-eldercare">
+      <h2>Eldercare</h2>
 
-        <div class="card">
-          <h3>Eldercare — Patients</h3>
-          <p>Fast weekly check-in and an easy-to-read summary.</p>
-          <button class="orange" onclick="location.href='/eldercare-patient.html'">Open Patient Check-In</button>
+      <div class="portal-section">
+        <h3>Doctors</h3>
+        <p>Clinician form &amp; results for falls, frailty, cognition, and hospitalization risk.</p>
+        <div class="btn-row">
+          <a class="btn btn-blue" href="/eldercare.html">Open Doctor Portal</a>
         </div>
       </div>
 
-      <div class="column">
-        <div class="card" id="athletics">
-          <h3>Athletics — Doctors</h3>
-          <p>Pitching workload & risk inputs with clear flags and recommendations.</p>
-          <button class="blue" onclick="location.href='/athletics.html'">Open Doctor Portal</button>
-        </div>
-
-        <div class="card">
-          <h3>Athletics — Patients</h3>
-          <p>Quick athlete self-report to generate a personalized risk snapshot.</p>
-          <button class="orange" onclick="location.href='/athletics-patient.html'">Open Patient Check-In</button>
+      <div class="portal-section">
+        <h3>Patients</h3>
+        <p>Fast weekly check-in and an easy-to-read summary.</p>
+        <div class="btn-row">
+          <a class="btn btn-orange" href="/eldercare-patient.html">Open Patient Check-In</a>
         </div>
       </div>
-    </div>
-  </main>
+    </article>
+
+    <!-- Right bubble: Athletics -->
+    <article class="portal-card" id="card-athletics">
+      <h2>Athletics</h2>
+
+      <div class="portal-section">
+        <h3>Doctors</h3>
+        <p>Pitching workload &amp; risk inputs with clear flags and recommendations.</p>
+        <div class="btn-row">
+          <a class="btn btn-blue" href="/athletics.html">Open Doctor Portal</a>
+        </div>
+      </div>
+
+      <div class="portal-section">
+        <h3>Patients</h3>
+        <p>Quick athlete self-report to generate a personalized risk snapshot.</p>
+        <div class="btn-row">
+          <a class="btn btn-orange" href="/athletics-patient.html">Open Patient Check-In</a>
+        </div>
+      </div>
+    </article>
+  </div>
+</section>
+</main>
+<!-- ==== /PATCH END ==== -->
 
   <!-- ABOUT (same width; TITLE now centered only) -->
   <section class="pw-mobile-section">
