@@ -232,17 +232,17 @@
 
     function buildSuggestions(p){
       const sug = [];
-      if (p.falls_12m !== '0' && p.falls_12m) sug.push('Discuss recent falls with your doctor; consider a falls clinic evaluation.');
-      if (p.unsteady === 'Sometimes' || p.unsteady === 'Often') sug.push('Start balance/strength exercises (sit-to-stand, heel-to-toe); ask about PT.');
-      if (p.chair_rise === 'Yes, but hard' || p.chair_rise === 'No') sug.push('Practice safe chair rises; check chair height; consider PT for leg strength.');
-      if (p.fear_fall === 'Yes') sug.push('Try short, safe walks with support; review footwear and home lighting.');
-      if (p.dizzy_stand === 'Occasionally' || p.dizzy_stand === 'Often') sug.push('Hydrate; stand up slowly; ask about orthostatic BP and meds review.');
-      if (p.med_count === '5 or more') sug.push('Ask for a medication review to reduce fall-risk medicines.');
-      if (p.memory_change === 'Some days' || p.memory_change === 'Most days') sug.push('Track memory changes; consider a brief cognition screen.');
-      if (p.mood === 'Somewhat down/anxious' || p.mood === 'Depressed or anxious') sug.push('Talk about mood; short walks and social time can help.');
-      if (p.activity === 'Hardly active') sug.push('Begin a gentle daily walking plan (5–10 minutes).');
-      if (p.home_hazards === 'Yes' || p.home_hazards === 'Not sure') sug.push('Remove throw rugs, add night lights, and install bathroom grab bars.');
-      if (p.living === 'Alone') sug.push('Set up a daily check-in or wearable alert button.');
+      if (p.falls_12m !== '0' && p.falls_12m) sug.push('Tell your doctor about your recent fall(s) and ask for simple steps to prevent the next one.');
+      if (p.unsteady === 'Sometimes' || p.unsteady === 'Often') sug.push('Do a few balance and leg-strength exercises each day; ask if short-term physical therapy would help.');
+      if (p.chair_rise === 'Yes, but hard' || p.chair_rise === 'No') sug.push('Practice standing up from a chair safely; raise the seat if needed to make it easier.');
+      if (p.fear_fall === 'Yes') sug.push('Take short, safe walks; wear sturdy shoes; keep night lights on to feel more confident.');
+      if (p.dizzy_stand === 'Occasionally' || p.dizzy_stand === 'Often') sug.push('Drink water and stand up slowly; ask your doctor to check blood pressure and medicines if dizziness continues.');
+      if (p.med_count === '5 or more') sug.push('Ask your doctor or pharmacist to review your medicines to see if any could make you dizzy or sleepy.');
+      if (p.memory_change === 'Some days' || p.memory_change === 'Most days') sug.push('Write down memory changes you notice and share them with your doctor.');
+      if (p.mood === 'Somewhat down/anxious' || p.mood === 'Depressed or anxious') sug.push('Tell your doctor about your mood; short walks and time with others can help.');
+      if (p.activity === 'Hardly active') sug.push('Try a daily 5–10 minute walk.');
+      if (p.home_hazards === 'Yes' || p.home_hazards === 'Not sure') sug.push('Remove loose rugs, add night lights, and put grab bars in the bathroom.');
+      if (p.living === 'Alone') sug.push('Set up a daily check-in with someone or wear an alert button.');
       return sug.slice(0, 3);
     }
 
