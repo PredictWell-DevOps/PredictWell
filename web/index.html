@@ -105,10 +105,11 @@
   .portals-grid { grid-template-columns: 1fr 1fr; }
 }
 .portal-card {
-  background: #ffffff;
+  background: rgba(255, 255, 255, 0.78); /* translucent like ABOUT */
   border-radius: 20px;
-  box-shadow: 0 10px 30px rgba(16, 24, 40, .08);
+  box-shadow: 0 10px 30px rgba(16, 24, 40, 0.08);
   padding: 22px 24px 26px;
+  backdrop-filter: blur(8px) saturate(1.1);
 }
 .portal-card h2 {
   margin: 0 0 18px 0;
