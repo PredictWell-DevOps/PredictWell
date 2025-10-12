@@ -6,8 +6,15 @@
   <title>PredictWell Health.ai</title>
   <meta name="description" content="Preventive health AI for seniors and athletes—multi-signal wearables + weekly voice/gait check-ins and sport-specific workload insights.">
   <link rel="icon" href="data:,">
+  <!-- Change #1/#7: Load Poppins font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
   <style>
     html { scroll-behavior: smooth; }
+
+    :root{
+      /* Change #1/#7: light navy used for designated headings */
+      --pw-navy: #1e3a8a;
+    }
 
     body {
       margin: 0;
@@ -54,7 +61,15 @@
 
     /* New landing hero inner styles */
     .landing-hero-box { background: transparent; border-radius: 24px; box-shadow: none; padding: 32px 28px; border: none; }
-    .landing-hero-box h1 { margin: 0 0 10px 0; font-size: clamp(28px, 3vw, 40px); line-height: 1.2; color: #0b1020; }
+    /* Change #1: Apply Poppins, light navy, and larger size to the top H1 only */
+    .landing-hero-box h1 { 
+      margin: 0 0 10px 0; 
+      font-family: 'Poppins', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      color: var(--pw-navy);
+      /* approx. 4 sizes larger than previous clamp(28px,3vw,40px) */
+      font-size: clamp(40px, 5vw, 64px);
+      line-height: 1.15;
+    }
     .landing-hero-box p { margin: 0 0 16px 0; font-size: 16px; color: #1f2937; line-height: 1.65; max-width: 900px; }
     .landing-cta-row { display: flex; gap: 12px; flex-wrap: wrap; }
     .pw-btn { border: none; cursor: pointer; padding: 10px 16px; border-radius: 999px; font-weight: 700; color: #fff; box-shadow: 0 10px 24px rgba(0,0,0,0.12); }
@@ -107,6 +122,17 @@
     @media (max-width: 640px){
       #mission .pw-mobile-wrap { padding: 34px 30px; }
     }
+
+    /* Change #2: footer styles (three columns with links) */
+    .pw-footer { margin: 26px auto 0; padding: 0 18px 40px; }
+    .pw-footer-wrap { max-width: 1080px; margin: 0 auto; background: rgba(255,255,255,0.78); border-radius: 18px; box-shadow: 0 10px 30px rgba(0,0,0,0.18); padding: 26px 28px; backdrop-filter: blur(6px) saturate(1.1); }
+    .pw-footer-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    @media (max-width: 900px){ .pw-footer-grid { grid-template-columns: 1fr; } }
+    .pw-footer h4 { margin: 0 0 10px 0; font-size: 16px; font-weight: 800; }
+    .pw-footer ul { list-style: none; padding: 0; margin: 0; }
+    .pw-footer li { margin: 8px 0; }
+    .pw-footer a { text-decoration: none; color: #1f2937; }
+    .pw-footer a:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
@@ -146,6 +172,7 @@
   <section class="pw-mobile-section">
     <div class="pw-mobile-wrap">
       <div class="landing-hero-box">
+        <!-- Change #1: Text stays the same; style (font/color/size) handled in CSS above -->
         <h1>PredictWell Health.ai is Preventative Health AI</h1>
         <p>
           PredictWell continuously learns your normal patterns from wearables and quick check-ins, then spots subtle changes in
@@ -196,7 +223,8 @@
   <!-- ABOUT (same width; TITLE now centered only) -->
   <section class="pw-mobile-section">
     <div class="pw-mobile-wrap">
-      <h2 class="pw-mobile-header" style="text-align:center;margin-bottom:8px;">ABOUT</h2>
+      <!-- Change #7: ABOUT header uses Poppins + light navy -->
+      <h2 class="pw-mobile-header" style="text-align:center;margin-bottom:8px;font-family:'Poppins',system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:var(--pw-navy);">ABOUT</h2>
       <p class="pw-mobile-sub" style="text-align:left;max-width:100%;margin-top:0;">
         <strong>PredictWell Health.ai</strong> is a <strong>preventative health AI</strong> that transforms everyday signals—wearables,
         short weekly voice or gait check-ins, and simple phone-based inputs—into early alerts and personalized actions. By
@@ -214,7 +242,8 @@
     <!-- MISSION (Investor-Focused) — replace your current mission section with this -->
 <section class="pw-mobile-section" id="mission">
   <div class="pw-mobile-wrap" style="background:linear-gradient(90deg,#0b1020,#1e3a8a);color:#fff;">
-    <h2 class="pw-mobile-header" style="text-align:left;margin-bottom:8px;color:#fff;">Redefining Preventive Care with Adaptive AI</h2>
+    <!-- Change #5: Center this header -->
+    <h2 class="pw-mobile-header" style="text-align:center;margin-bottom:8px;color:#fff;">Redefining Preventive Care with Adaptive AI</h2>
 
     <p class="pw-mobile-sub" style="text-align:left;max-width:100%;margin-top:0;color:#eef2ff;">
       <strong>PredictWell Health.ai</strong> is redefining preventive care through adaptive artificial intelligence. Our mission is to
@@ -229,10 +258,13 @@
   </div>
 </section>
 
-  <!-- Stay Ahead of Risk (unchanged) -->
+  <!-- Stay Ahead of Risk -->
   <section class="pw-mobile-section">
     <div class="pw-mobile-wrap">
-      <h2 class="pw-mobile-header">Stay Ahead of Risk — Smarter Monitoring with PredictWell</h2>
+      <!-- Change #3 + #7: Update text and apply Poppins + light navy -->
+      <h2 class="pw-mobile-header" style="font-family:'Poppins',system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:var(--pw-navy);">
+        Stay Ahead of Risk — Smarter Monitoring with PredictWell Health AI
+      </h2>
       <p class="pw-mobile-sub">
         Our upcoming <strong>PredictWell&nbsp;Mobile</strong> experience turns everyday signals into proactive care.
         Seniors, families, and clinicians stay aligned with real-time alerts, simple self-check-ins, and AI-guided next steps—without adding busywork.
@@ -295,10 +327,13 @@
     </div>
   </section>
 
-  <!-- Athletics Performance (unchanged) -->
+  <!-- Athletics Performance -->
   <section class="pw-mobile-section">
     <div class="pw-mobile-wrap">
-      <h2 class="pw-mobile-header">PredictWell Performance — Smarter Insights for Every Athlete</h2>
+      <!-- Change #4 + #7: Update text and apply Poppins + light navy -->
+      <h2 class="pw-mobile-header" style="font-family:'Poppins',system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:var(--pw-navy);">
+        PredictWell Health AI Performance — Smarter Insights for Every Athlete
+      </h2>
       <p class="pw-mobile-sub">
         The <strong>PredictWell Performance</strong> platform extends our proactive AI engine to athletes of every level.
         Coaches, trainers, and players gain real-time visibility into workload, recovery, and readiness—turning data into
@@ -321,13 +356,16 @@
     </div>
   </section>
 
-  <!-- Contact (unchanged) -->
+  <!-- Contact -->
   <section class="pw-lead-section" id="contact">
     <div class="pw-lead-wrap">
       <div class="pw-lead-grid">
         <img class="pw-lead-img" src="/static/images/lead_photo.jpg" alt="Person relaxing at home wearing a discreet safety device" />
         <div>
-          <h2 class="pw-lead-title">Discover PredictWell For You</h2>
+          <!-- Change #6 + #7: Update text and apply Poppins + light navy -->
+          <h2 class="pw-lead-title" style="font-family:'Poppins',system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:var(--pw-navy);">
+            Discover PredictWell Health AI For You
+          </h2>
           <p class="pw-lead-sub">Prefer a quick call or email? Share a few details and our team will help you find the right fit for your family, team, or clinic.</p>
 
           <form class="pw-form" id="leadForm" onsubmit="event.preventDefault(); leadSubmit();">
@@ -371,6 +409,36 @@
       </div>
     </div>
   </section>
+
+  <!-- Change #2: New Footer with three columns and links (not connected yet) -->
+  <footer class="pw-footer">
+    <div class="pw-footer-wrap">
+      <div class="pw-footer-grid">
+        <div>
+          <h4>Services</h4>
+          <ul>
+            <li><a href="#">Eldercare</a></li>
+            <li><a href="#">Athletics</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Support</h4>
+          <ul>
+            <li><a href="#">Report A Fall</a></li>
+            <li><a href="#">Customer Support</a></li>
+            <li><a href="#">Frequently Asked Questions</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>About PredictWell Health AI</h4>
+          <ul>
+            <li><a href="#">Mission Statement</a></li>
+            <li><a href="#">About PredictWell Health AI</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </footer>
 
   <script>
     const menuBtn = document.getElementById('menuBtn');
