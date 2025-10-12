@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>PredictWell — Doctor Portal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#0b1220;--panel:#121a2b;--ink:#e9eefc;--muted:#9bb0d3;--good:#34d399;--warn:#f59e0b;--bad:#ef4444;--chip:#1f2a44}
+    *{box-sizing:border-box} body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+    .wrap{max-width:1100px;margin:40px auto;padding:0 20px}
+    .header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px}
+    .brand{font-weight:700;font-size:22px;letter-spacing:.3px}
+    .card{background:var(--panel);border:1px solid #213052;border-radius:16px;padding:20px;margin-bottom:16px}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:16px} @media(max-width:900px){.row{grid-template-columns:1fr}}
+    .btn{appearance:none;border:1px solid #2a3a5e;background:#1a2440;color:#fff;border-radius:12px;padding:14px 16px;font-weight:600;cursor:pointer}
+    .btn:hover{background:#223052}
+    textarea{width:100%;min-height:160px;border-radius:12px;border:1px solid #223052;background:#0b1426;color:#e9eefc;padding:12px}
+    .muted{color:var(--muted);font-size:14px}
+    .pill{display:inline-block;background:var(--chip);padding:6px 10px;border-radius:999px;font-size:12px;color:var(--muted)}
+    .bar{height:12px;border-radius:999px;background:linear-gradient(90deg,#34d399,#f59e0b,#ef4444)}
+    .gauge{position:relative}
+    .needle{position:absolute;top:-6px;width:2px;height:24px;background:#fff;border-radius:1px}
+    .kv{display:grid;grid-template-columns:220px 1fr;gap:8px;margin:8px 0}
+    pre{background:#0b1426;border:1px solid #223052;border-radius:12px;padding:14px;overflow:auto}
+    a {color:#a6c8ff;text-decoration:none} a:hover{text-decoration:underline}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="header">
+      <div class="brand">PredictWell — Doctor Portal</div>
+      <div><a href="/index.html" class="pill">← Back to landing</a></div>
+    </div>
+
+    <div class="card">
+      <h2>Load patient data</h2>
+      <p class="muted">Paste a JSON export from the Patient Portal or upload a .json file (works for Eldercare or Athletics).</p>
+      <div class="row">
+        <div>
+          <textarea id="jsonIn" placeholder="Paste JSON here..."></textarea>
+          <div style="margin-top:10px"><button class="btn" onclick="loadFromText()">Load</button></div>
+        </div>
+        <div class="card">
+          <h3>Upload .json</h3>
+          <input type="file" id="fileIn" accept=".json" />
+          <div style="margin-top:10px"><button class="btn" onclick="loadFromFile()">Load</button></div>
+          <p class="muted" id="err" style="margin-top:10px"></p>
+        </div>
+      </div>
+    </div>
+
+    <div id="summary" class="card" style="display:none">
+      <h2>Summary</h2>
+      <div id="who" class="kv"></div>
+
+      <div class="card">
+        <h3>Risk band</h3>
+        <div class="gauge" style="margin:10px 0 8px">
+          <div class="bar"></div>
+          <div id="needle" class="needle"></div>
+        </div>
+        <div class="muted" style="display:flex;justify-content:space-between">
+          <span>Low</span><span>Moderate</span><span>High</span>
+        </div>
+        <div style="margin-top:10px"><strong id="band">—</strong> <span class="muted" id="score"></span></div>
+      </div>
+
+      <div class="row">
+        <div class="card">
+          <h3>Vitals & Metrics</h3>
+          <div id="metrics"></div>
+        </div>
+        <div class="card">
+          <h3>Flags & Notes</h3>
+          <div id="flags"></div>
+        </div>
+      </div>
+
+      <details class="card" style="margin-top:10px">
+        <summary>Raw JSON</summary>
+        <pre id="raw"></pre>
+      </details>
+    </div>
+  </div>
+
+<script>
+function safe(s){return s.replace(/[<>&]/g, m=>({"<":"&lt;",">":"&gt;","&":"&amp;"}[m]))}
+function isAthletics(obj){ return !!(obj?.workload || obj?.wellness || obj?.vitals || obj?.health); }
+
+function computeRisk(obj){
+  let score = 0;
+  if(isAthletics(obj)){
+    const w = obj.workload||{};
+    const wl = (w.rpe||0) * (w.duration_min||0);
+    score += Math.min(60, wl/10);
+    const well = obj.wellness||{};
+    score += (well.soreness||0)*2 + (well.fatigue||0)*1.5 + (well.stress||0)*1.5;
+    score = Math.min(100, Math.round(score));
+  }else{
+    const m = (obj.metrics||obj) || {};
+    if(m.spo2_avg)   score += (98 - Math.min(98, m.spo2_avg))*5;
+    if(m.resting_hr) score += Math.max(0, (m.resting_hr - 60));
+    if(m.hrv_rmssd)  score += Math.max(0, 30 - m.hrv_rmssd);
+    if(m.sleep_hours)score += Math.max(0, 7 - m.sleep_hours)*5;
+    score = Math.min(100, Math.round(score));
+  }
+  const band = score < 33 ? "Low" : (score < 66 ? "Moderate" : "High");
+  return {score, band};
+}
+function setNeedle(score){
+  const n = document.getElementById('needle');
+  n.style.left = `calc(${score}% - 1px)`;
+}
+function kv(k,v){ return `<div class="kv"><div class="muted">${safe(String(k))}</div><div>${safe(v==null? '—' : String(v))}</div></div>` }
+function boolText(b){ return b===true?'Yes':(b===false?'No':'—') }
+
+function render(obj){
+  document.getElementById('summary').style.display = '';
+  document.getElementById('raw').innerHTML = safe(JSON.stringify(obj, null, 2));
+
+  const name = obj.name || obj?.athlete?.name || obj?.patient?.name || 'Patient';
+  const age  = obj.age  || obj?.athlete?.age  || obj?.patient?.age  || '—';
+  document.getElementById('who').innerHTML = `
+    <div class="muted">Name</div><div>${safe(String(name))}</div>
+    <div class="muted">Age</div><div>${safe(String(age))}</div>
+    <div class="muted">Type</div><div>${isAthletics(obj)?'Athletics':'Eldercare'}</div>
+  `;
+
+  const {score, band} = computeRisk(obj);
+  document.getElementById('band').textContent = band;
+  document.getElementById('score').textContent = `(${score}/100)`;
+  setNeedle(score);
+
+  const m = []; const f = [];
+  if(isAthletics(obj)){
+    const v = obj.vitals||{};
+    const w = obj.workload||{};
+    const well = obj.wellness||{};
+    m.push(kv('Resting HR', v.resting_hr));
+    m.push(kv('HRV (RMSSD)', v.hrv_rmssd));
+    m.push(kv('Sleep (h)', well.sleep_hours));
+    m.push(kv('Soreness (0–10)', well.soreness));
+    m.push(kv('Fatigue (0–10)', well.fatigue));
+    m.push(kv('Stress (0–10)', well.stress));
+    m.push(kv('RPE', w.rpe));
+    m.push(kv('Duration (min)', w.duration_min));
+    m.push(kv('ACWR', w.acwr));
+    f.push(kv('Pain areas', obj?.health?.pain_areas||'—'));
+    f.push(kv('Recent injury', obj?.health?.recent_injury||'—'));
+    f.push(kv('Recent illness', obj?.health?.recent_illness||'—'));
+    f.push(kv('Notes', obj?.notes||''));
+  }else{
+    const x = obj.metrics||obj;
+    m.push(kv('SpO₂ avg (%)', x.spo2_avg));
+    m.push(kv('Resting HR (bpm)', x.resting_hr));
+    m.push(kv('HRV (RMSSD)', x.hrv_rmssd));
+    m.push(kv('Sleep (h)', x.sleep_hours));
+    m.push(kv('Steps daily', x.steps_daily));
+    f.push(kv('Gait concern', boolText(obj?.flags?.gait_concern)));
+    f.push(kv('Cognitive flags', boolText(obj?.flags?.cognitive_flags)));
+    f.push(kv('Notes', obj?.notes||''));
+  }
+  document.getElementById('metrics').innerHTML = m.join('');
+  document.getElementById('flags').innerHTML = f.join('');
+}
+
+function loadFromText(){
+  try{
+    const txt = document.getElementById('jsonIn').value.trim();
+    if(!txt) return;
+    const obj = JSON.parse(txt);
+    render(obj);
+    document.getElementById('err').textContent = '';
+  }catch(e){
+    document.getElementById('err').textContent = 'Invalid JSON.';
+  }
+}
+function loadFromFile(){
+  const f = document.getElementById('fileIn').files[0];
+  if(!f) return;
+  const r = new FileReader();
+  r.onload = () => {
+    try{ render(JSON.parse(r.result)); document.getElementById('err').textContent=''; }
+    catch{ document.getElementById('err').textContent='Invalid JSON.'; }
+  };
+  r.readAsText(f);
+}
+</script>
+</body>
+</html>

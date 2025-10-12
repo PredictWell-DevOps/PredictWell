@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>PredictWell — Athletics Patient Portal</title>
+<link rel="icon" href="data:," />
+<meta name="description" content="Athletics Patient Portal — daily workload & recovery check-ins.">
+
+<style>
+  :root{
+    --bg-a:#0a2b4a;        /* deep navy */
+    --bg-b:#0f4d73;        /* lighter navy */
+    --card:#0e2d48;        /* glass card base */
+    --text:#e9f2fb;
+    --muted:#bcd0e5;
+    --accent:#f4b000;
+    --accent-press:#d99a00;
+    --shadow:0 14px 40px rgba(0,0,0,.45);
+    --radius:16px;
+    --max:980px;
+    --fieldh:46px;
+  }
+
+  /* page background + overlay like Doctor Portal */
+  html,body{height:100%}
+  body{
+    margin:0;
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+    color:var(--text);
+    background-image:url("/static/images/predictwell_background.png");
+    background-size:cover; background-position:center; background-attachment:fixed;
+  }
+  body::before{
+    content:"";
+    position:fixed; inset:0; z-index:-1;
+    background:linear-gradient(180deg, rgba(10,43,74,.92), rgba(15,77,115,.92));
+  }
+
+  /* sticky top bar (matches doctor page) */
+  .top{
+    position:sticky; top:0; z-index:10;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 22px;
+    background:linear-gradient(90deg, rgba(10,43,74,.85), rgba(15,77,115,.85));
+    border-bottom:1px solid rgba(255,255,255,.08);
+    backdrop-filter:blur(6px);
+  }
+  .brand{display:flex; align-items:center; gap:10px; color:var(--text); text-decoration:none;}
+  .brand .dot{width:28px;height:28px;border-radius:8px;background:#ffffff1a}
+  .brand b{letter-spacing:.2px}
+  .nav a{color:var(--text); text-decoration:none; margin-left:20px; opacity:.85}
+  .nav a:hover{opacity:1}
+  .nav a.active{font-weight:700; text-decoration:underline}
+
+  /* hero */
+  .hero{ text-align:center; padding:34px 16px 16px }
+  .hero h1{ margin:0; font-size:34px; font-weight:800 }
+  .hero p{ margin:8px 0 0; opacity:.92 }
+
+  /* card */
+  .card{
+    width:min(100% - 40px, var(--max));
+    margin: 16px auto 64px;
+    background: linear-gradient(180deg, rgba(14,45,72,.86), rgba(14,45,72,.94));
+    box-shadow:var(--shadow);
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:20px;
+    padding:28px;
+  }
+
+  /* form layout (two columns on desktop, one on mobile) */
+  .grid{ display:grid; grid-template-columns: 1fr 1fr; gap:16px }
+  .grid-1{ display:grid; grid-template-columns: 1fr; gap:16px }
+  label{ display:block; font-size:13px; margin:2px 2px 8px; opacity:.9 }
+  input,select,textarea,button{
+    width:100%; box-sizing:border-box;
+    height:var(--fieldh);
+    border-radius:12px; border:1px solid rgba(255,255,255,.12);
+    background:#0b253f; color:var(--text); padding:0 12px; outline:none;
+  }
+  input::placeholder, textarea::placeholder{ color:var(--muted) }
+  textarea{ height:120px; padding:12px; resize:vertical }
+  button{
+    height:48px; font-weight:700; letter-spacing:.2px; cursor:pointer;
+    background:var(--accent); color:#111; border:none;
+  }
+  button:hover{ background:var(--accent-press) }
+
+  .help{font-size:12.5px; opacity:.85; margin-top:8px}
+  .status{margin-top:10px; font-size:14px}
+  .ok{color:#47c17e} .err{color:#ff6b6b}
+
+  /* footer */
+  footer{
+    text-align:center; color:#cfe3f7cc; font-size:12px; padding:22px 10px 40px;
+    background:linear-gradient(180deg, rgba(10,43,74,.82), rgba(10,43,74,.92));
+    border-top:1px solid rgba(255,255,255,.08);
+  }
+
+  @media (max-width:780px){
+    .grid{ grid-template-columns:1fr }
+    .hero h1{ font-size:28px }
+  }
+</style>
+</head>
+<body>
+  <!-- header -->
+  <div class="top">
+    <a class="brand" href="/index.html" aria-label="PredictWell Home">
+      <span class="dot"></span><b>PredictWell Health.ai</b>
+    </a>
+    <nav class="nav">
+      <a href="/athletics.html">Doctors</a>
+      <a href="/athletics-patient.html" class="active">Patients</a>
+      <a href="/eldercare.html">Eldercare</a>
+    </nav>
+  </div>
+
+  <!-- hero -->
+  <section class="hero">
+    <h1>Athletics Patient Portal</h1>
+    <p>Enter your daily workload and recovery metrics below.</p>
+  </section>
+
+  <!-- form card -->
+  <main class="card">
+    <form id="athPatientForm" autocomplete="on" novalidate>
+      <div class="grid">
+        <div>
+          <label for="name">Full Name</label>
+          <input id="name" name="name" placeholder="Jane Doe" required />
+        </div>
+        <div>
+          <label for="sleep">Hours Slept</label>
+          <input id="sleep" name="sleep" placeholder="e.g., 7.5" inputmode="decimal" />
+        </div>
+      </div>
+
+      <div class="grid">
+        <div>
+          <label for="pitches">Pitch Count (if applicable)</label>
+          <input id="pitches" name="pitches" placeholder="e.g., 42" inputmode="numeric" />
+        </div>
+        <div>
+          <label for="pain">Pain Level</label>
+          <select id="pain" name="pain">
+            <option value="">Select Pain Level</option>
+            <option value="0">0 — No pain</option>
+            <option>1</option><option>2</option><option>3</option>
+            <option>4</option><option>5</option><option>6</option>
+            <option>7</option><option>8</option><option>9</option>
+            <option value="10">10 — Worst</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid-1">
+        <div>
+          <label for="notes">Additional Notes</label>
+          <textarea id="notes" name="notes" placeholder="Soreness, workload, recovery, etc."></textarea>
+        </div>
+        <button type="submit">Submit</button>
+        <div class="help">Submission sends to your PredictWell backend and returns a confirmation.</div>
+        <div id="status" class="status" role="status" aria-live="polite"></div>
+      </div>
+    </form>
+  </main>
+
+  <footer>© <span id="yr"></span> PredictWell Health.ai — Athletics</footer>
+
+<script>
+  document.getElementById('yr').textContent = new Date().getFullYear();
+
+  const BASE_API = 'https://predictwell-backend-ai.onrender.com'; // same as Doctor
+  const form = document.getElementById('athPatientForm');
+  const statusEl = document.getElementById('status');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    statusEl.textContent = 'Submitting...'; statusEl.className = 'status';
+
+    const payload = {
+      name: form.name.value.trim(),
+      sleep_hours: parseFloat(form.sleep.value || '0'),
+      pitch_count: parseInt(form.pitches.value || '0', 10),
+      pain_level: form.pain.value === '' ? null : parseInt(form.pain.value,10),
+      notes: form.notes.value.trim() || null
+    };
+
+    try{
+      const res = await fetch(`${BASE_API}/risk`, {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify(payload)
+      });
+      if(!res.ok) throw new Error('HTTP '+res.status);
+      const data = await res.json();
+      statusEl.textContent = 'Thank you! Your entry was received.' + (data?.risk || data?.risk_score ? ` Risk score: ${data.risk ?? data.risk_score}` : '');
+      statusEl.className = 'status ok';
+      form.reset();
+    }catch(err){
+      console.error(err);
+      statusEl.textContent = 'Submission failed. Please try again.';
+      statusEl.className = 'status err';
+    }
+  });
+</script>
+</body>
+</html>
