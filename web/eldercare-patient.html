@@ -51,7 +51,7 @@
 
 .footer{ text-align:center; color:#374151; font-size:12px; margin-top:28px; text-shadow:0 1px 0 rgba(255,255,255,0.75); }
 </style>
-@@ -146,6 +185,19 @@ <h2>Your Quick Checkup</h2>
+@@ -146,6 +185,19 @@
 </div>
 <h2 style="margin:0;">Your Results</h2>
 </div>
@@ -71,7 +71,7 @@
 <pre class="results" id="resultsBox">{ "status": "ready" }</pre>
 </section>
 
-@@ -260,6 +312,38 @@ <h2 style="margin:0;">Your Results</h2>
+@@ -260,6 +312,38 @@
 badge.style.color = '#0b1020';
 }
 
@@ -110,7 +110,7 @@ badge.style.color = '#0b1020';
 // Backend status
 async function pingBackend() {
 const badge = document.getElementById('backendStatus');
-@@ -283,6 +367,9 @@ <h2 style="margin:0;">Your Results</h2>
+@@ -283,24 +367,27 @@
 };
 
 updateBadge(local);
@@ -120,3 +120,21 @@ updateBadge(local);
 resultsBox.textContent = JSON.stringify(localBlock, null, 2);
 
 try{
+const res = await fetch(`${BASE_API}/eldercare/checkin`, {
+method: 'POST',
+headers: { 'Content-Type': 'application/json' },
+body: JSON.stringify({ ...payload, client_score: local.score, client_category: local.level })
+});
+const json = await res.json();
+const merged = { ...localBlock, server_response: json };
+resultsBox.textContent = JSON.stringify(merged, null, 2);
+}catch(e){
+const merged = { ...localBlock, server_error: 'Request failed or backend unreachable' };
+resultsBox.textContent = JSON.stringify(merged, null, 2);
+}
+}
+
+document.getElementById('runBtn').addEventListener('click', runAnalysis);
+</script>
+</body>
+</html>
