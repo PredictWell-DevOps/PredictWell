@@ -102,6 +102,11 @@
     .pw-check-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
     .pw-btn-submit { background: linear-gradient(135deg,#2563eb,#60a5fa); color: #fff; border: 0; border-radius: 999px; padding: 10px 18px; font-weight: 800; cursor: pointer; box-shadow: 0 10px 24px rgba(37,99,235,0.22); }
     .pw-legal { font-size: 11px; color: #6b7280; }
+
+    /* ===== Mobile tweak for Mission banner ONLY ===== */
+    @media (max-width: 640px){
+      #mission .pw-mobile-wrap { padding: 34px 30px; }
+    }
   </style>
 </head>
 <body>
@@ -188,10 +193,10 @@
     </div>
   </main>
 
-  <!-- ABOUT (already same width style) -->
+  <!-- ABOUT (same width; TITLE now centered only) -->
   <section class="pw-mobile-section">
     <div class="pw-mobile-wrap">
-      <h2 class="pw-mobile-header" style="text-align:left;margin-bottom:8px;">ABOUT</h2>
+      <h2 class="pw-mobile-header" style="text-align:center;margin-bottom:8px;">ABOUT</h2>
       <p class="pw-mobile-sub" style="text-align:left;max-width:100%;margin-top:0;">
         <strong>PredictWell Health.ai</strong> is a <strong>preventative health AI</strong> that transforms everyday signals—wearables,
         short weekly voice or gait check-ins, and simple phone-based inputs—into early alerts and personalized actions. By
@@ -200,6 +205,17 @@
         declines</strong> before they occur. The result is a calmer, smarter way to stay ahead of health risks—helping individuals
         maintain independence, families stay informed, and clinicians make proactive, data-driven decisions that improve wellbeing
         and quality of life.
+      </p>
+    </div>
+  </section>
+
+  <!-- MISSION (Investor-Focused) — placed directly under ABOUT, same width -->
+  <section class="pw-mobile-section" id="mission">
+    <div class="pw-mobile-wrap" style="background:linear-gradient(90deg,#0b1020,#1e3a8a);color:#fff;">
+      <h2 class="pw-mobile-header" style="text-align:left;margin-bottom:8px;color:#fff;">Redefining Preventive Care with Adaptive AI</h2>
+      <p class="pw-mobile-sub" style="text-align:left;max-width:100%;margin-top:0;color:#eef2ff;">
+        PredictWell Health.ai is closing the gap between health data and real-world action — using intelligent, multi-signal analytics
+        to detect early risks, personalize interventions, and promote health equity, longevity, and performance across all ages.
       </p>
     </div>
   </section>
