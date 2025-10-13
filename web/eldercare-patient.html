@@ -159,23 +159,43 @@
         </div>
         <div>
           <label>Medication count</label>
-          <input id="med_count" type="number" min="0" />
+          <select id="med_count">
+  <option value="1">1</option>
+  <option value="2">2</option>
+  <option value="3">3</option>
+  <option value="4">4</option>
+  <option value="5+">5+</option>
+</select>
         </div>
         <div>
           <label>Memory concerns?</label>
-          <select id="memory"><option>No</option><option>Yes</option></select>
+          <select id="memory">
+  <option value="1">1 (Low concern)</option>
+  <option value="2">2</option>
+  <option value="3">3</option>
+  <option value="4">4</option>
+  <option value="5">5 (High concern)</option>
+</select>
         </div>
         <div>
           <label>Mood concerns?</label>
-          <select id="mood"><option>No</option><option>Yes</option></select>
+          <select id="mood">
+  <option value="1">1 (Good mood)</option>
+  <option value="2">2</option>
+  <option value="3">3</option>
+  <option value="4">4</option>
+  <option value="5">5 (Bad mood)</option>
+</select>
         </div>
         <div>
           <label>Weekly activity level</label>
           <select id="activity">
-            <option value="low">Low</option>
-            <option value="moderate">Moderate</option>
-            <option value="high">High</option>
-          </select>
+            <option value="1">1 (High activity)</option>
+  <option value="2">2</option>
+  <option value="3">3</option>
+  <option value="4">4</option>
+  <option value="5">5 (Low activity)</option>
+</select>
         </div>
         <div>
           <label>Home hazards present?</label>
@@ -262,7 +282,10 @@
       // Lightweight heuristic to preserve existing behavior
       let score = 100;
       const yes = v => String(v).toLowerCase() === 'yes';
-      score -= Math.min(30, Number(data.med_count||0) * 2);
+      // Medications (1–5+): scale to 1→6, 2→12, 3→18, 4→24, 5+→30
+const medsStr = String(data.med_count || '0');
+const medsNum = medsStr.endsWith('+') ? 5 : Number(medsStr) || 0;
+score -= Math.min(30, medsNum * 6);
       // Falls (1–5+): scale penalty so 1→5, 2→10, 3→15, 4→20, 5+→25
 const fallsStr = String(data.falls_12m || '0').trim();
 const fallsNum = fallsStr.endsWith('+') ? 5 : Number(fallsStr) || 0;
@@ -279,9 +302,15 @@ if (chairNum > 0) score -= Math.min(10, chairNum * 2);
       // Dizziness (1–5): 1→-2, 2→-4, 3→-6, 4→-8, 5→-10
 const dizzyNum = Number(data.dizzy || 0);
 if (dizzyNum > 0) score -= Math.min(10, dizzyNum * 2);
-      if (yes(data.memory)) score -= 10;
-      if (yes(data.mood)) score -= 8;
-      if ((data.activity||'low') === 'low') score -= 6;
+      // Memory concerns (1–5): 1 best → small/no penalty; 5 worst → up to -10
+const memNum = Number(data.memory || 0) || 0;
+if (memNum > 0) score -= Math.min(10, memNum * 2);
+      // Mood (1–5): 1 best; 5 worst → up to -8
+const moodNum = Number(data.mood || 0) || 0;
+if (moodNum > 0) score -= Math.min(8, moodNum * 2);
+      // Activity (1–5): 1=High(best), 5=Low(worst). Scale up to -6 max.
+const actNum = Number(data.activity || 0) || 0;
+if (actNum > 0) score -= Math.min(6, (actNum - 1) * 2);
       if (yes(data.home_haz)) score -= 6;
       score = Math.max(0, Math.min(100, score));
       return score;
@@ -396,5 +425,6 @@ if (dizzyNum > 0) score -= Math.min(10, dizzyNum * 2);
   </script>
 </body>
 </html>
+
 
 
