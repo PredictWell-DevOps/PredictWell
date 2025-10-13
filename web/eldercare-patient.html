@@ -23,6 +23,8 @@
         url("/static/images/predictwell_background.png") center/cover no-repeat fixed;
       display:flex; flex-direction:column;
     }
+
+    /* Original header styles (kept) */
     header {
       position:sticky; top:0; z-index:10;
       backdrop-filter: blur(8px);
@@ -32,6 +34,7 @@
     .wrap { max-width: 980px; margin: 0 auto; padding: 12px 18px; display:flex; align-items:center; gap:16px; }
     .brand { display:flex; align-items:center; gap:10px; text-decoration:none; color:var(--ink); font-weight:700; }
     .brand span { font-size:18px; letter-spacing:.2px; }
+
     .main { flex:1; display:flex; align-items:flex-start; justify-content:center; padding: 28px 16px 60px; }
     .card {
       width:100%; max-width:980px; background:var(--glass-bg); backdrop-filter: blur(6px);
@@ -53,18 +56,12 @@
       box-shadow: 0 8px 24px rgba(37,99,235,.25);
     }
     .btn:active { transform: translateY(1px); }
-    .grid-tiles {
-      display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:12px; margin-top:14px;
-    }
-    .tile {
-      background:#fff; border:1px solid var(--line); border-radius:14px; padding:14px;
-    }
+    .grid-tiles { display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:12px; margin-top:14px; }
+    .tile { background:#fff; border:1px solid var(--line); border-radius:14px; padding:14px; }
     .tile h3 { margin:0 0 6px; font-size:16px; }
     .metric { font-size:28px; font-weight:800; margin: 4px 0 2px; }
     .ok { color: var(--ok); } .warn{ color: var(--warn);} .risk{ color: var(--risk); }
-    .badge {
-      display:inline-block; padding:4px 10px; border-radius:999px; font-size:12px; font-weight:700; background:#111827; color:#fff;
-    }
+    .badge { display:inline-block; padding:4px 10px; border-radius:999px; font-size:12px; font-weight:700; background:#111827; color:#fff; }
     .results {
       background:#fff; border:1px dashed var(--line); border-radius:14px; padding:14px; margin-top:12px; white-space:pre-wrap; font-family: ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace; font-size:13px;
     }
@@ -73,14 +70,30 @@
       h1 { font-size:20px; }
       .metric { font-size:24px; }
     }
+
+    /* === PW HEADER (standardized like screenshot) — OVERRIDES === */
+    .header{position:sticky;top:0;z-index:50;backdrop-filter:saturate(1.2) blur(6px);
+      background:linear-gradient(90deg,rgba(255,255,255,.62),rgba(255,255,255,.42));
+      border-bottom:1px solid rgba(0,0,0,.18)}
+    .header-inner{max-width:1080px;margin:0 auto;padding:14px 18px;display:flex;align-items:center;gap:14px}
+    .brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:#0b1020}
+    .brand-logo{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#2563eb,#60a5fa);box-shadow:0 10px 30px rgba(0,0,0,.18)}
+    .brand-title{font-size:22px;line-height:1}
+    .brand-title b{font-weight:800}
+    .brand-title .thin{font-weight:600}
+    .brand-tagline{font-size:12px;color:#374151;opacity:.95}
   </style>
 </head>
 <body>
   <!-- Header (logo links back to homepage) -->
-  <header>
-    <div class="wrap">
+  <header class="header">
+    <div class="header-inner">
       <a class="brand" href="/index.html" title="Back to Home">
-        <span>PredictWell<span style="font-weight:400">Health</span>.ai</span>
+        <div class="brand-logo" aria-hidden="true"></div>
+        <div>
+          <div class="brand-title"><b>PredictWell</b><span class="thin">Health.ai</span></div>
+          <div class="brand-tagline">AI health intelligence for longer, stronger living.</div>
+        </div>
       </a>
       <div style="margin-left:auto;">
         <span class="badge" id="healthz">checking…</span>
@@ -110,92 +123,92 @@
         <div>
           <label>Falls in last 12 months?</label>
           <select id="falls_12m">
-  <option value="1">1</option>
-  <option value="2">2</option>
-  <option value="3">3</option>
-  <option value="4">4</option>
-  <option value="5+">5+</option>
-</select>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5+">5+</option>
+          </select>
         </div>
         <div>
           <label>Feel unsteady when walking?</label>
           <select id="unsteady">
-  <option value="1">1 (Least unsteady)</option>
-  <option value="2">2</option>
-  <option value="3">3</option>
-  <option value="4">4</option>
-  <option value="5">5 (Most unsteady)</option>
-</select>
+            <option value="1">1 (Least unsteady)</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5 (Most unsteady)</option>
+          </select>
         </div>
         <div>
           <label>Fear of falling?</label>
           <select id="fear_fall">
-  <option value="1">1 (Low Fear)</option>
-  <option value="2">2</option>
-  <option value="3">3</option>
-  <option value="4">4</option>
-  <option value="5">5 (High Fear)</option>
-</select>
+            <option value="1">1 (Low Fear)</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5 (High Fear)</option>
+          </select>
         </div>
         <div>
           <label>Chair rise difficulty?</label>
           <select id="chair_rise">
-  <option value="1">1 (Least difficult)</option>
-  <option value="2">2</option>
-  <option value="3">3</option>
-  <option value="4">4</option>
-  <option value="5">5 (Most difficult)</option>
-</select>
+            <option value="1">1 (Least difficult)</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5 (Most difficult)</option>
+          </select>
         </div>
         <div>
           <label>Dizziness?</label>
           <select id="dizzy">
-  <option value="1">1 (Least dizzy)</option>
-  <option value="2">2</option>
-  <option value="3">3</option>
-  <option value="4">4</option>
-  <option value="5">5 (Most dizzy)</option>
-</select>
+            <option value="1">1 (Least dizzy)</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5 (Most dizzy)</option>
+          </select>
         </div>
         <div>
           <label>Medication count</label>
           <select id="med_count">
-  <option value="1">1</option>
-  <option value="2">2</option>
-  <option value="3">3</option>
-  <option value="4">4</option>
-  <option value="5+">5+</option>
-</select>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5+">5+</option>
+          </select>
         </div>
         <div>
           <label>Memory concerns?</label>
           <select id="memory">
-  <option value="1">1 (Low concern)</option>
-  <option value="2">2</option>
-  <option value="3">3</option>
-  <option value="4">4</option>
-  <option value="5">5 (High concern)</option>
-</select>
+            <option value="1">1 (Low concern)</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5 (High concern)</option>
+          </select>
         </div>
         <div>
           <label>Mood concerns?</label>
           <select id="mood">
-  <option value="1">1 (Good mood)</option>
-  <option value="2">2</option>
-  <option value="3">3</option>
-  <option value="4">4</option>
-  <option value="5">5 (Bad mood)</option>
-</select>
+            <option value="1">1 (Good mood)</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5 (Bad mood)</option>
+          </select>
         </div>
         <div>
           <label>Weekly activity level</label>
           <select id="activity">
             <option value="1">1 (High activity)</option>
-  <option value="2">2</option>
-  <option value="3">3</option>
-  <option value="4">4</option>
-  <option value="5">5 (Low activity)</option>
-</select>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5 (Low activity)</option>
+          </select>
         </div>
         <div>
           <label>Home hazards present?</label>
@@ -282,39 +295,51 @@
       // Lightweight heuristic to preserve existing behavior
       let score = 100;
       const yes = v => String(v).toLowerCase() === 'yes';
+
       // Medications (1–5+): scale to 1→6, 2→12, 3→18, 4→24, 5+→30
-const medsStr = String(data.med_count || '0');
-const medsNum = medsStr.endsWith('+') ? 5 : Number(medsStr) || 0;
-score -= Math.min(30, medsNum * 6);
-      // Falls (1–5+): scale penalty so 1→5, 2→10, 3→15, 4→20, 5+→25
-const fallsStr = String(data.falls_12m || '0').trim();
-const fallsNum = fallsStr.endsWith('+') ? 5 : Number(fallsStr) || 0;
-score -= Math.min(25, Math.max(0, fallsNum * 5));
-      // Unsteady (1–5): scale penalty so 1→3, 2→6, 3→9, 4→12, 5→15
-const unsteadyNum = Number(data.unsteady || 0);
-if (unsteadyNum > 0) score -= Math.min(15, unsteadyNum * 3);
-      // Fear of falling (1–5): 1→-2, 2→-4, 3→-6, 4→-8, 5→-10
-const fearNum = Number(data.fear_fall || 0);
-if (fearNum > 0) score -= Math.min(10, fearNum * 2);
-      // Chair rise difficulty (1–5): 1→-2, 2→-4, 3→-6, 4→-8, 5→-10
-const chairNum = Number(data.chair_rise || 0);
-if (chairNum > 0) score -= Math.min(10, chairNum * 2);
-      // Dizziness (1–5): 1→-2, 2→-4, 3→-6, 4→-8, 5→-10
-const dizzyNum = Number(data.dizzy || 0);
-if (dizzyNum > 0) score -= Math.min(10, dizzyNum * 2);
-      // Memory concerns (1–5): 1 best → small/no penalty; 5 worst → up to -10
-const memNum = Number(data.memory || 0) || 0;
-if (memNum > 0) score -= Math.min(10, memNum * 2);
-      // Mood (1–5): 1 best; 5 worst → up to -8
-const moodNum = Number(data.mood || 0) || 0;
-if (moodNum > 0) score -= Math.min(8, moodNum * 2);
-      // Activity (1–5): 1=High(best), 5=Low(worst). Scale up to -6 max.
-const actNum = Number(data.activity || 0) || 0;
-if (actNum > 0) score -= Math.min(6, (actNum - 1) * 2);
+      const medsStr = String(data.med_count || '0');
+      const medsNum = medsStr.endsWith('+') ? 5 : Number(medsStr) || 0;
+      score -= Math.min(30, medsNum * 6);
+
+      // Falls (1–5+): 1→5, 2→10, 3→15, 4→20, 5+→25
+      const fallsStr = String(data.falls_12m || '0').trim();
+      const fallsNum = fallsStr.endsWith('+') ? 5 : Number(fallsStr) || 0;
+      score -= Math.min(25, Math.max(0, fallsNum * 5));
+
+      // Unsteady (1–5): 1→3 ... 5→15
+      const unsteadyNum = Number(data.unsteady || 0);
+      if (unsteadyNum > 0) score -= Math.min(15, unsteadyNum * 3);
+
+      // Fear of falling (1–5): up to -10
+      const fearNum = Number(data.fear_fall || 0);
+      if (fearNum > 0) score -= Math.min(10, fearNum * 2);
+
+      // Chair rise difficulty (1–5): up to -10
+      const chairNum = Number(data.chair_rise || 0);
+      if (chairNum > 0) score -= Math.min(10, chairNum * 2);
+
+      // Dizziness (1–5): up to -10
+      const dizzyNum = Number(data.dizzy || 0);
+      if (dizzyNum > 0) score -= Math.min(10, dizzyNum * 2);
+
+      // Memory concerns (1–5): up to -10
+      const memNum = Number(data.memory || 0) || 0;
+      if (memNum > 0) score -= Math.min(10, memNum * 2);
+
+      // Mood (1–5): up to -8
+      const moodNum = Number(data.mood || 0) || 0;
+      if (moodNum > 0) score -= Math.min(8, moodNum * 2);
+
+      // Activity (1–5): 1 best; 5 worst → up to -6
+      const actNum = Number(data.activity || 0) || 0;
+      if (actNum > 0) score -= Math.min(6, (actNum - 1) * 2);
+
       if (yes(data.home_haz)) score -= 6;
+
       score = Math.max(0, Math.min(100, score));
       return score;
     }
+
     function setScoreBadge(score){
       const num = document.getElementById('scoreNum');
       const tag = document.getElementById('scoreTag');
@@ -387,8 +412,8 @@ if (actNum > 0) score -= Math.min(6, (actNum - 1) * 2);
       // POST to backend and merge response
       try{
         const r = await fetch(BASE_API + '/eldercare/checkin', {
-          method:'POST',
-          headers:{'Content-Type':'application/json'},
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ source:'patient_portal', inputs:data, client_score: localScore })
         });
         const j = await r.json();
@@ -425,6 +450,3 @@ if (actNum > 0) score -= Math.min(6, (actNum - 1) * 2);
   </script>
 </body>
 </html>
-
-
-
