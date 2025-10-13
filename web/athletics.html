@@ -258,27 +258,112 @@
   </style>
 </head>
 <body>
-  <!-- Header -->
-  <header class="header">
-    <div class="header-inner">
-      <a class="brand" href="/index.html" aria-label="Back to PredictWell Health.ai home">
-        <div class="brand-logo" aria-hidden="true"></div>
-        <div>
-          <div class="brand-title"><b>PredictWell</b><span class="thin">Health.ai</span></div>
-          <div class="brand-tagline">AI health intelligence for longer, stronger living.</div>
-        </div>
-      </a>
-      <div class="spacer"></div>
-      <button class="hamburger" id="menuBtn" aria-label="Open menu"></button>
-      <nav class="menu" id="menu">
-        <a href="/eldercare.html">Eldercare — Doctors</a>
-        <a href="/eldercare-patient.html">Eldercare — Patients</a>
-        <a href="/athletics.html"><strong>Athletics — Doctors</strong></a>
-        <a href="/athletics-patient.html">Athletics — Patients</a>
-      </nav>
-    </div>
-  </header>
-  <!-- ===== END HEADER ===== -->
+  /* ===== HEADER (IDENTICAL TO INDEX) ===== */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  backdrop-filter: saturate(1.2) blur(6px);
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.48));
+  border-bottom: 1px solid rgba(0, 0, 0, 0.18);
+}
+
+.header-inner {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: #0b1020;
+}
+
+.brand-logo {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #2563eb, #60a5fa);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+}
+
+.brand-title {
+  font-size: 21px;
+  line-height: 1;
+  font-family: 'Poppins', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+}
+
+.brand-title b {
+  font-weight: 800;
+}
+
+.brand-title .thin {
+  font-weight: 600;
+}
+
+.brand-tagline {
+  font-size: 12px;
+  color: #374151;
+  opacity: 0.95;
+  line-height: 1.1;
+  font-family: 'Poppins', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+}
+
+.spacer {
+  flex: 1;
+}
+
+.hamburger {
+  border: none;
+  background: #fff;
+  border-radius: 999px;
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+  cursor: pointer;
+}
+
+.hamburger:after {
+  content: "≡";
+  font-size: 20px;
+  color: #111827;
+  position: relative;
+  top: -1px;
+}
+
+.menu {
+  position: absolute;
+  right: 18px;
+  top: 58px;
+  background: rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(10px);
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+  padding: 8px;
+  display: none;
+}
+
+.menu a {
+  display: block;
+  padding: 10px 12px;
+  border-radius: 10px;
+  text-decoration: none;
+  color: #111827;
+  min-width: 220px;
+}
+
+.menu a:hover {
+  background: rgba(17, 24, 39, 0.06);
+}
+/* ===== END HEADER ===== */
 
   <div class="hero-wrap">
     <section class="hero">
