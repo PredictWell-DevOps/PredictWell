@@ -5,222 +5,135 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>PredictWell Health.ai — Athletics Doctor Portal</title>
-  <meta name="description" content="Pitching workload and risk inputs with clear flags and recommendations." />
+  <meta name="description" content="Pitching workload and risk inputs with clear flags and recommendations.">
   <link rel="icon" href="data:,">
+  <!-- EXACT same font import used by Index -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
 
   <style>
-    :root {
-      --glass-bg: rgba(255,255,255,0.78);
-      --radius: 18px;
-      --shadow: 0 10px 30px rgba(0,0,0,0.18);
-      --blu: #2563eb;
-      --ink: #0b1020;
+    html { scroll-behavior: smooth; }
+
+    :root{
+      /* kept from Index (safe; doesn't alter header visuals) */
+      --pw-navy: #1e3a8a;
     }
 
-    html, body { height: 100%; margin: 0; }
     body {
+      margin: 0;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
       color: #111827;
       background-image: url("/static/images/predictwell_background.png");
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      background-attachment: fixed;
-      min-height: 100vh;
+      background-size: cover; background-position: center; background-repeat: no-repeat; background-attachment: fixed;
     }
 
-    /* ===== HEADER (IDENTICAL TO INDEX) ===== */
-    .header {
-      position: sticky; top: 0; z-index: 50;
-      backdrop-filter: saturate(1.2) blur(6px);
-      background: linear-gradient(90deg, rgba(255,255,255,.62), rgba(255,255,255,.42));
-      border-bottom: 1px solid rgba(0,0,0,.18);
-    }
-    .header-inner {
-      max-width: 1080px; margin: 0 auto;
-      padding: 14px 18px; display: flex;
-      align-items: center; gap: 14px;
-    }
-    .brand {
-      display: flex; align-items: center;
-      gap: 10px; text-decoration: none; color: #0b1020;
-    }
-    .brand-logo {
-      width: 34px; height: 34px; border-radius: 10px;
-      background: linear-gradient(135deg, #2563eb, #60a5fa);
-      box-shadow: 0 10px 30px rgba(0,0,0,.18);
-    }
-    .brand-title {
-      font-size: 22px; line-height: 1;
-      font-family: 'Poppins', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
-    }
-    .brand-title b { font-weight: 800; }
-    .brand-title .thin { font-weight: 600; }
-    .brand-tagline {
-      font-size: 12px; color: #374151; opacity: .95; line-height: 1.1;
-      font-family: 'Poppins', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
-    }
-    .spacer { flex: 1; }
-    .hamburger {
-      border: none; background: #fff; border-radius: 999px;
-      width: 36px; height: 36px; display: grid;
-      place-items: center; box-shadow: 0 10px 30px rgba(0,0,0,.18);
-      cursor: pointer;
-    }
-    .hamburger:after {
-      content: "≡"; font-size: 20px; color: #111827;
-      position: relative; top: -1px;
-    }
-    .menu {
-      position: absolute; right: 18px; top: 58px;
-      background: rgba(255,255,255,.78);
-      backdrop-filter: blur(10px);
-      border-radius: 14px;
-      box-shadow: 0 10px 30px rgba(0,0,0,.18);
-      padding: 8px; display: none;
-    }
-    .menu a {
-      display: block; padding: 10px 12px;
-      border-radius: 10px; text-decoration: none;
-      color: #111827; min-width: 220px;
-    }
-    .menu a:hover { background: rgba(17,24,39,.06); }
-    /* ===== END HEADER ===== */
+    /* ===== HEADER — COPIED IDENTICALLY FROM INDEX ===== */
+    .header{position:sticky;top:0;z-index:50;backdrop-filter:saturate(1.2) blur(6px);
+      background:linear-gradient(90deg,rgba(255,255,255,.62),rgba(255,255,255,.42));
+      border-bottom:1px solid rgba(0,0,0,.18)}
+    .header-inner{max-width:1080px;margin:0 auto;padding:14px 18px;display:flex;align-items:center;gap:14px}
+    .brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:#0b1020}
+    .brand-logo{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#2563eb,#60a5fa);box-shadow:0 10px 30px rgba(0,0,0,.18)}
+    .brand-title{font-size:22px;line-height:1}
+    .brand-title b{font-weight:800}           /* PredictWell (bold) */
+    .brand-title .thin{font-weight:600}       /* Health.ai (semi-bold) */
+    .brand-tagline{font-size:12px;color:#374151;opacity:.95}
+    .spacer{flex:1}
+    .hamburger{border:none;background:#fff;border-radius:999px;width:36px;height:36px;display:grid;place-items:center;box-shadow:0 10px 30px rgba(0,0,0,.18);cursor:pointer}
+    .hamburger:after{content:"≡";font-size:20px;color:#111827;position:relative;top:-1px}
+    .menu{position:absolute;right:18px;top:58px;background:rgba(255,255,255,.78);backdrop-filter:blur(10px);border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.18);padding:8px;display:none}
+    .menu a{display:block;padding:10px 12px;border-radius:10px;text-decoration:none;color:#111827;min-width:220px}
+    .menu a:hover{background:rgba(17,24,39,.06)}
 
-    .hero-wrap {
-      max-width: 1080px;
-      margin: 28px auto 0;
-      padding: 0 18px 24px;
+    /* Email picker — COPIED IDENTICALLY FROM INDEX */
+    .email-wrap { position: relative; display: inline-block; }
+    .header-email { font-size: 14px; color: #111827; text-decoration: none; margin-right: 12px; font-weight: 600; cursor: pointer; }
+    .header-email:hover { text-decoration: underline; }
+    .email-menu {
+      position: absolute; right: 0; top: 120%;
+      background: rgba(255,255,255,0.96);
+      border: 1px solid rgba(17,24,39,0.08);
+      border-radius: 10px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.18);
+      padding: 6px; min-width: 230px; display: none; z-index: 60;
     }
-    .hero {
-      background: var(--glass-bg);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 22px 24px;
-    }
-    .hero h1 {
-      margin: 0 0 8px 0;
-      font-size: 26px;
-      letter-spacing: 0.2px;
-    }
-    .hero p {
-      margin: 0;
-      color: #374151;
-      line-height: 1.55;
-    }
+    .email-menu a { display: block; padding: 8px 10px; border-radius: 8px; text-decoration: none; color: #111827; font-size: 14px; }
+    .email-menu a:hover { background: rgba(17,24,39,0.06); }
+    /* ===== END IDENTICAL HEADER CSS ===== */
 
-    .card-row {
-      display: grid;
-      grid-template-columns: 1.08fr 0.92fr;
-      gap: 18px;
-      margin-top: 18px;
-    }
-    .card {
-      background: var(--glass-bg);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 18px;
-    }
-    .card h2 {
-      margin: 0 0 14px 0;
-      font-size: 18px;
-      letter-spacing: 0.2px;
-    }
+    /* ===== Athletics Doctor page content styles (do not touch header classes) ===== */
+    .hero-wrap { max-width: 1080px; margin: 28px auto 0; padding: 0 18px 24px; }
+    .hero { background: rgba(255,255,255,0.78); border-radius: 18px; box-shadow: 0 10px 30px rgba(0,0,0,0.18); padding: 22px 24px; }
+    .hero h1 { margin: 0 0 8px 0; font-size: 26px; letter-spacing: 0.2px; }
+    .hero p { margin: 0; color: #374151; line-height: 1.55; }
 
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 12px;
-    }
+    .card-row { display: grid; grid-template-columns: 1.08fr 0.92fr; gap: 18px; margin-top: 18px; }
+    .card { background: rgba(255,255,255,0.78); border-radius: 18px; box-shadow: 0 10px 30px rgba(0,0,0,0.18); padding: 18px; }
+    .card h2 { margin: 0 0 14px 0; font-size: 18px; letter-spacing: 0.2px; }
+
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
     .field { display: flex; flex-direction: column; gap: 6px; }
     label { font-size: 12px; color: #374151; }
     input[type="text"], input[type="number"], textarea {
       width: 100%; padding: 10px 12px;
       border: 1px solid rgba(17,24,39,0.1);
-      border-radius: 12px; background: #fff;
+      border-radius: 12px; background: #ffffff;
       outline: none; font-size: 14px;
     }
     textarea { min-height: 90px; resize: vertical; }
-    .checkbox {
-      display: flex; align-items: center;
-      gap: 8px; margin-top: 4px;
-      font-size: 13px; color: #374151;
-    }
+    .checkbox { display: flex; align-items: center; gap: 8px; margin-top: 4px; font-size: 13px; color: #374151; }
 
-    .actions {
-      display: flex; align-items: center;
-      gap: 10px; margin-top: 12px;
-      flex-wrap: wrap;
-    }
-    .btn {
-      appearance: none; border: none;
-      padding: 10px 16px;
-      border-radius: 999px;
-      color: #fff; font-weight: 700;
-      cursor: pointer; box-shadow: var(--shadow);
-    }
-    .btn-blue { background: linear-gradient(135deg, var(--blu), #60a5fa); }
+    .actions { display: flex; align-items: center; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
+    .btn { appearance: none; border: none; padding: 10px 16px; border-radius: 999px; color: #fff; font-weight: 700; cursor: pointer; box-shadow: 0 10px 30px rgba(0,0,0,0.18); }
+    .btn-blue { background: linear-gradient(135deg, #2563eb, #60a5fa); }
     .btn-gray { background: linear-gradient(135deg, #6b7280, #9ca3af); color: #0b1020; }
 
-    .badge {
-      padding: 7px 10px;
-      border-radius: 999px;
-      background: #e5f8ec;
-      color: #065f46;
-      font-weight: 700;
-      font-size: 12px;
-    }
+    .badge { padding: 7px 10px; border-radius: 999px; background: #e5f8ec; color: #065f46; font-weight: 700; font-size: 12px; }
 
     pre {
-      margin: 0; padding: 14px;
-      background: #0b1020;
-      color: #c7d2fe;
-      border-radius: 14px;
-      min-height: 220px;
-      overflow: auto;
-      white-space: pre-wrap;
-      word-break: break-word;
+      margin: 0; padding: 14px; background: #0b1020; color: #c7d2fe;
+      border-radius: 14px; min-height: 220px; overflow: auto; white-space: pre-wrap; word-break: break-word;
     }
 
-    .footer {
-      max-width: 1080px;
-      margin: 20px auto 40px;
-      padding: 0 18px;
-      color: #374151;
-      font-size: 12px;
-      text-align: center;
-      text-shadow: 0 1px 0 rgba(255,255,255,0.75);
-    }
+    .footer { max-width: 1080px; margin: 20px auto 40px; padding: 0 18px; color: #374151; font-size: 12px; text-align: center; text-shadow: 0 1px 0 rgba(255,255,255,0.75); }
 
-    @media (max-width: 900px) {
-      .card-row { grid-template-columns: 1fr; }
-    }
+    @media (max-width: 900px) { .card-row { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
-  <!-- Header -->
+  <!-- ===== IDENTICAL HEADER HTML (copied from Index) ===== -->
   <header class="header">
     <div class="header-inner">
-      <a class="brand" href="/index.html" aria-label="Back to PredictWell Health.ai home">
-        <div class="brand-logo" aria-hidden="true"></div>
+      <a class="brand" href="/">
+        <div class="brand-logo"></div>
         <div>
           <div class="brand-title"><b>PredictWell</b><span class="thin">Health.ai</span></div>
           <div class="brand-tagline">AI health intelligence for longer, stronger living.</div>
         </div>
       </a>
       <div class="spacer"></div>
-      <button class="hamburger" id="menuBtn" aria-label="Open menu"></button>
+
+      <!-- Email picker -->
+      <div class="email-wrap">
+        <a href="mailto:info@predictwellhealth.ai" class="header-email" id="emailLink">info@predictwellhealth.ai</a>
+        <div class="email-menu" id="emailMenu" role="menu" aria-label="Email options">
+          <a role="menuitem" target="_blank" rel="noopener" href="https://mail.google.com/mail/?view=cm&fs=1&to=info@predictwellhealth.ai">Open in Gmail</a>
+          <a role="menuitem" target="_blank" rel="noopener" href="https://outlook.live.com/mail/0/deeplink/compose?to=info@predictwellhealth.ai">Open in Outlook.com</a>
+          <a role="menuitem" target="_blank" rel="noopener" href="https://compose.mail.yahoo.com/?to=info@predictwellhealth.ai">Open in Yahoo Mail</a>
+          <a role="menuitem" href="mailto:info@predictwellhealth.ai">Use default mail app</a>
+        </div>
+      </div>
+
+      <button class="hamburger" id="menuBtn"></button>
       <nav class="menu" id="menu">
-        <a href="/eldercare.html">Eldercare — Doctors</a>
-        <a href="/eldercare-patient.html">Eldercare — Patients</a>
-        <a href="/athletics.html"><strong>Athletics — Doctors</strong></a>
-        <a href="/athletics-patient.html">Athletics — Patients</a>
+        <a href="#eldercare">Eldercare — Doctors</a>
+        <a href="#athletics">Athletics — Doctors</a>
+        <a href="#contact">Contact</a>
       </nav>
     </div>
   </header>
-  <!-- ===== END HEADER ===== -->
+  <!-- ===== END IDENTICAL HEADER HTML ===== -->
 
+  <!-- ===== Doctor Portal content ===== -->
   <div class="hero-wrap">
     <section class="hero">
       <h1>Pitching Risk — Daily/Weekly Input</h1>
@@ -230,7 +143,6 @@
     <div class="card-row">
       <section class="card">
         <h2>Pitcher Inputs</h2>
-
         <div class="grid">
           <div class="field">
             <label for="pitcherName">Pitcher Name</label>
@@ -299,24 +211,65 @@
 
   <div class="footer">© 2025 PredictWell Health.ai — Athletics</div>
 
+  <!-- ===== JS: IDENTICAL header behavior from Index + portal logic ===== -->
   <script>
-    const BASE_API = 'https://predictwell-backend-ai.onrender.com';
+    // Header menu toggle (copied from Index)
     const menuBtn = document.getElementById('menuBtn');
     const menu = document.getElementById('menu');
+
+    // Toggle open/close on button
     document.addEventListener('click', (e) => {
-      if (menuBtn.contains(e.target)) {
+      if (menuBtn && menuBtn.contains(e.target)) {
         menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
-      } else if (!menu.contains(e.target)) {
+      } else if (menu && !menu.contains(e.target)) {
         menu.style.display = 'none';
       }
     });
 
+    // Close menu when a link is clicked
+    if (menu) {
+      menu.querySelectorAll('a').forEach(a => {
+        a.addEventListener('click', () => {
+          menu.style.display = 'none';
+        });
+      });
+    }
+
+    // Close on Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && menu) menu.style.display = 'none';
+    });
+
+    // Email picker behavior (copied from Index)
+    (function () {
+      const emailLink = document.getElementById('emailLink');
+      const emailMenu = document.getElementById('emailMenu');
+      if (!emailLink || !emailMenu) return;
+
+      emailLink.addEventListener('click', function (e) {
+        e.preventDefault();
+        emailMenu.style.display = (emailMenu.style.display === 'block') ? 'none' : 'block';
+      });
+
+      document.addEventListener('click', function (e) {
+        if (!emailMenu.contains(e.target) && e.target !== emailLink) {
+          emailMenu.style.display = 'none';
+        }
+      });
+
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') emailMenu.style.display = 'none';
+      });
+    })();
+
+    // ===== Doctor portal logic =====
+    const BASE_API = 'https://predictwell-backend-ai.onrender.com';
     const resultBox = document.getElementById('resultBox');
     const backendStatus = document.getElementById('backendStatus');
 
     function readNumber(id) {
-      const v = document.getElementById(id).value;
-      const n = Number(v);
+      const el = document.getElementById(id);
+      const n = Number(el && el.value);
       return Number.isFinite(n) ? n : 0;
     }
 
@@ -338,7 +291,7 @@
 
     async function computeRisk() {
       const payload = {
-        name: document.getElementById('pitcherName').value || '',
+        name: (document.getElementById('pitcherName')||{}).value || '',
         age: readNumber('age'),
         pitch_count_7d: readNumber('pitchCount7d'),
         innings_7d: readNumber('innings7d'),
@@ -346,8 +299,8 @@
         avg_velo: readNumber('avgVelo'),
         pain_today: readNumber('painToday'),
         throws_today: readNumber('throwsToday'),
-        prior_injury: document.getElementById('priorInjury').checked,
-        mechanics_flags: document.getElementById('mechanicsFlags').value || ''
+        prior_injury: !!(document.getElementById('priorInjury')||{}).checked,
+        mechanics_flags: (document.getElementById('mechanicsFlags')||{}).value || ''
       };
 
       resultBox.textContent = 'Scoring...';
