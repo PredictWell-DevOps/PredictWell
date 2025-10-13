@@ -1,11 +1,15 @@
-<<<<<<< HEAD
 fastapi==0.115.0
 uvicorn[standard]==0.30.6
 pydantic==2.8.2
 pydantic-settings==2.4.0
-python-multipart==0.0.9
 starlette>=0.37.2
 typing-extensions>=4.8.0
-=======
--r backend/requirements.txt
->>>>>>> 783c1c4e973073665cf3c1f34d0051ece37e85dd
+
+# DB & migrations
+SQLAlchemy==2.0.44
+alembic==1.17.0
+
+# Auth & forms
+passlib[argon2]==1.7.4
+pyjwt==2.10.1
+python-multipart==0.0.9
