@@ -25,19 +25,23 @@
     }
 
     /* Header */
-    .header { position: sticky; top: 0; z-index: 50; backdrop-filter: saturate(1.2) blur(6px); background: rgba(255,255,255,0.75); border-bottom: 1px solid rgba(255,255,255,0.4); }
-    .header-inner { max-width: 1080px; margin: 0 auto; padding: 14px 18px; display: flex; align-items: center; gap: 14px; }
-    .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: #0b1020; }
-    .brand-logo { width: 34px; height: 34px; border-radius: 10px; background: linear-gradient(135deg, #2563eb, #60a5fa); box-shadow: 0 10px 30px rgba(0,0,0,0.18); }
-    .brand-title { font-weight: 800; font-size: 20px; line-height: 1; }
-    .brand-title .hi { color: #111827; } .brand-title .ai { color: #000000; }
-    .brand-tagline { font-size: 12px; color: #4b5563; }
-    .spacer { flex: 1; }
-    .hamburger { border: none; background: #fff; border-radius: 999px; width: 36px; height: 36px; display: grid; place-items: center; box-shadow: 0 10px 30px rgba(0,0,0,0.18); cursor: pointer; }
-    .hamburger:after{ content: "≡"; font-size: 20px; color: #111827; position: relative; top: -1px; }
-    .menu { position: absolute; right: 18px; top: 58px; background: rgba(255,255,255,0.78); backdrop-filter: blur(10px); border-radius: 14px; box-shadow: 0 10px 30px rgba(0,0,0,0.18); padding: 8px; display: none; }
-    .menu a { display: block; padding: 10px 12px; border-radius: 10px; text-decoration: none; color: #111827; min-width: 220px; }
-    .menu a:hover { background: rgba(17,24,39,0.06); }
+    /* Header — standardized like your screenshot */
+.header{position:sticky;top:0;z-index:50;backdrop-filter:saturate(1.2) blur(6px);
+  background:linear-gradient(90deg,rgba(255,255,255,.62),rgba(255,255,255,.42));
+  border-bottom:1px solid rgba(0,0,0,.18)}
+.header-inner{max-width:1080px;margin:0 auto;padding:14px 18px;display:flex;align-items:center;gap:14px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:#0b1020}
+.brand-logo{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#2563eb,#60a5fa);box-shadow:0 10px 30px rgba(0,0,0,.18)}
+.brand-title{font-size:22px;line-height:1}
+.brand-title b{font-weight:800}           /* PredictWell (bold) */
+.brand-title .thin{font-weight:600}       /* Health.ai (semi-bold) */
+.brand-tagline{font-size:12px;color:#374151;opacity:.95}
+.spacer{flex:1}
+.hamburger{border:none;background:#fff;border-radius:999px;width:36px;height:36px;display:grid;place-items:center;box-shadow:0 10px 30px rgba(0,0,0,.18);cursor:pointer}
+.hamburger:after{content:"≡";font-size:20px;color:#111827;position:relative;top:-1px}
+.menu{position:absolute;right:18px;top:58px;background:rgba(255,255,255,.78);backdrop-filter:blur(10px);border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.18);padding:8px;display:none}
+.menu a{display:block;padding:10px 12px;border-radius:10px;text-decoration:none;color:#111827;min-width:220px}
+.menu a:hover{background:rgba(17,24,39,.06)}
 
     /* Email picker (unchanged) */
     .email-wrap { position: relative; display: inline-block; }
@@ -209,9 +213,9 @@
       <a class="brand" href="/">
         <div class="brand-logo"></div>
         <div>
-          <div class="brand-title"><span class="hi">PredictWell Health</span><span class="ai">.ai</span></div>
-          <div class="brand-tagline">Proactive health insights for seniors & athletes</div>
-        </div>
+  <div class="brand-title"><b>PredictWell</b><span class="thin">Health.ai</span></div>
+  <div class="brand-tagline">AI health intelligence for longer, stronger living.</div>
+</div>
       </a>
       <div class="spacer"></div>
 
