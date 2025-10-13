@@ -218,6 +218,19 @@
     details.fold[open] > summary:before { content: "▾"; }
     .fold-body { padding: 14px; border-top: 1px dashed var(--line); }
     .hint { font-size: 12px; color: #64748b; margin-top: 6px; }
+    .hint { font-size: 12px; color: #64748b; margin-top: 6px; }
+
+/* === PW HEADER (standardized like screenshot) — OVERRIDES === */
+.header{position:sticky;top:0;z-index:50;backdrop-filter:saturate(1.2) blur(6px);
+  background:linear-gradient(90deg,rgba(255,255,255,.62),rgba(255,255,255,.42));
+  border-bottom:1px solid rgba(0,0,0,.18)}
+.header-inner{max-width:1080px;margin:0 auto;padding:14px 18px;display:flex;align-items:center;gap:14px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:#0b1020}
+.brand-logo{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#2563eb,#60a5fa);box-shadow:0 10px 30px rgba(0,0,0,.18)}
+.brand-title{font-size:22px;line-height:1}
+.brand-title b{font-weight:800}
+.brand-title .thin{font-weight:600}
+.brand-tagline{font-size:12px;color:#374151;opacity:.95}
   </style>
 </head>
 <body>
@@ -227,10 +240,8 @@
       <a class="brand" href="/index.html" aria-label="Back to PredictWell Health.ai home">
         <div class="brand-logo" aria-hidden="true"></div>
         <div>
-          <div class="brand-title">
-            <span class="hi">PredictWell Health</span><span class="ai">.ai</span>
-          </div>
-          <div class="brand-tagline">Proactive health insights for seniors & athletes</div>
+          <div class="brand-title"><b>PredictWell</b><span class="thin">Health.ai</span></div>
+<div class="brand-tagline">AI health intelligence for longer, stronger living.</div>
         </div>
       </a>
       <div class="spacer"></div>
