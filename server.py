@@ -1,8 +1,8 @@
-# server.py — FastAPI app with auth (cookies) + optional existing routers
+# backend/server.py — FastAPI app with cookie-based auth + optional routers
 
 from __future__ import annotations
 import os
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from typing import Optional
 
 from fastapi import FastAPI, Depends, HTTPException, Request, Response
@@ -24,9 +24,9 @@ from auth_utils import (
     decode_access, decode_refresh, sha256
 )
 
-# ------------------------------------------------------------------------------
+# ----------------------------------------------------------------------
 # App + CORS
-# ------------------------------------------------------------------------------
+# ----------------------------------------------------------------------
 app = FastAPI(title="PredictWell API")
 
 CORS_ORIGINS = os.getenv(
@@ -42,9 +42,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ------------------------------------------------------------------------------
+# ----------------------------------------------------------------------
 # DB dependency
-# ------------------------------------------------------------------------------
+# ----------------------------------------------------------------------
 def get_db():
     db = SessionLocal()
     try:
@@ -57,14 +57,13 @@ def get_db():
 def _startup_create_tables():
     init_db()
 
-# ------------------------------------------------------------------------------
+# ----------------------------------------------------------------------
 # Cookie helpers
-# ------------------------------------------------------------------------------
+# ----------------------------------------------------------------------
 COOKIE_DOMAIN: Optional[str] = os.getenv("COOKIE_DOMAIN") or None
 
 def set_auth_cookies(response: Response, access: str, refresh: str):
-    # NOTE: secure=True assumes HTTPS (Render is HTTPS). For local dev over HTTP,
-    # you may temporarily set secure=False or use a tool that supports HTTPS.
+    # NOTE: secure=True assumes HTTPS (Render is HTTPS).
     response.set_cookie(
         "access_token", access,
         httponly=True, secure=True, samesite="lax", domain=COOKIE_DOMAIN
@@ -78,9 +77,9 @@ def clear_auth_cookies(response: Response):
     for name in ("access_token", "refresh_token"):
         response.delete_cookie(name, domain=COOKIE_DOMAIN)
 
-# ------------------------------------------------------------------------------
+# ----------------------------------------------------------------------
 # Schemas
-# ------------------------------------------------------------------------------
+# ----------------------------------------------------------------------
 class RegisterDoctorIn(BaseModel):
     email: EmailStr
     password: str = Field(min_length=8)
@@ -103,16 +102,16 @@ class LoginIn(BaseModel):
     email: EmailStr
     password: str
 
-# ------------------------------------------------------------------------------
+# ----------------------------------------------------------------------
 # Health
-# ------------------------------------------------------------------------------
+# ----------------------------------------------------------------------
 @app.get("/healthz")
 def healthz():
     return {"status": "ok"}
 
-# ------------------------------------------------------------------------------
+# ----------------------------------------------------------------------
 # Auth endpoints
-# ------------------------------------------------------------------------------
+# ----------------------------------------------------------------------
 @app.post("/auth/register/doctor")
 def register_doctor(
     data: RegisterDoctorIn,
@@ -200,7 +199,6 @@ def login(
 ):
     u = db.query(User).filter(User.email == data.email).first()
     if not u or not verify_password(data.password, u.password_hash):
-        # Log failure; don't reveal which part was wrong
         db.add(AuditLog(user_id=u.id if u else None, event_type="login_failure"))
         db.commit()
         raise HTTPException(status_code=401, detail="Invalid credentials")
@@ -212,7 +210,6 @@ def login(
     db.commit()
 
     set_auth_cookies(response, access, refresh)
-    # Frontend can route by role/sentinel
     return {"ok": True, "role": u.role, "sentinel": u.sentinel}
 
 @app.post("/auth/logout")
@@ -273,11 +270,11 @@ def me(request: Request, db: Session = Depends(get_db)):
         ),
     }
 
-# ------------------------------------------------------------------------------
+# ----------------------------------------------------------------------
 # Include your existing routers if present (no crash if missing)
-# ------------------------------------------------------------------------------
+# ----------------------------------------------------------------------
 try:
-    from eldercare import router as eldercare_router  # if you’ve defined APIRouter there
+    from eldercare import router as eldercare_router
     app.include_router(eldercare_router, prefix="/eldercare", tags=["eldercare"])
 except Exception:
     pass
@@ -289,13 +286,14 @@ except Exception:
     pass
 
 try:
-    from sleep import router as sleep_router  # future module
+    from sleep import router as sleep_router
     app.include_router(sleep_router, prefix="/sleep", tags=["sleep"])
 except Exception:
     pass
-# ------------------------------------------------------------------------------
+
+# ----------------------------------------------------------------------
 # Role/sentinel helpers + routing hint
-# ------------------------------------------------------------------------------
+# ----------------------------------------------------------------------
 def require_doctor(u: User):
     if u.role != "doctor":
         raise HTTPException(status_code=403, detail="Doctors only")
@@ -319,24 +317,20 @@ def get_current_user_from_cookie(request: Request, db: Session) -> User:
 
 @app.get("/route/next")
 def route_next(request: Request, db: Session = Depends(get_db)):
-    """
-    After login/refresh, frontend can call this to know where to route.
-    """
     u = get_current_user_from_cookie(request, db)
     if u.role == "doctor":
         return {"redirect": "/doctor/dashboard"}
-    # patients: route by sentinel
     if u.sentinel == "eldercare":
         return {"redirect": "/patients/eldercare/dashboard"}
     if u.sentinel == "athletics":
         return {"redirect": "/patients/athletics/dashboard"}
     if u.sentinel == "sleep":
         return {"redirect": "/patients/sleep/dashboard"}
-    # fallback for special/dummy/multi
-    return {"redirect": "/patients/choose-portal"}  # UI can show buttons to choose
-# ------------------------------------------------------------------------------
+    return {"redirect": "/patients/choose-portal"}
+
+# ----------------------------------------------------------------------
 # Example protected routes (placeholders)
-# ------------------------------------------------------------------------------
+# ----------------------------------------------------------------------
 @app.get("/doctor/dashboard")
 def doctor_dashboard(request: Request, db: Session = Depends(get_db)):
     u = get_current_user_from_cookie(request, db)
@@ -366,4 +360,3 @@ def patient_sleep_dashboard(request: Request, db: Session = Depends(get_db)):
     if u.sentinel not in ("sleep", "multi"):
         raise HTTPException(status_code=403, detail="Wrong sentinel")
     return {"ok": True, "page": "patients_sleep_dashboard", "user_id": u.id}
-
