@@ -1,39 +1,41 @@
-# backend/db.py — SQLite engine + Base + init_db (dual-compatible)
+# backend/db.py — SQLite engine + Base + init_db (env-aware)
 
 from __future__ import annotations
 import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 
-# -----------------------------------------------------------------------------
-# SQLite path alongside this file (backend/app.db)
-# -----------------------------------------------------------------------------
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DB_FILE = os.path.join(BASE_DIR, "app.db")
-SQLALCHEMY_DATABASE_URL = f"sqlite:///{DB_FILE}"
+# Declarative Base (models should import this as: from db import Base)
+Base = declarative_base()
 
+def _get_database_url() -> str:
+    """Use DATABASE_URL if set (Render), else fallback to local app.db."""
+    url = os.getenv("DATABASE_URL")
+    if url and url.strip():
+        return url
+
+    # Fallback: local SQLite file next to this file
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    db_file = os.path.join(base_dir, "app.db")
+    return f"sqlite:///{db_file}"
+
+DATABASE_URL = _get_database_url()
+
+# SQLite needs check_same_thread=False for single-threaded dev servers
 engine = create_engine(
-    SQLALCHEMY_DATABASE_URL,
-    connect_args={"check_same_thread": False},  # needed for SQLite in single process
+    DATABASE_URL,
+    connect_args={"check_same_thread": False} if DATABASE_URL.startswith("sqlite") else {},
 )
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-# Exported Declarative Base
-Base = declarative_base()
-
-# -----------------------------------------------------------------------------
-# init_db: import models safely (works whether backend is a package or top-level)
-# -----------------------------------------------------------------------------
 def init_db() -> None:
     """
     Import models and create tables. Safe to call on every startup.
+    Works whether 'backend' is a package or run as top-level.
     """
-    # Try relative import when 'backend' is treated as a package
     try:
         from . import models  # noqa: F401
     except Exception:
-        # Fallback when running from inside backend/ as top-level
         import models  # type: ignore  # noqa: F401
 
-    # Create all tables registered on Base
     Base.metadata.create_all(bind=engine)
