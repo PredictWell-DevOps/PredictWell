@@ -293,3 +293,77 @@ try:
     app.include_router(sleep_router, prefix="/sleep", tags=["sleep"])
 except Exception:
     pass
+# ------------------------------------------------------------------------------
+# Role/sentinel helpers + routing hint
+# ------------------------------------------------------------------------------
+def require_doctor(u: User):
+    if u.role != "doctor":
+        raise HTTPException(status_code=403, detail="Doctors only")
+
+def require_patient(u: User):
+    if u.role != "patient":
+        raise HTTPException(status_code=403, detail="Patients only")
+
+def get_current_user_from_cookie(request: Request, db: Session) -> User:
+    at = request.cookies.get("access_token")
+    if not at:
+        raise HTTPException(status_code=401, detail="Not signed in")
+    try:
+        payload = decode_access(at)
+    except Exception:
+        raise HTTPException(status_code=401, detail="Invalid access token")
+    u = db.get(User, int(payload["sub"]))
+    if not u:
+        raise HTTPException(status_code=401, detail="User not found")
+    return u
+
+@app.get("/route/next")
+def route_next(request: Request, db: Session = Depends(get_db)):
+    """
+    After login/refresh, frontend can call this to know where to route.
+    """
+    u = get_current_user_from_cookie(request, db)
+    if u.role == "doctor":
+        return {"redirect": "/doctor/dashboard"}
+    # patients: route by sentinel
+    if u.sentinel == "eldercare":
+        return {"redirect": "/patients/eldercare/dashboard"}
+    if u.sentinel == "athletics":
+        return {"redirect": "/patients/athletics/dashboard"}
+    if u.sentinel == "sleep":
+        return {"redirect": "/patients/sleep/dashboard"}
+    # fallback for special/dummy/multi
+    return {"redirect": "/patients/choose-portal"}  # UI can show buttons to choose
+# ------------------------------------------------------------------------------
+# Example protected routes (placeholders)
+# ------------------------------------------------------------------------------
+@app.get("/doctor/dashboard")
+def doctor_dashboard(request: Request, db: Session = Depends(get_db)):
+    u = get_current_user_from_cookie(request, db)
+    require_doctor(u)
+    return {"ok": True, "page": "doctor_dashboard", "user_id": u.id}
+
+@app.get("/patients/eldercare/dashboard")
+def patient_eldercare_dashboard(request: Request, db: Session = Depends(get_db)):
+    u = get_current_user_from_cookie(request, db)
+    require_patient(u)
+    if u.sentinel not in ("eldercare", "multi"):
+        raise HTTPException(status_code=403, detail="Wrong sentinel")
+    return {"ok": True, "page": "patients_eldercare_dashboard", "user_id": u.id}
+
+@app.get("/patients/athletics/dashboard")
+def patient_athletics_dashboard(request: Request, db: Session = Depends(get_db)):
+    u = get_current_user_from_cookie(request, db)
+    require_patient(u)
+    if u.sentinel not in ("athletics", "multi"):
+        raise HTTPException(status_code=403, detail="Wrong sentinel")
+    return {"ok": True, "page": "patients_athletics_dashboard", "user_id": u.id}
+
+@app.get("/patients/sleep/dashboard")
+def patient_sleep_dashboard(request: Request, db: Session = Depends(get_db)):
+    u = get_current_user_from_cookie(request, db)
+    require_patient(u)
+    if u.sentinel not in ("sleep", "multi"):
+        raise HTTPException(status_code=403, detail="Wrong sentinel")
+    return {"ok": True, "page": "patients_sleep_dashboard", "user_id": u.id}
+
