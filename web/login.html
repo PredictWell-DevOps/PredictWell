@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>PredictWell — Login</title>
+  <style>
+    body{font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial;margin:0;background:#f6f7fb}
+    .wrap{max-width:520px;margin:6rem auto;padding:2rem;background:#fff;border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,.07)}
+    h1{margin:0 0 1rem}
+    label{display:block;margin:.75rem 0 .25rem}
+    input{width:100%;padding:.8rem;border:1px solid #ddd;border-radius:10px}
+    button{margin-top:1rem;width:100%;padding:.9rem;border:0;border-radius:12px;background:#111827;color:#fff;font-weight:600;cursor:pointer}
+    .muted{color:#666;font-size:.9rem;margin-top:.75rem;text-align:center}
+    .msg{margin-top:1rem;padding:.75rem;border-radius:10px;display:none}
+    .ok{background:#ecfdf5;color:#065f46}
+    .err{background:#fef2f2;color:#991b1b}
+    .topnav{position:fixed;left:0;right:0;top:0;background:#fff;border-bottom:1px solid #eee;padding:.8rem 1rem}
+    .topnav a{margin-right:1rem;text-decoration:none;color:#111}
+  </style>
+</head>
+<body>
+  <div class="topnav">
+    <a href="index.html">PredictWell</a>
+    <a href="login.html"><b>Login</b></a>
+    <a href="register.html">Register</a>
+  </div>
+
+  <div class="wrap">
+    <h1>Welcome back</h1>
+    <form id="form">
+      <label>Email</label>
+      <input id="email" type="email" required />
+      <label>Password</label>
+      <input id="password" type="password" required />
+      <button type="submit">Log in</button>
+      <div id="msg" class="msg"></div>
+      <div class="muted">No account? <a href="register.html">Create one</a></div>
+    </form>
+  </div>
+
+<script>
+const BASE_API = 'https://predictwell-backend-ai.onrender.com';
+const msg = document.getElementById('msg');
+
+document.getElementById('form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  msg.style.display='none';
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value;
+  try {
+    const res = await fetch(`${BASE_API}/auth/login`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ email, password })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.detail || 'Login failed');
+    // Demo token/cache
+    localStorage.setItem('pw_user', JSON.stringify({ email }));
+    localStorage.setItem('pw_token', btoa(`${email}:${Date.now()}`));
+    msg.className='msg ok';
+    msg.textContent='Logged in. Redirecting…';
+    msg.style.display='block';
+    setTimeout(()=>location.href='eldercare-patient.html', 700);
+  } catch (err) {
+    msg.className='msg err';
+    msg.textContent=err.message;
+    msg.style.display='block';
+  }
+});
+</script>
+</body>
+</html>
