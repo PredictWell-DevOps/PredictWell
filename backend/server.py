@@ -1,42 +1,27 @@
-# backend/server.py — PredictWell API (full version with auth + sleep + eldercare)
+# backend/server.py — resilient load (eldercare + optional sleep/auth)
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+import importlib
+import logging
 
-# --------------------------------------------------------------------------
-# Router Imports (robust for both local and Render environments)
-# --------------------------------------------------------------------------
-try:
-    from .eldercare import router as eldercare_router
-    from .sleep import router as sleep_router
-    from .auth import router as auth_router
-except ImportError:
-    from eldercare import router as eldercare_router
-    from sleep import router as sleep_router
-    from auth import router as auth_router
+log = logging.getLogger("predictwell")
+logging.basicConfig(level=logging.INFO)
 
-# --------------------------------------------------------------------------
-# FastAPI App Initialization
-# --------------------------------------------------------------------------
 app = FastAPI(
     title="PredictWell API",
     version="1.0.0",
-    description="Backend API for PredictWell Health.ai — Eldercare, Sleep, and Performance Sentinel modules.",
+    description="Backend API for PredictWell Health.ai — Eldercare, Sleep, Auth (optional).",
 )
 
-# --------------------------------------------------------------------------
-# CORS Middleware (open during development; restrict later)
-# --------------------------------------------------------------------------
+# CORS (open for now; restrict to https://predictwellhealth.ai later)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # lock down later to https://predictwellhealth.ai
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# --------------------------------------------------------------------------
-# Root & Health Check
-# --------------------------------------------------------------------------
 @app.get("/")
 def root():
     return {"message": "PredictWell API running. See /docs for details."}
@@ -45,13 +30,33 @@ def root():
 def healthz():
     return {"status": "ok"}
 
-# --------------------------------------------------------------------------
-# Include Routers
-# --------------------------------------------------------------------------
-app.include_router(eldercare_router)
-app.include_router(sleep_router)
-app.include_router(auth_router)
+def _load_router(module_candidates, attr_name="router"):
+    """
+    Try importing a router from several module paths.
+    Returns the router or None if not importable.
+    """
+    for mod in module_candidates:
+        try:
+            m = importlib.import_module(mod)
+            r = getattr(m, attr_name)
+            log.info(f"Loaded router from {mod}.{attr_name}")
+            return r
+        except Exception as e:
+            log.warning(f"Router not found at {mod}.{attr_name}: {e}")
+    return None
 
-# --------------------------------------------------------------------------
-# End of File
-# --------------------------------------------------------------------------
+# Always present (your working endpoint)
+eldercare_router = _load_router(["backend.eldercare", "eldercare"])
+if eldercare_router:
+    app.include_router(eldercare_router)
+else:
+    log.error("Eldercare router missing; /eldercare/checkin will not be available.")
+
+# Optional routers — will load if the modules exist; otherwise skipped gracefully
+sleep_router = _load_router(["backend.sleep", "sleep"])
+if sleep_router:
+    app.include_router(sleep_router)
+
+auth_router = _load_router(["backend.auth", "auth"])
+if auth_router:
+    app.include_router(auth_router)
