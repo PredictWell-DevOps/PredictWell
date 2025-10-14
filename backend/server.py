@@ -1,15 +1,31 @@
-# backend/server.py
+# backend/server.py — PredictWell API (full version with auth + sleep + eldercare)
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-# Robust import whether run as a package or a module
+# --------------------------------------------------------------------------
+# Router Imports (robust for both local and Render environments)
+# --------------------------------------------------------------------------
 try:
     from .eldercare import router as eldercare_router
-except ImportError:  # when working dir is /backend
+    from .sleep import router as sleep_router
+    from .auth import router as auth_router
+except ImportError:
     from eldercare import router as eldercare_router
+    from sleep import router as sleep_router
+    from auth import router as auth_router
 
-app = FastAPI(title="PredictWell API", version="1.0.0")
+# --------------------------------------------------------------------------
+# FastAPI App Initialization
+# --------------------------------------------------------------------------
+app = FastAPI(
+    title="PredictWell API",
+    version="1.0.0",
+    description="Backend API for PredictWell Health.ai — Eldercare, Sleep, and Performance Sentinel modules.",
+)
 
+# --------------------------------------------------------------------------
+# CORS Middleware (open during development; restrict later)
+# --------------------------------------------------------------------------
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  # lock down later to https://predictwellhealth.ai
@@ -18,13 +34,24 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# --------------------------------------------------------------------------
+# Root & Health Check
+# --------------------------------------------------------------------------
 @app.get("/")
 def root():
-    return {"message": "PredictWell API running. See /docs"}
+    return {"message": "PredictWell API running. See /docs for details."}
 
 @app.get("/healthz")
 def healthz():
     return {"status": "ok"}
 
-# ⬇️ this exposes POST /eldercare/checkin
+# --------------------------------------------------------------------------
+# Include Routers
+# --------------------------------------------------------------------------
 app.include_router(eldercare_router)
+app.include_router(sleep_router)
+app.include_router(auth_router)
+
+# --------------------------------------------------------------------------
+# End of File
+# --------------------------------------------------------------------------
