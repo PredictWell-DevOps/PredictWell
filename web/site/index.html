@@ -61,7 +61,14 @@
     .btn-gray{background:linear-gradient(135deg,#6b7280,#9ca3af); color:#0b1020}
 
     /* ====== Portals Grid (Two Bubbles) ====== */
-    .portals{display:grid; grid-template-columns:1fr; gap:28px}
+    .portals{  display:grid;
+  grid-template-columns:1fr;
+  gap:28px;
+  max-width:var(--max);
+  margin:0 auto;
+  padding:0 18px;
+  box-sizing:border-box;
+}
     @media (min-width:900px){ .portals{grid-template-columns:1fr 1fr} }
     .portal{background:var(--glass); border-radius:20px; box-shadow:var(--shadow); padding:22px 24px 26px}
     .portal h2{margin:0 0 12px 0; font:700 28px/1.2 Poppins, Inter, system-ui; letter-spacing:.2px; color:var(--pw-navy)}
