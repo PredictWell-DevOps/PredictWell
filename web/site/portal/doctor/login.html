@@ -71,24 +71,29 @@
   </div>
 
   <script>
+  // Safe shim if /auth.js isn't present
+  if (!window.PW_AUTH) {
+    window.PW_AUTH = { isAuthed: () => false, login: () => {} };
+  }
+
   const emailField = document.getElementById('email');
   const btn = document.getElementById('loginBtn');
 
-  // pick destination based on ?dest=query
+  // pick destination based on ?dest= query
   const params = new URLSearchParams(location.search);
   const dest = params.get('dest');
   const nextUrl = dest === 'eldercare'
     ? '/portal/doctor/eldercare.html'
-    : '/portal/doctor/intake.html'; // default: athletics
+    : '/portal/doctor/intake.html'; // default
 
   if (PW_AUTH.isAuthed()) {
     window.location.href = nextUrl;
   }
 
   btn.addEventListener('click', () => {
-    const email = emailField.value.trim();
-    if (!email) return alert('Enter a valid email.');
-    PW_AUTH.login({ email });
+    const email = (emailField.value || '').trim();
+    if (!email) { alert('Enter a valid email.'); return; }
+    try { PW_AUTH.login({ email }); } catch (e) {}
     window.location.href = nextUrl;
   });
 </script>
