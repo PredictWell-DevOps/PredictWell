@@ -1,3 +1,5 @@
+const BASE_API = "https://predictwell-backend-ai.onrender.com";
+
 // auth.js — append a nav into the existing site header (keeps logo/tagline/glass)
 
 (function () {
