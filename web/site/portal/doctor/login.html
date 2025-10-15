@@ -71,18 +71,26 @@
   </div>
 
   <script>
-    const emailField = document.getElementById('email');
-    const btn = document.getElementById('loginBtn');
+  const emailField = document.getElementById('email');
+  const btn = document.getElementById('loginBtn');
 
-    btn.addEventListener('click', () => {
-      const email = emailField.value.trim();
-      if (!email) {
-        alert("Please enter your email.");
-        return;
-      }
-      localStorage.setItem('predictwell_doctor', JSON.stringify({ email }));
-      window.location.href = "/portal/doctor/intake.html";
-    });
-  </script>
+  // pick destination based on ?dest=query
+  const params = new URLSearchParams(location.search);
+  const dest = params.get('dest');
+  const nextUrl = dest === 'eldercare'
+    ? '/portal/doctor/eldercare.html'
+    : '/portal/doctor/intake.html'; // default: athletics
+
+  if (PW_AUTH.isAuthed()) {
+    window.location.href = nextUrl;
+  }
+
+  btn.addEventListener('click', () => {
+    const email = emailField.value.trim();
+    if (!email) return alert('Enter a valid email.');
+    PW_AUTH.login({ email });
+    window.location.href = nextUrl;
+  });
+</script>
 </body>
 </html>
