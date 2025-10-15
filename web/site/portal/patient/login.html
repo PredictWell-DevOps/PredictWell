@@ -52,20 +52,20 @@
   </div>
 
   <script>
-    const emailField = document.getElementById('email');
-    const btn = document.getElementById('loginBtn');
+const emailField = document.getElementById('email');
+const btn = document.getElementById('loginBtn');
 
-    // If already logged in → redirect to patient portal
-    if (PW_AUTH.isAuthed()) {
-      window.location.href = "/portal/patient/athletics.html";
-    }
+// If already logged in → go to doctor portal
+if (PW_AUTH.isAuthed()) {
+  window.location.href = "/portal/doctor/intake.html";
+}
 
-    btn.addEventListener('click', () => {
-      const email = emailField.value.trim();
-      if(!email) return alert("Enter a valid email.");
-      PW_AUTH.login({ email });
-      window.location.href = "/portal/patient/athletics.html";
-    });
-  </script>
+btn.addEventListener('click', () => {
+  const email = emailField.value.trim();
+  if (!email) return alert("Enter a valid email.");
+  PW_AUTH.login({ email });
+  window.location.href = "/portal/doctor/intake.html";
+});
+</script>
 </body>
 </html>
