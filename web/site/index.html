@@ -4,213 +4,397 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>PredictWell Health.ai</title>
-  <meta name="description" content="Preventive health AI for seniors and athletes—multi-signal wearables + weekly voice/gait check-ins and sport-specific workload insights.">
-  <link rel="icon" href="data:,">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
-  <style>
-    html { scroll-behavior: smooth; }
-    :root { --pw-navy:#1e3a8a; }
+  <meta name="description" content="PredictWell Health.ai — Sentinel Series™ (Eldercare, Sleep, Performance): multi-signal monitoring + explainable AI to forecast risk and recommend action." />
+  <link rel="icon" href="data:," />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&family=Inter:wght@400;600&display=swap" rel="stylesheet" />
 
-    body {
-      margin:0;
-      font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
-      color:#111827;
-      background-image:url("/static/images/predictwell_background.png");
-      background-size:cover;background-position:center;background-repeat:no-repeat;background-attachment:fixed;
+  <style>
+    /* ====== Theme ====== */
+    :root{
+      --pw-navy:#1e3a8a;         /* brand blue for headers */
+      --text:#0b1020;
+      --muted:#374151;
+      --glass:rgba(255,255,255,0.78);
+      --border:rgba(17,24,39,0.08);
+      --shadow:0 10px 30px rgba(0,0,0,.18);
+      --radius:18px;
+      --max:1080px;
     }
 
-    /* Header */
-    .header{position:sticky;top:0;z-index:50;backdrop-filter:saturate(1.2) blur(6px);
-      background:linear-gradient(90deg,rgba(255,255,255,.62),rgba(255,255,255,.42));
-      border-bottom:1px solid rgba(0,0,0,.18)}
-    .header-inner{max-width:1080px;margin:0 auto;padding:14px 18px;display:flex;align-items:center;gap:14px}
-    .brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:#0b1020}
-    .brand-logo{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#2563eb,#60a5fa);box-shadow:0 10px 30px rgba(0,0,0,.18)}
-    .brand-title{font-size:22px;line-height:1}
-    .brand-title b{font-weight:800}
-    .brand-title .thin{font-weight:600}
-    .brand-tagline{font-size:12px;color:#374151;opacity:.95}
+    html,body{height:100%}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      color:#111827;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      background-image:url("/static/images/predictwell_background.png");
+      background-size:cover; background-position:center; background-repeat:no-repeat; background-attachment:fixed;
+    }
+
+    /* ====== Standardized Header (LOCKED STYLE) ====== */
+    .header{position:sticky; top:0; z-index:50; backdrop-filter:saturate(1.2) blur(6px); background:rgba(255,255,255,.75); border-bottom:1px solid rgba(255,255,255,.4)}
+    .header-inner{max-width:var(--max); margin:0 auto; padding:14px 18px; display:flex; align-items:center; gap:14px}
+    .brand{display:flex; align-items:center; gap:10px; text-decoration:none; color:#0b1020}
+    .brand-logo{width:34px; height:34px; border-radius:10px; background:linear-gradient(135deg,#2563eb,#60a5fa); box-shadow:var(--shadow)}
+    .brand-title{font-weight:800; font-size:20px; line-height:1; display:flex; gap:6px; align-items:baseline; font-family:Poppins, Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif}
+    .brand-title b{font-weight:800}                   /* "PredictWell" bold */
+    .brand-title .thin{font-weight:400}              /* "Health.ai" NOT bold */
+    .brand-tagline{font-size:12px; color:#4b5563}
     .spacer{flex:1}
-    .hamburger{border:none;background:#fff;border-radius:999px;width:36px;height:36px;display:grid;place-items:center;box-shadow:0 10px 30px rgba(0,0,0,.18);cursor:pointer}
-    .hamburger:after{content:"≡";font-size:20px;color:#111827;position:relative;top:-1px}
-    .menu{position:absolute;right:18px;top:58px;background:rgba(255,255,255,.78);backdrop-filter:blur(10px);border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.18);padding:8px;display:none}
-    .menu a{display:block;padding:10px 12px;border-radius:10px;text-decoration:none;color:#111827;min-width:220px}
+    .hamburger{border:0; background:#fff; border-radius:999px; width:36px; height:36px; display:grid; place-items:center; box-shadow:var(--shadow); cursor:pointer}
+    .hamburger:after{content:"≡"; font-size:20px; color:#111827; position:relative; top:-1px}
+    .menu{position:absolute; right:18px; top:58px; background:rgba(255,255,255,.86); backdrop-filter:blur(10px); border-radius:14px; box-shadow:var(--shadow); padding:8px; display:none}
+    .menu a{display:block; padding:10px 12px; border-radius:10px; text-decoration:none; color:#111827; min-width:220px}
     .menu a:hover{background:rgba(17,24,39,.06)}
 
-    /* Email picker */
-    .email-wrap{position:relative;display:inline-block;}
-    .header-email{font-size:14px;color:#111827;text-decoration:none;margin-right:12px;font-weight:600;cursor:pointer;}
-    .header-email:hover{text-decoration:underline;}
-    .email-menu{position:absolute;right:0;top:120%;background:rgba(255,255,255,0.96);border:1px solid rgba(17,24,39,0.08);border-radius:10px;
-      box-shadow:0 10px 30px rgba(0,0,0,0.18);padding:6px;min-width:230px;display:none;z-index:60;}
-    .email-menu a{display:block;padding:8px 10px;border-radius:8px;text-decoration:none;color:#111827;font-size:14px;}
-    .email-menu a:hover{background:rgba(17,24,39,0.06);}
+    /* ====== Sections ====== */
+    .section{margin:28px auto 40px; padding:0 18px}
+    .wrap{max-width:var(--max); margin:0 auto; background:var(--glass); border-radius:var(--radius); box-shadow:var(--shadow); padding:26px 28px; backdrop-filter:blur(6px) saturate(1.06)}
+    .h1, .h2{margin:0 0 10px 0; font-family:Poppins, Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; color:var(--pw-navy)}
+    .h1{font-size:clamp(22px, 2.4vw, 36px)}
+    .h2{font-size:clamp(22px, 2.2vw, 34px)}
+    .sub{margin:8px 0 16px 0; color:var(--muted); line-height:1.6; font-size:15px}
 
-    .main{max-width:1080px;margin:40px auto;padding:0 18px;}
+    .cta-row{display:flex; gap:12px; flex-wrap:wrap}
+    .btn{border:0; border-radius:999px; padding:10px 16px; font-weight:700; cursor:pointer; color:#fff; box-shadow:0 10px 24px rgba(0,0,0,.12)}
+    .btn-blue{background:linear-gradient(135deg,#2563eb,#60a5fa)}
+    .btn-gray{background:linear-gradient(135deg,#6b7280,#9ca3af); color:#0b1020}
 
-    /* Portals grid */
-    .portals-grid{display:grid;grid-template-columns:1fr;gap:28px;max-width:1100px;margin:40px auto;padding:0 16px;}
-    @media(min-width:900px){.portals-grid{grid-template-columns:1fr 1fr;}}
-    .portal-card{background:rgba(255,255,255,0.78);border-radius:20px;box-shadow:0 10px 30px rgba(16,24,40,0.08);padding:22px 24px 26px;
-      backdrop-filter:blur(8px) saturate(1.1);text-decoration:none;color:#0b1020;transition:transform .06s ease,box-shadow .12s ease;}
-    .portal-card:hover{transform:translateY(-2px);box-shadow:0 14px 34px rgba(0,0,0,0.15);}
-    .portal-card h3{margin:0 0 10px;font-family:'Poppins',system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;font-size:20px;color:var(--pw-navy);}
-    .portal-card p{margin:0;color:#374151;line-height:1.5;font-size:15px;}
+    /* ====== Portals Grid (Two Bubbles) ====== */
+    .portals{display:grid; grid-template-columns:1fr; gap:28px}
+    @media (min-width:900px){ .portals{grid-template-columns:1fr 1fr} }
+    .portal{background:var(--glass); border-radius:20px; box-shadow:var(--shadow); padding:22px 24px 26px}
+    .portal h2{margin:0 0 12px 0; font:700 28px/1.2 Poppins, Inter, system-ui; letter-spacing:.2px; color:var(--pw-navy)}
+    .portal .sec{margin:14px 0 20px 0}
+    .portal .sec h3{margin:0 0 6px 0; font:700 18px/1.3 Inter, system-ui; color:#0f172a}
+    .portal .sec p{margin:0 0 12px 0; color:#475569; line-height:1.5}
+    .btn-row{display:flex; gap:12px; flex-wrap:wrap}
+    .alink{display:inline-block; padding:10px 16px; border-radius:999px; font-weight:600; text-decoration:none; color:#fff; box-shadow:0 8px 22px rgba(2,6,23,.08)}
+    .alink-blue{background:#2f6feb}
+    .alink-orange{background:#f97316}
 
-    /* Shared predictive sections */
-    .pw-mobile-section{margin:26px auto 40px;padding:0 18px;}
-    .pw-mobile-wrap{max-width:1080px;margin:0 auto;background:rgba(255,255,255,0.78);border-radius:18px;box-shadow:0 10px 30px rgba(0,0,0,0.18);
-      padding:26px 28px;backdrop-filter:blur(6px) saturate(1.1);}
-    .pw-mobile-header{text-align:center;margin:0 0 8px;font-size:clamp(24px,2.2vw,34px);letter-spacing:.2px;color:#0b1020;}
-    .pw-mobile-sub{text-align:center;margin:8px auto 18px;max-width:820px;color:#374151;line-height:1.55;font-size:15px;}
+    /* ====== Feature Cards (3-up rows) ====== */
+    .grid-3{display:grid; gap:24px; grid-template-columns:repeat(3,minmax(0,1fr))}
+    @media (max-width:900px){ .grid-3{grid-template-columns:1fr} }
+    .card{display:grid; grid-template-columns:56px 1fr; gap:12px; background:rgba(255,255,255,.92); border:1px solid var(--border); border-radius:16px; padding:16px}
+    .ico{width:48px; height:48px; border-radius:12px; display:grid; place-items:center; background:linear-gradient(135deg,#2563eb,#60a5fa); color:#fff; font-size:22px; box-shadow:0 8px 16px rgba(37,99,235,.2)}
+    .card h3{margin:2px 0 6px 0; font-size:20px; color:#0b1020}
+    .card p{margin:0; color:#374151; line-height:1.55; font-size:15px}
+
+    /* ====== Lead / Contact (No image, full-width form) ====== */
+    .form-grid{display:grid; grid-template-columns:1fr; gap:14px}
+    .row-2{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+    @media (max-width:640px){ .row-2{grid-template-columns:1fr} }
+    .field{display:grid; gap:6px}
+    label{font-size:12px; color:#374151}
+    .input, .select, .textarea{
+      width:100%; border:1px solid var(--border); border-radius:12px; background:#fff; padding:10px 12px; font-size:14px; outline:none
+    }
+    .checks{display:flex; align-items:center; gap:12px; flex-wrap:wrap}
+    .submit{background:linear-gradient(135deg,#2563eb,#60a5fa); color:#fff; border:0; border-radius:999px; padding:10px 18px; font-weight:800; cursor:pointer; box-shadow:0 10px 24px rgba(37,99,235,.22)}
+    .legal{font-size:11px; color:#6b7280}
+
+    /* ====== Footer ====== */
+    .footer{margin:26px auto 0; padding:0 18px 40px}
+    .footer-wrap{max-width:var(--max); margin:0 auto; background:var(--glass); border-radius:var(--radius); box-shadow:var(--shadow); padding:26px 28px}
+    .footer-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:24px}
+    @media (max-width:900px){ .footer-grid{grid-template-columns:1fr} }
+    .footer h4{margin:0 0 10px 0; font-size:16px; font-weight:800}
+    .footer ul{list-style:none; padding:0; margin:0}
+    .footer li{margin:8px 0}
+    .footer a{text-decoration:none; color:#1f2937}
+    .footer a:hover{text-decoration:underline}
   </style>
-<script src="auth.js"></script>
 </head>
+
 <body>
-<header class="header">
-  <div class="header-inner">
-    <a class="brand" href="/">
-      <div class="brand-logo"></div>
-      <div>
-        <div class="brand-title"><b>PredictWell</b><span class="thin">Health.ai</span></div>
-        <div class="brand-tagline">AI health intelligence for longer, stronger living.</div>
-      </div>
-    </a>
-    <div class="spacer"></div>
-    <div class="email-wrap">
-      <a href="mailto:info@predictwellhealth.ai" class="header-email" id="emailLink">info@predictwellhealth.ai</a>
-      <div class="email-menu" id="emailMenu" role="menu">
-        <a role="menuitem" target="_blank" href="https://mail.google.com/mail/?view=cm&fs=1&to=info@predictwellhealth.ai">Open in Gmail</a>
-        <a role="menuitem" target="_blank" href="https://outlook.live.com/mail/0/deeplink/compose?to=info@predictwellhealth.ai">Open in Outlook.com</a>
-        <a role="menuitem" target="_blank" href="https://compose.mail.yahoo.com/?to=info@predictwellhealth.ai">Open in Yahoo Mail</a>
-        <a role="menuitem" href="mailto:info@predictwellhealth.ai">Use default mail app</a>
+  <!-- ===== Header ===== -->
+  <header class="header">
+    <div class="header-inner">
+      <a class="brand" href="/index.html">
+        <div class="brand-logo"></div>
+        <div>
+          <div class="brand-title">
+            <b>PredictWell</b><span class="thin">Health.ai</span>
+          </div>
+          <div class="brand-tagline">AI health intelligence for longer, stronger living.</div>
+        </div>
+      </a>
+      <div class="spacer"></div>
+      <button class="hamburger" id="menuBtn" aria-label="Open menu"></button>
+      <nav class="menu" id="menu" aria-label="Main">
+        <a href="#choose">Portals</a>
+        <a href="#about">About</a>
+        <a href="#mission">Mission</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ===== Landing ===== -->
+  <section class="section">
+    <div class="wrap" style="text-align:center">
+      <h1 class="h1">PredictWell Health.ai is Preventative Health AI</h1>
+      <p class="sub" style="max-width:900px; margin:0 auto">
+        PredictWell continuously learns your normal patterns from wearables and quick check-ins, then spots subtle changes in
+        balance, mobility, sleep, and cognition to flag risk early. It turns everyday data into simple, timely guidance—helping
+        prevent events like <strong>falls</strong> and avoidable hospitalizations while supporting confident independence for users and
+        clearer decision-making for clinicians and families.
+      </p>
+      <div class="cta-row" style="justify-content:center; margin-top:14px">
+        <button class="btn btn-blue" onclick="location.href='#contact'">Start Here</button>
+        <button class="btn btn-gray" onclick="location.href='#choose'">Choose a Portal</button>
       </div>
     </div>
-    <button class="hamburger" id="menuBtn"></button>
-    <nav class="menu" id="menu">
-      <a href="#eldercare">Eldercare — Doctors</a>
-      <a href="#athletics">Athletics — Doctors</a>
-      <a href="#contact">Contact</a>
-    </nav>
-  </div>
-</header>
+  </section>
 
-<section class="pw-mobile-section">
-  <div class="pw-mobile-wrap">
-    <div class="landing-hero-box">
-      <h1 style="font-family:'Poppins';color:var(--pw-navy);">PredictWellHealth.ai is Preventative Health AI</h1>
-      <p><strong>PredictWellHealth.ai</strong> continuously learns your individual health patterns from wearable data and weekly check-ins—analyzing mobility, balance, sleep, cognition, and vitals to forecast and prevent falls or injuries.</p>
-      <div class="landing-cta-row">
-        <button class="pw-btn pw-btn-primary" onclick="location.href='#contact'">Start Here</button>
+  <!-- ===== Portals (Two Bubbles) ===== -->
+  <section class="section" id="choose" aria-label="Choose your portal">
+    <div class="portals">
+      <!-- Eldercare -->
+      <article class="portal" id="eldercare">
+        <h2>Eldercare</h2>
+        <div class="sec">
+          <h3>Doctors</h3>
+          <p>Clinician form & results for falls, frailty, cognition, and hospitalization risk.</p>
+          <div class="btn-row">
+            <a class="alink alink-blue" href="/eldercare.html">Open Doctor Portal</a>
+          </div>
+        </div>
+        <div class="sec">
+          <h3>Patients</h3>
+          <p>Fast weekly check-in and an easy-to-read summary.</p>
+          <div class="btn-row">
+            <a class="alink alink-orange" href="/eldercare-patient.html">Open Patient Check-In</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- Athletics -->
+      <article class="portal" id="athletics">
+        <h2>Athletics</h2>
+        <div class="sec">
+          <h3>Doctors</h3>
+          <p>Pitching workload & risk inputs with clear flags and recommendations.</p>
+          <div class="btn-row">
+            <a class="alink alink-blue" href="/athletics.html">Open Doctor Portal</a>
+          </div>
+        </div>
+        <div class="sec">
+          <h3>Patients</h3>
+          <p>Quick athlete self-report to generate a personalized risk snapshot.</p>
+          <div class="btn-row">
+            <a class="alink alink-orange" href="/athletics-patient.html">Open Patient Check-In</a>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ===== About ===== -->
+  <section class="section" id="about">
+    <div class="wrap">
+      <h2 class="h2" style="text-align:center">ABOUT</h2>
+      <p class="sub" style="margin-top:0">
+        <strong>PredictWell Health.ai</strong> is a <strong>preventative health AI</strong> that transforms everyday signals—wearables,
+        short weekly voice or gait check-ins, and simple phone-based inputs—into early alerts and personalized actions. By
+        continuously learning your normal patterns in mobility, balance, sleep, and cognition, PredictWell detects small changes
+        that may signal elevated risk. This allows for timely interventions to help <strong>prevent falls, hospitalizations, or sudden
+        declines</strong> before they occur—supporting independence, family awareness, and proactive, data-driven care.
+      </p>
+    </div>
+  </section>
+
+  <!-- ===== Mission ===== -->
+  <section class="section" id="mission">
+    <div class="wrap" style="background:linear-gradient(90deg,#0b1020,#1e3a8a); color:#fff">
+      <h2 class="h2" style="text-align:center; color:#fff">Redefining Preventive Care with Adaptive AI</h2>
+      <p class="sub" style="color:#eef2ff">
+        <strong>PredictWell Health.ai</strong> is redefining preventive care through adaptive artificial intelligence. Our mission is to
+        close the gap between health data and real-world action—using AI to detect early risks, personalize interventions, and empower
+        both families and professionals to make proactive, evidence-based decisions.
+      </p>
+      <p class="sub" style="color:#eef2ff; margin-top:6px">
+        By combining multi-signal monitoring, explainable AI, and accessible design, PredictWell promotes <strong>health equity,
+        longevity, and performance</strong>—from eldercare to elite sports—creating a smarter, more preventive future for every generation.
+      </p>
+    </div>
+  </section>
+
+  <!-- ===== Eldercare Features ===== -->
+  <section class="section">
+    <div class="wrap">
+      <h2 class="h2">Stay Ahead of Risk — Smarter Monitoring with PredictWell Health AI</h2>
+      <p class="sub">
+        Our upcoming <strong>PredictWell&nbsp;Mobile</strong> experience turns everyday signals into proactive care.
+        Seniors, families, and clinicians stay aligned with real-time alerts, simple self-check-ins, and AI-guided next steps—without extra busywork.
+      </p>
+
+      <div class="grid-3">
+        <article class="card"><div class="ico">☎️</div><div><h3>24/7 Response & Clinician Connect</h3><p>Instant help connects users to trained responders and alerts care teams, capturing context for faster triage.</p></div></article>
+        <article class="card"><div class="ico">🤖</div><div><h3>Smart Fall Detection+</h3><p>AI-enhanced sensing flags potential falls and learns from feedback to reduce false alarms.</p></div></article>
+        <article class="card"><div class="ico">📱</div><div><h3>PredictWell App</h3><p>One-minute daily check-ins, real-time insights, and family visibility in one connected experience.</p></div></article>
+        <article class="card"><div class="ico">🧠</div><div><h3>Personalized Care Plans</h3><p>Transforms vitals, meds, and behavior into simple, actionable guidance tailored to each person.</p></div></article>
+        <article class="card"><div class="ico">💧</div><div><h3>Wearable & Waterproof Ready</h3><p>Works seamlessly across watches, wearables, and buttons—built for safety anywhere.</p></div></article>
+        <article class="card"><div class="ico">👨‍👩‍👧‍👦</div><div><h3>Loved-Ones Live View</h3><p>Families see updates, alerts, and trends in real-time while maintaining privacy.</p></div></article>
+      </div>
+
+      <div class="cta-row" style="margin-top:22px">
+        <button class="btn btn-blue" onclick="location.href='/eldercare-patient.html'">Try Patient Check-In</button>
+        <button class="btn btn-gray" onclick="location.href='/eldercare.html'">See Clinician Workflow</button>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<main class="main" id="top">
-<!-- ==== PATCH: PORTALS GRID (Eldercare | Athletics) ==== -->
-<!-- BEGIN PATCH: PW-INDEX-PORTALS-LOCK -->
-<section id="portals" aria-label="Choose your portal">
-  <div class="portals-grid">
+  <!-- ===== Athletics Features ===== -->
+  <section class="section">
+    <div class="wrap">
+      <h2 class="h2">PredictWell Health AI Performance — Smarter Insights for Every Athlete</h2>
+      <p class="sub">
+        <strong>PredictWell Performance</strong> extends our AI engine to athletes at every level. Coaches, trainers, and players gain
+        visibility into workload, recovery, and readiness—turning data into stronger performance and longer careers.
+      </p>
 
-    <a class="portal-card" id="btn-eldercare-doctor" href="/portal/doctor/login.html" aria-label="Eldercare Doctor Login">
-      <h3>Eldercare — Doctor Portal</h3>
-      <p>Clinical intake & AI results for falls, frailty, cognition, and hospitalization risk.</p>
-    </a>
-
-    <a class="portal-card" id="btn-eldercare-patient" href="/portal/patient/login.html" aria-label="Eldercare Patient Login">
-      <h3>Eldercare — Patient Portal</h3>
-      <p>Quick weekly check-ins and personalized summaries for patients and families.</p>
-    </a>
-
-    <a class="portal-card" id="btn-athletics-doctor" href="/portal/doctor/login.html" aria-label="Athletics Doctor Login">
-      <h3>Athletics — Doctor Portal</h3>
-      <p>Workload, biomechanics, and injury-risk tools for coaches and clinicians.</p>
-    </a>
-
-    <a class="portal-card" id="btn-athletics-patient" href="/portal/patient/login.html" aria-label="Athletics Patient Login">
-      <h3>Athletics — Patient Portal</h3>
-      <p>Daily workload, soreness, and recovery tracking for athletes of all levels.</p>
-    </a>
-
-  </div>
-</section>
-<!-- END PATCH: PW-INDEX-PORTALS-LOCK -->
-<!-- ==== /PATCH END ==== -->
-</main>
-
-<section class="pw-mobile-section">
-  <div class="pw-mobile-wrap">
-    <h2 class="pw-mobile-header" style="font-family:'Poppins';color:var(--pw-navy);">ABOUT</h2>
-    <p class="pw-mobile-sub" style="text-align:left;">
-      <strong>PredictWell Health.ai</strong> is a <strong>preventative health AI</strong> that transforms everyday signals—wearables, short weekly check-ins, and phone-based inputs—into early alerts and personalized actions to prevent falls, hospitalizations, and declines.
-    </p>
-  </div>
-</section>
-
-<section class="pw-mobile-section" id="mission">
-  <div class="pw-mobile-wrap" style="background:linear-gradient(90deg,#0b1020,#1e3a8a);color:#fff;">
-    <h2 class="pw-mobile-header" style="color:#fff;">Redefining Preventive Care with Adaptive AI</h2>
-    <p class="pw-mobile-sub" style="color:#eef2ff;">
-      <strong>PredictWell Health.ai</strong> is redefining preventive care through adaptive artificial intelligence—closing the gap between health data and real-world action.
-    </p>
-    <p class="pw-mobile-sub" style="color:#eef2ff;">
-      By combining multi-signal monitoring, explainable AI, and accessible design, PredictWell promotes <strong>health equity, longevity, and performance</strong>—from eldercare to elite sports.
-    </p>
-  </div>
-</section>
-
-<section class="pw-lead-section" id="contact">
-  <div class="pw-lead-wrap">
-    <h2 class="pw-lead-title" style="text-align:center;font-family:'Poppins';color:var(--pw-navy);">Discover PredictWell Health AI For You</h2>
-    <p class="pw-lead-sub" style="text-align:center;max-width:720px;margin:0 auto 24px;">
-      Prefer a quick call or email? Share a few details and our team will help you find the right fit for your family, team, or clinic.
-    </p>
-    <form class="pw-form" id="leadForm" onsubmit="event.preventDefault();leadSubmit();" style="max-width:720px;margin:0 auto;">
-      <div class="pw-row-2">
-        <div class="pw-field"><label class="pw-label">First name</label><input class="pw-input" id="first_name" type="text" required></div>
-        <div class="pw-field"><label class="pw-label">Last name</label><input class="pw-input" id="last_name" type="text" required></div>
+      <div class="grid-3">
+        <article class="card"><div class="ico">⚾</div><div><h3>Workload & Risk Tracking</h3><p>Analyzes pitch counts, velocities, and loads to flag overuse before it leads to injury.</p></div></article>
+        <article class="card"><div class="ico">💪</div><div><h3>Recovery & Readiness Scores</h3><p>Wearables + subjective inputs combine into daily readiness indicators.</p></div></article>
+        <article class="card"><div class="ico">📊</div><div><h3>Biomechanics & Form</h3><p>Video and motion metrics identify inefficiencies to refine form and prevent breakdowns.</p></div></article>
+        <article class="card"><div class="ico">🧠</div><div><h3>Predictive Injury Modeling</h3><p>Models forecast elevated injury risk using trends, fatigue, and history.</p></div></article>
+        <article class="card"><div class="ico">📈</div><div><h3>Team Dashboards & Alerts</h3><p>View athlete risk profiles, live updates, and recommended adjustments.</p></div></article>
+        <article class="card"><div class="ico">🏅</div><div><h3>Player Progress Tracking</h3><p>Track seasonal trends and development to optimize long-term growth.</p></div></article>
       </div>
-      <div class="pw-row-2">
-        <div class="pw-field"><label class="pw-label">Phone</label><input class="pw-input" id="phone" type="tel" required></div>
-        <div class="pw-field"><label class="pw-label">Email</label><input class="pw-input" id="email" type="email" required></div>
+
+      <div class="cta-row" style="margin-top:22px">
+        <button class="btn btn-blue" onclick="location.href='/athletics-patient.html'">Try Athlete Check-In</button>
+        <button class="btn btn-gray" onclick="location.href='/athletics.html'">View Coach Dashboard</button>
       </div>
-      <div class="pw-field"><label class="pw-label">Who is this for?</label>
-        <div class="pw-check-row">
-          <label><input type="radio" name="for_whom" value="self" checked> Self</label>
-          <label><input type="radio" name="for_whom" value="loved_one"> Loved One</label>
-          <label><input type="radio" name="for_whom" value="athlete_or_team"> Athlete / Team</label>
-          <label><input type="radio" name="for_whom" value="clinic"> Clinic</label>
+    </div>
+  </section>
+
+  <!-- ===== Contact (Full-Width Form, no image) ===== -->
+  <section class="section" id="contact">
+    <div class="wrap">
+      <h2 class="h2" style="text-align:center">Discover PredictWell Health AI For You</h2>
+      <p class="sub" style="text-align:center">Prefer a quick call or email? Share a few details and our team will help you find the right fit for your family, team, or clinic.</p>
+
+      <form class="form-grid" id="leadForm" onsubmit="event.preventDefault(); leadSubmit();">
+        <div class="row-2">
+          <div class="field"><label for="first_name">First name</label><input class="input" id="first_name" type="text" placeholder="First" required></div>
+          <div class="field"><label for="last_name">Last name</label><input class="input" id="last_name" type="text" placeholder="Last" required></div>
+        </div>
+        <div class="row-2">
+          <div class="field"><label for="phone">Phone</label><input class="input" id="phone" type="tel" inputmode="tel" placeholder="(555) 555-5555" required></div>
+          <div class="field"><label for="email">Email</label><input class="input" id="email" type="email" placeholder="you@example.com" required></div>
+        </div>
+        <div class="field">
+          <span style="font-size:12px; color:#374151">Who is this for?</span>
+          <div class="checks" role="radiogroup" aria-label="Who is this for">
+            <label><input type="radio" name="for_whom" value="self" checked> Self</label>
+            <label><input type="radio" name="for_whom" value="loved_one"> Loved One</label>
+            <label><input type="radio" name="for_whom" value="athlete_or_team"> Athlete / Team</label>
+            <label><input type="radio" name="for_whom" value="clinic"> Clinic</label>
+          </div>
+        </div>
+        <div class="row-2">
+          <div class="field">
+            <label for="interest">I'm most interested in</label>
+            <select id="interest" class="select">
+              <option value="eldercare">Eldercare Monitoring</option>
+              <option value="fall_detection">Fall Detection</option>
+              <option value="athletics">Athletics Performance</option>
+              <option value="both">Both Eldercare & Athletics</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="contact_pref">Preferred contact</label>
+            <select id="contact_pref" class="select">
+              <option value="phone">Phone</option>
+              <option value="email">Email</option>
+              <option value="either">Either</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label for="notes">Anything else we should know? (optional)</label>
+          <textarea id="notes" class="textarea" rows="4" placeholder="Share context like location, timing, or specific needs…"></textarea>
+        </div>
+        <div class="checks">
+          <label><input type="checkbox" id="sms_optin"> Receive updates by text message</label>
+        </div>
+        <div class="checks">
+          <button class="submit" type="submit">Submit</button>
+          <span id="leadStatus" aria-live="polite"></span>
+        </div>
+        <p class="legal">By submitting your contact information you agree that we may reach out about PredictWell products and services. You can opt out at any time.</p>
+      </form>
+    </div>
+  </section>
+
+  <!-- ===== Footer ===== -->
+  <footer class="footer">
+    <div class="footer-wrap">
+      <div class="footer-grid">
+        <div>
+          <h4>Services</h4>
+          <ul>
+            <li><a href="#choose">Eldercare</a></li>
+            <li><a href="#choose">Athletics</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Support</h4>
+          <ul>
+            <li><a href="#">Report A Fall</a></li>
+            <li><a href="#">Customer Support</a></li>
+            <li><a href="#">Frequently Asked Questions</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>About PredictWell Health AI</h4>
+          <ul>
+            <li><a href="#mission">Mission Statement</a></li>
+            <li><a href="#about">About PredictWell Health AI</a></li>
+          </ul>
         </div>
       </div>
-      <button class="pw-btn-submit" type="submit">Submit</button>
-      <span id="leadStatus"></span>
-    </form>
-  </div>
-</section>
-
-<footer class="pw-footer">
-  <div class="pw-footer-wrap">
-    <div class="pw-footer-grid">
-      <div><h4>Services</h4><ul><li><a href="#">Eldercare</a></li><li><a href="#">Athletics</a></li></ul></div>
-      <div><h4>Support</h4><ul><li><a href="#">Report A Fall</a></li><li><a href="#">Customer Support</a></li></ul></div>
-      <div><h4>About</h4><ul><li><a href="#">Mission</a></li><li><a href="#">About PredictWell</a></li></ul></div>
     </div>
-  </div>
-</footer>
+  </footer>
 
-<script>
-const menuBtn=document.getElementById('menuBtn');
-const menu=document.getElementById('menu');
-document.addEventListener('click',e=>{
-  if(menuBtn.contains(e.target)) menu.style.display=menu.style.display==='block'?'none':'block';
-  else if(!menu.contains(e.target)) menu.style.display='none';
-});
-document.addEventListener('keydown',e=>{if(e.key==='Escape') menu.style.display='none';});
-function leadSubmit(){
- const status=document.getElementById('leadStatus');
- status.textContent='Thanks — we received your request and will follow up shortly.';
-}
-</script>
+  <!-- ===== JS ===== -->
+  <script>
+    // Menu toggle + close on outside click / Escape
+    const menuBtn = document.getElementById('menuBtn');
+    const menu = document.getElementById('menu');
+    document.addEventListener('click', (e) => {
+      if (menuBtn.contains(e.target)) {
+        menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+      } else if (menu && !menu.contains(e.target)) {
+        menu.style.display = 'none';
+      }
+    });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') menu.style.display = 'none'; });
+    menu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => { menu.style.display = 'none'; }));
+
+    // Lead form local save
+    function leadSubmit(){
+      const status = document.getElementById('leadStatus');
+      status.textContent = 'Thanks — we received your request and will follow up shortly.';
+      try{
+        const payload = {
+          first_name: document.getElementById('first_name').value,
+          last_name: document.getElementById('last_name').value,
+          phone: document.getElementById('phone').value,
+          email: document.getElementById('email').value,
+          for_whom: (document.querySelector('input[name="for_whom"]:checked')||{}).value,
+          interest: document.getElementById('interest').value,
+          contact_pref: document.getElementById('contact_pref').value,
+          notes: document.getElementById('notes').value,
+          sms_optin: document.getElementById('sms_optin').checked,
+          ts: new Date().toISOString()
+        };
+        localStorage.setItem('predictwell_lead', JSON.stringify(payload));
+      }catch(e){}
+    }
+  </script>
 </body>
 </html>
