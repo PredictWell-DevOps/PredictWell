@@ -1,109 +1,158 @@
-<!-- ====== athletics.html (Doctor Portal — Header IDENTICAL to Index) ====== -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>PredictWell Health.ai — Athletics Doctor Portal</title>
-  <meta name="description" content="Pitching workload and risk inputs with clear flags and recommendations.">
-  <link rel="icon" href="data:,">
-  <!-- EXACT same font import used by Index -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>PredictWell — Eldercare Doctor Portal</title>
+  <meta name="description" content="Eldercare Doctor Portal — comprehensive intake and AI risk analysis for seniors."/>
+  <link rel="icon" href="data:,"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet"/>
 
   <style>
-    html { scroll-behavior: smooth; }
-
     :root{
-      /* kept from Index (safe; doesn't alter header visuals) */
-      --pw-navy: #1e3a8a;
+      --bg-a:#0a2b4a;
+      --bg-b:#0f4d73;
+      --glass:#0e2d48;
+      --text:#e9f2fb;
+      --muted:#bcd0e5;
+      --accent:#f4b000;
+      --accent-press:#d99a00;
+      --ok:#4ade80;
+      --warn:#fbbf24;
+      --err:#f87171;
+      --card:rgba(255,255,255,.06);
+      --line:rgba(255,255,255,.12);
+      --shadow:0 18px 48px rgba(0,0,0,.45);
+      --radius:16px;
+      --max:1100px;
+      --fieldh:46px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:Poppins,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+      color:var(--text);
+      background:
+        linear-gradient(180deg,rgba(10,43,74,.8),rgba(15,77,115,.85)),
+        url('/static/images/predictwell_background.png') center/cover fixed no-repeat;
+      min-height:100%;
     }
 
-    body {
-      margin: 0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
-      color: #111827;
-      background-image: url("/static/images/predictwell_background.png");
-      background-size: cover; background-position: center; background-repeat: no-repeat; background-attachment: fixed;
+    /* ===== Locked Standard Header ===== */
+    .header{position:sticky;top:0;z-index:1000;
+      background:linear-gradient(180deg,rgba(2,10,25,.75),rgba(2,10,25,.35));
+      -webkit-backdrop-filter: blur(10px) saturate(1.2);
+      backdrop-filter: blur(10px) saturate(1.2);
+      border-bottom:1px solid var(--line);
     }
-
-    /* ===== HEADER — COPIED IDENTICALLY FROM INDEX ===== */
-    .header{position:sticky;top:0;z-index:50;backdrop-filter:saturate(1.2) blur(6px);
-      background:linear-gradient(90deg,rgba(255,255,255,.62),rgba(255,255,255,.42));
-      border-bottom:1px solid rgba(0,0,0,.18)}
-    .header-inner{max-width:1080px;margin:0 auto;padding:14px 18px;display:flex;align-items:center;gap:14px}
-    .brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:#0b1020}
-    .brand-logo{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#2563eb,#60a5fa);box-shadow:0 10px 30px rgba(0,0,0,.18)}
-    .brand-title{font-size:22px;line-height:1}
-    .brand-title b{font-weight:800}           /* PredictWell (bold) */
-    .brand-title .thin{font-weight:600}       /* Health.ai (semi-bold) */
-    .brand-tagline{font-size:12px;color:#374151;opacity:.95}
+    .header-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:16px;padding:14px 18px}
+    .brand{display:flex;align-items:center;gap:12px;color:#fff;text-decoration:none}
+    .brand-logo{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#0e2d48,#0f4d73)}
+    .brand-title{font-size:18px;line-height:1}
+    .brand-title b{font-weight:800}
+    .thin{font-weight:400;opacity:.9} /* “Health.ai” not bold */
+    .brand-tagline{font-size:12px;opacity:.8}
     .spacer{flex:1}
-    .hamburger{border:none;background:#fff;border-radius:999px;width:36px;height:36px;display:grid;place-items:center;box-shadow:0 10px 30px rgba(0,0,0,.18);cursor:pointer}
-    .hamburger:after{content:"≡";font-size:20px;color:#111827;position:relative;top:-1px}
-    .menu{position:absolute;right:18px;top:58px;background:rgba(255,255,255,.78);backdrop-filter:blur(10px);border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.18);padding:8px;display:none}
-    .menu a{display:block;padding:10px 12px;border-radius:10px;text-decoration:none;color:#111827;min-width:220px}
-    .menu a:hover{background:rgba(17,24,39,.06)}
+    .hamburger{width:36px;height:36px;border:1px solid var(--line);border-radius:10px;background:transparent;position:relative;cursor:pointer}
+    .hamburger:before,.hamburger:after{content:"";position:absolute;left:7px;right:7px;height:2px;background:#fff;border-radius:2px}
+    .hamburger:before{top:11px}
+    .hamburger:after{bottom:11px}
+    .menu{display:none;gap:16px}
+    .menu a{color:#fff;text-decoration:none;opacity:.9}
+    @media (min-width:900px){ .menu{display:flex} .hamburger{display:none} }
 
-    /* Email picker — COPIED IDENTICALLY FROM INDEX */
-    .email-wrap { position: relative; display: inline-block; }
-    .header-email { font-size: 14px; color: #111827; text-decoration: none; margin-right: 12px; font-weight: 600; cursor: pointer; }
-    .header-email:hover { text-decoration: underline; }
-    .email-menu {
-      position: absolute; right: 0; top: 120%;
-      background: rgba(255,255,255,0.96);
-      border: 1px solid rgba(17,24,39,0.08);
-      border-radius: 10px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.18);
-      padding: 6px; min-width: 230px; display: none; z-index: 60;
+    /* ===== Layout ===== */
+    .wrap{max-width:var(--max);margin:28px auto;padding:0 18px 80px}
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:22px;
+      margin-bottom:18px;
     }
-    .email-menu a { display: block; padding: 8px 10px; border-radius: 8px; text-decoration: none; color: #111827; font-size: 14px; }
-    .email-menu a:hover { background: rgba(17,24,39,0.06); }
-    /* ===== END IDENTICAL HEADER CSS ===== */
+    h1{margin:10px 0 6px;font-size:28px}
+    h2{margin:0 0 4px;font-size:18px}
+    p.lead{margin:0 0 16px;color:var(--muted)}
 
-    /* ===== Athletics Doctor page content styles (do not touch header classes) ===== */
-    .hero-wrap { max-width: 1080px; margin: 28px auto 0; padding: 0 18px 24px; }
-    .hero { background: rgba(255,255,255,0.78); border-radius: 18px; box-shadow: 0 10px 30px rgba(0,0,0,0.18); padding: 22px 24px; }
-    .hero h1 { margin: 0 0 8px 0; font-size: 26px; letter-spacing: 0.2px; }
-    .hero p { margin: 0; color: #374151; line-height: 1.55; }
+    /* Accordion (dropdown sections) */
+    details{border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.04);margin:10px 0;overflow:hidden}
+    summary{list-style:none;cursor:pointer;padding:14px 16px;font-weight:700;display:flex;align-items:center;justify-content:space-between}
+    summary::-webkit-details-marker{display:none}
+    .section-body{padding:12px 16px 18px;border-top:1px solid var(--line)}
+    .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:12px}
+    .col-6{grid-column:span 6} .col-4{grid-column:span 4} .col-3{grid-column:span 3} .col-12{grid-column:span 12}
+    @media (max-width:900px){ .col-6,.col-4,.col-3,.col-12{grid-column:span 12} }
 
-    .card-row { display: grid; grid-template-columns: 1.08fr 0.92fr; gap: 18px; margin-top: 18px; }
-    .card { background: rgba(255,255,255,0.78); border-radius: 18px; box-shadow: 0 10px 30px rgba(0,0,0,0.18); padding: 18px; }
-    .card h2 { margin: 0 0 14px 0; font-size: 18px; letter-spacing: 0.2px; }
-
-    .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-    .field { display: flex; flex-direction: column; gap: 6px; }
-    label { font-size: 12px; color: #374151; }
-    input[type="text"], input[type="number"], textarea {
-      width: 100%; padding: 10px 12px;
-      border: 1px solid rgba(17,24,39,0.1);
-      border-radius: 12px; background: #ffffff;
-      outline: none; font-size: 14px;
+    /* Fields */
+    label{display:block;margin:8px 0 6px;font-size:13px;opacity:.95}
+    input[type="text"],input[type="number"],input[type="date"],select,textarea{
+      width:100%;height:var(--fieldh);border-radius:12px;border:1px solid rgba(255,255,255,.18);
+      background:rgba(255,255,255,.06);color:#fff;padding:0 12px;font-size:15px;outline:none;
     }
-    textarea { min-height: 90px; resize: vertical; }
-    .checkbox { display: flex; align-items: center; gap: 8px; margin-top: 4px; font-size: 13px; color: #374151; }
+    textarea{min-height:100px;resize:vertical;padding:12px}
+    .muted{color:var(--muted);font-size:12px}
+    .row{display:flex;gap:12px;flex-wrap:wrap}
+    .btn{height:48px;border:none;border-radius:12px;background:var(--accent);padding:0 18px;font-weight:800;cursor:pointer}
+    .btn:active{background:var(--accent-press)}
+    .ghost{background:transparent;border:1px solid var(--line)}
+    .pill{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;border:1px solid var(--line);font-size:12px}
+    .ok{color:var(--ok)} .warn{color:var(--warn)} .bad{color:var(--err)}
 
-    .actions { display: flex; align-items: center; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
-    .btn { appearance: none; border: none; padding: 10px 16px; border-radius: 999px; color: #fff; font-weight: 700; cursor: pointer; box-shadow: 0 10px 30px rgba(0,0,0,0.18); }
-    .btn-blue { background: linear-gradient(135deg, #2563eb, #60a5fa); }
-    .btn-gray { background: linear-gradient(135deg, #6b7280, #9ca3af); color: #0b1020; }
-
-    .badge { padding: 7px 10px; border-radius: 999px; background: #e5f8ec; color: #065f46; font-weight: 700; font-size: 12px; }
-
-    pre {
-      margin: 0; padding: 14px; background: #0b1020; color: #c7d2fe;
-      border-radius: 14px; min-height: 220px; overflow: auto; white-space: pre-wrap; word-break: break-word;
-    }
-
-    .footer { max-width: 1080px; margin: 20px auto 40px; padding: 0 18px; color: #374151; font-size: 12px; text-align: center; text-shadow: 0 1px 0 rgba(255,255,255,0.75); }
-
-    @media (max-width: 900px) { .card-row { grid-template-columns: 1fr; } }
+    /* Results */
+    .results{white-space:pre-wrap;background:rgba(0,0,0,.35);border:1px solid var(--line);border-radius:12px;padding:12px;font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace}
+    .status{display:flex;align-items:center;gap:10px}
+    .badge{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:10px;border:1px solid var(--line)}
+    .healthz{font-size:12px}
   </style>
+
+  <!-- Auth/token pass-through and backend health badge -->
+  <script>
+    (function(){
+      const API = 'https://predictwell-backend-ai.onrender.com';
+      const token = localStorage.getItem('pw_token') || '';
+      // Redirect to login if missing token
+      if(!token){
+        const next = encodeURIComponent(location.pathname + location.search);
+        location.replace(`/login.html?next=${next}`);
+        return;
+      }
+      // Attach Bearer token to backend calls
+      const _fetch = window.fetch;
+      window.fetch = function(input, init={}) {
+        try{
+          const url = (typeof input === 'string') ? input : input.url;
+          if(url && url.startsWith(API)){
+            init.headers = Object.assign({}, init.headers || {}, { Authorization:`Bearer ${token}` });
+          }
+        }catch(_){}
+        return _fetch(input, init);
+      };
+
+      // health check badge
+      window.addEventListener('DOMContentLoaded', async () => {
+        const el = document.getElementById('healthBadge');
+        try{
+          const r = await fetch(`${API}/healthz`);
+          if(r.ok){
+            el.innerHTML = `<span class="pill ok">●</span> <span>Backend</span> <span class="healthz">/healthz OK</span>`;
+          }else{
+            el.innerHTML = `<span class="pill bad">●</span> <span>Backend</span> <span class="healthz">unhealthy</span>`;
+          }
+        }catch{
+          el.innerHTML = `<span class="pill bad">●</span> <span>Backend</span> <span class="healthz">offline</span>`;
+        }
+      });
+    })();
+  </script>
 </head>
 <body>
-  <!-- ===== IDENTICAL HEADER HTML (copied from Index) ===== -->
+  <!-- ===== Header (LOCKED) ===== -->
   <header class="header">
     <div class="header-inner">
-      <a class="brand" href="/">
+      <a class="brand" href="/index.html">
         <div class="brand-logo"></div>
         <div>
           <div class="brand-title"><b>PredictWell</b><span class="thin">Health.ai</span></div>
@@ -111,215 +160,397 @@
         </div>
       </a>
       <div class="spacer"></div>
-
-      <!-- Email picker -->
-      <div class="email-wrap">
-        <a href="mailto:info@predictwellhealth.ai" class="header-email" id="emailLink">info@predictwellhealth.ai</a>
-        <div class="email-menu" id="emailMenu" role="menu" aria-label="Email options">
-          <a role="menuitem" target="_blank" rel="noopener" href="https://mail.google.com/mail/?view=cm&fs=1&to=info@predictwellhealth.ai">Open in Gmail</a>
-          <a role="menuitem" target="_blank" rel="noopener" href="https://outlook.live.com/mail/0/deeplink/compose?to=info@predictwellhealth.ai">Open in Outlook.com</a>
-          <a role="menuitem" target="_blank" rel="noopener" href="https://compose.mail.yahoo.com/?to=info@predictwellhealth.ai">Open in Yahoo Mail</a>
-          <a role="menuitem" href="mailto:info@predictwellhealth.ai">Use default mail app</a>
-        </div>
-      </div>
-
       <button class="hamburger" id="menuBtn"></button>
       <nav class="menu" id="menu">
-        <a href="#eldercare">Eldercare — Doctors</a>
-        <a href="#athletics">Athletics — Doctors</a>
-        <a href="#contact">Contact</a>
+        <a href="/eldercare.html">Eldercare</a>
+        <a href="/athletics.html">Athletics</a>
+        <a href="/index.html#contact">Contact</a>
+        <a href="/login.html">Doctor Login</a>
       </nav>
     </div>
   </header>
-  <!-- ===== END IDENTICAL HEADER HTML ===== -->
 
-  <!-- ===== Doctor Portal content ===== -->
-  <div class="hero-wrap">
-    <section class="hero">
-      <h1>Pitching Risk — Daily/Weekly Input</h1>
-      <p>Enter workload, pain, rest, and flags. We’ll compute a risk score and recommendations.</p>
+  <main class="wrap">
+    <!-- Top status row -->
+    <div class="row" style="align-items:center; margin-bottom:10px">
+      <div class="badge" id="healthBadge" title="Backend health">Checking…</div>
+      <div class="pill">Portal: <b>Eldercare (Doctor)</b></div>
+      <div class="pill">Version: <span>Locked Baseline</span></div>
+    </div>
+
+    <!-- Intro card -->
+    <section class="card">
+      <h1>Eldercare Doctor Portal — Intake</h1>
+      <p class="lead">Complete the intake, then select <b>Run Analysis</b> to get AI risk forecasts and recommendations.</p>
     </section>
 
-    <div class="card-row">
-      <section class="card">
-        <h2>Pitcher Inputs</h2>
-        <div class="grid">
-          <div class="field">
-            <label for="pitcherName">Pitcher Name</label>
-            <input id="pitcherName" type="text" placeholder="e.g., A. Miller" />
+    <!-- ===== FORM ===== -->
+    <form id="intakeForm" class="card">
+      <!-- Section A — Patient & Visit -->
+      <details open>
+        <summary>A. Patient & Visit</summary>
+        <div class="section-body grid">
+          <div class="col-6">
+            <label for="patient_first">First name</label>
+            <input id="patient_first" name="patient_first" type="text" placeholder="Jane"/>
           </div>
-
-          <div class="field">
-            <label for="age">Age</label>
-            <input id="age" type="number" min="8" max="60" value="17" />
+          <div class="col-6">
+            <label for="patient_last">Last name</label>
+            <input id="patient_last" name="patient_last" type="text" placeholder="Doe"/>
           </div>
-
-          <div class="field">
-            <label for="pitchCount7d">Pitch count (last 7 days)</label>
-            <input id="pitchCount7d" type="number" min="0" value="92" />
+          <div class="col-4">
+            <label for="dob">Date of birth</label>
+            <input id="dob" name="dob" type="date"/>
           </div>
-
-          <div class="field">
-            <label for="innings7d">Innings (last 7 days)</label>
-            <input id="innings7d" type="number" min="0" step="0.1" value="6.2" />
+          <div class="col-4">
+            <label for="visit_date">Visit date</label>
+            <input id="visit_date" name="visit_date" type="date"/>
           </div>
-
-          <div class="field">
-            <label for="restDays">Rest days since last outing</label>
-            <input id="restDays" type="number" min="0" value="2" />
+          <div class="col-4">
+            <label for="pcp">Primary care physician</label>
+            <input id="pcp" name="pcp" type="text" placeholder="Clinic / MD"/>
           </div>
-
-          <div class="field">
-            <label for="avgVelo">Avg Velo (mph)</label>
-            <input id="avgVelo" type="number" min="0" step="0.1" value="84.7" />
-          </div>
-
-          <div class="field">
-            <label for="painToday">Pain today (0–10)</label>
-            <input id="painToday" type="number" min="0" max="10" value="2" />
-          </div>
-
-          <div class="field">
-            <label for="throwsToday">Throws today</label>
-            <input id="throwsToday" type="number" min="0" value="35" />
+          <div class="col-12">
+            <span class="muted">Contact & insurance captured in EHR—optional to include here in notes.</span>
           </div>
         </div>
+      </details>
 
-        <label class="checkbox" for="priorInjury">
-          <input id="priorInjury" type="checkbox" />
-          Prior elbow/shoulder injury or surgery?
-        </label>
-
-        <div class="field" style="margin-top:8px;">
-          <label for="mechanicsFlags">Mechanics flags (optional)</label>
-          <textarea id="mechanicsFlags" placeholder="e.g., late arm, inconsistent stride, drag line anomalies..."></textarea>
+      <!-- Section B — Vitals -->
+      <details>
+        <summary>B. Vitals</summary>
+        <div class="section-body grid">
+          <div class="col-3"><label>BP (systolic)</label><input name="bp_sys" type="number" min="60" max="250" placeholder="120"/></div>
+          <div class="col-3"><label>BP (diastolic)</label><input name="bp_dia" type="number" min="40" max="140" placeholder="75"/></div>
+          <div class="col-3"><label>HR (bpm)</label><input name="hr" type="number" min="30" max="200" placeholder="70"/></div>
+          <div class="col-3"><label>SpO₂ (%)</label><input name="spo2" type="number" min="50" max="100" placeholder="97"/></div>
+          <div class="col-3"><label>Respiratory rate</label><input name="rr" type="number" min="6" max="40" placeholder="16"/></div>
+          <div class="col-3"><label>Temp (°F)</label><input name="temp_f" type="number" step="0.1" min="90" max="107" placeholder="98.6"/></div>
+          <div class="col-3"><label>Weight (lb)</label><input name="weight_lb" type="number" min="60" max="600" placeholder="165"/></div>
+          <div class="col-3"><label>Height (in)</label><input name="height_in" type="number" min="48" max="84" placeholder="66"/></div>
+          <div class="col-4"><label>Orthostatics present?</label>
+            <select name="orthostatics">
+              <option value="">Select…</option>
+              <option>No</option>
+              <option>Yes—mild</option>
+              <option>Yes—significant</option>
+            </select>
+          </div>
+          <div class="col-4"><label>Fasting glucose</label><input name="fasting_glucose" type="number" min="50" max="300" placeholder="92"/></div>
+          <div class="col-4"><label>Recent med changes?</label>
+            <select name="med_changes">
+              <option value="">Select…</option>
+              <option>No</option>
+              <option>Yes—minor</option>
+              <option>Yes—major</option>
+            </select>
+          </div>
         </div>
+      </details>
 
-        <div class="actions">
-          <button id="computeBtn" class="btn btn-blue">Compute Risk</button>
-          <button id="pingBtn" class="btn btn-gray">Ping Backend</button>
-          <span id="backendStatus" class="badge" title="Backend health status">Backend: ok</span>
+      <!-- Section C — Functional & Safety -->
+      <details>
+        <summary>C. Functional & Safety</summary>
+        <div class="section-body grid">
+          <div class="col-4"><label>Living situation</label>
+            <select name="living">
+              <option value="">Select…</option>
+              <option>Independent</option>
+              <option>With family</option>
+              <option>Assisted living</option>
+              <option>Skilled nursing</option>
+            </select>
+          </div>
+          <div class="col-4"><label>Falls in last 12 months</label>
+            <select name="falls_12m">
+              <option value="">Select…</option>
+              <option>0</option><option>1</option><option>2+</option>
+            </select>
+          </div>
+          <div class="col-4"><label>Unsteady on feet</label>
+            <select name="unsteady">
+              <option value="">Select…</option>
+              <option>No</option><option>Sometimes</option><option>Often</option>
+            </select>
+          </div>
+          <div class="col-4"><label>Fear of falling</label>
+            <select name="fear_fall">
+              <option value="">Select…</option>
+              <option>No</option><option>Mild</option><option>Significant</option>
+            </select>
+          </div>
+          <div class="col-4"><label>Chair rise (5x)</label>
+            <select name="chair_rise">
+              <option value="">Select…</option>
+              <option>Easy</option><option>Moderate</option><option>Difficult</option>
+            </select>
+          </div>
+          <div class="col-4"><label>Gait tests (TUG/Timed walk)</label>
+            <select name="gait_tests">
+              <option value="">Select…</option>
+              <option>Normal</option><option>Borderline</option><option>Impaired</option>
+            </select>
+          </div>
+          <div class="col-4"><label>Home hazards</label>
+            <select name="home_hazards">
+              <option value="">Select…</option>
+              <option>None reported</option><option>Some</option><option>Many</option>
+            </select>
+          </div>
         </div>
-      </section>
+      </details>
 
-      <section class="card">
-        <h2>Risk Score &amp; Recommendations</h2>
-        <pre id="resultBox">{\n  "status": "ok"\n}</pre>
-      </section>
-    </div>
-  </div>
+      <!-- Section D — Cognition & Mood -->
+      <details>
+        <summary>D. Cognition & Mood</summary>
+        <div class="section-body grid">
+          <div class="col-4"><label>Memory concerns</label>
+            <select name="memory">
+              <option value="">Select…</option>
+              <option>No</option><option>Mild</option><option>Significant</option>
+            </select>
+          </div>
+          <div class="col-4"><label>Mood concerns</label>
+            <select name="mood">
+              <option value="">Select…</option>
+              <option>No</option><option>Mild</option><option>Moderate</option><option>Severe</option>
+            </select>
+          </div>
+          <div class="col-4"><label>Delirium risk</label>
+            <select name="delirium_risk">
+              <option value="">Select…</option>
+              <option>Low</option><option>Medium</option><option>High</option>
+            </select>
+          </div>
+        </div>
+      </details>
 
-  <div class="footer">© 2025 PredictWell Health.ai — Athletics</div>
+      <!-- Section E — Medications & Supplements -->
+      <details>
+        <summary>E. Medications & Supplements</summary>
+        <div class="section-body grid">
+          <div class="col-4"><label>Medication count</label>
+            <select name="med_count">
+              <option value="">Select…</option>
+              <option>0–3</option><option>4–7</option><option>8+</option>
+            </select>
+          </div>
+          <div class="col-4"><label>High-risk meds present?</label>
+            <select name="high_risk_meds">
+              <option value="">Select…</option>
+              <option>No</option><option>Possibly</option><option>Yes</option>
+            </select>
+          </div>
+          <div class="col-4"><label>Supplements changed?</label>
+            <select name="supplements_change">
+              <option value="">Select…</option>
+              <option>No</option><option>Yes</option>
+            </select>
+          </div>
+        </div>
+      </details>
 
-  <!-- ===== JS: IDENTICAL header behavior from Index + portal logic ===== -->
+      <!-- Section F — Hearing, Vision, Dizziness -->
+      <details>
+        <summary>F. Hearing, Vision & Dizziness</summary>
+        <div class="section-body grid">
+          <div class="col-4"><label>Hearing issues</label>
+            <select name="hearing">
+              <option value="">Select…</option>
+              <option>No</option><option>Mild</option><option>Moderate</option><option>Severe</option>
+            </select>
+          </div>
+          <div class="col-4"><label>Vision issues</label>
+            <select name="vision">
+              <option value="">Select…</option>
+              <option>No</option><option>Mild</option><option>Moderate</option><option>Severe</option>
+            </select>
+          </div>
+          <div class="col-4"><label>Dizziness</label>
+            <select name="dizzy">
+              <option value="">Select…</option>
+              <option>No</option><option>Occasional</option><option>Frequent</option>
+            </select>
+          </div>
+        </div>
+      </details>
+
+      <!-- Section G — Sleep & Activity -->
+      <details>
+        <summary>G. Sleep & Activity</summary>
+        <div class="section-body grid">
+          <div class="col-4"><label>Sleep quality</label>
+            <select name="sleep_quality">
+              <option value="">Select…</option>
+              <option>Good</option><option>Fair</option><option>Poor</option>
+            </select>
+          </div>
+          <div class="col-4"><label>Weekly activity level</label>
+            <select name="activity_level">
+              <option value="">Select…</option>
+              <option>High</option><option>Moderate</option><option>Low</option>
+            </select>
+          </div>
+          <div class="col-4"><label>Wearable data available</label>
+            <select name="wearable">
+              <option value="">Select…</option>
+              <option>No</option><option>Steps/HR</option><option>Advanced (HRV/SpO₂)</option>
+            </select>
+          </div>
+        </div>
+      </details>
+
+      <!-- Section H — Recent Care & Goals -->
+      <details>
+        <summary>H. Recent Care & Goals</summary>
+        <div class="section-body grid">
+          <div class="col-4"><label>Recent hospital/ER</label>
+            <select name="recent_hosp_er">
+              <option value="">Select…</option>
+              <option>No</option><option>Yes—ER</option><option>Yes—Hospital</option>
+            </select>
+          </div>
+          <div class="col-4"><label>New referrals needed?</label>
+            <select name="referrals_needed">
+              <option value="">Select…</option>
+              <option>No</option><option>PT/OT</option><option>Cardio</option><option>Neuro</option><option>Other</option>
+            </select>
+          </div>
+          <div class="col-4"><label>Hydration & appetite</label>
+            <select name="hydration_appetite">
+              <option value="">Select…</option>
+              <option>Good</option><option>Fair</option><option>Poor</option>
+            </select>
+          </div>
+          <div class="col-12">
+            <label>Patient goals (short notes)</label>
+            <textarea name="goals" placeholder="E.g., reduce falls, improve stamina, manage meds…"></textarea>
+          </div>
+        </div>
+      </details>
+
+      <!-- Key Labs -->
+      <details>
+        <summary>Key Labs</summary>
+        <div class="section-body grid">
+          <div class="col-3"><label>A1c (%)</label><input name="a1c" type="number" step="0.1" min="4" max="15" placeholder="5.4"/></div>
+          <div class="col-3"><label>eGFR</label><input name="egfr" type="number" step="1" min="5" max="120" placeholder="88"/></div>
+          <div class="col-3"><label>LDL (mg/dL)</label><input name="ldl" type="number" min="20" max="300" placeholder="110"/></div>
+          <div class="col-3"><label>Vitamin D (ng/mL)</label><input name="vitd" type="number" min="5" max="120" placeholder="32"/></div>
+        </div>
+      </details>
+
+      <!-- Pain & Symptoms -->
+      <details>
+        <summary>Pain & Symptoms</summary>
+        <div class="section-body grid">
+          <div class="col-4"><label>Pain level (0–10)</label><input name="pain_0_10" type="number" min="0" max="10" placeholder="0"/></div>
+          <div class="col-4"><label>New/worsening symptoms?</label>
+            <select name="symptoms_new">
+              <option value="">Select…</option>
+              <option>No</option><option>Yes — mild</option><option>Yes — significant</option>
+            </select>
+          </div>
+          <div class="col-4"><label>Red flags present?</label>
+            <select name="red_flags">
+              <option value="">Select…</option>
+              <option>No</option><option>Possibly</option><option>Yes</option>
+            </select>
+          </div>
+          <div class="col-12">
+            <label>Clinician notes (free text)</label>
+            <textarea name="clinician_notes" placeholder="Add any additional history, findings, plans…"></textarea>
+          </div>
+        </div>
+      </details>
+
+      <!-- Actions -->
+      <div class="row" style="margin-top:14px">
+        <button class="btn" type="submit">Run Analysis</button>
+        <button class="btn ghost" type="button" id="saveLocal">Save (local)</button>
+        <button class="btn ghost" type="button" id="restoreLocal">Restore</button>
+        <span id="saveMsg" class="muted" style="align-self:center"></span>
+      </div>
+    </form>
+
+    <!-- Results -->
+    <section class="card">
+      <h2>Results</h2>
+      <p class="muted">Raw AI response appears below. (Forecasts typically include <b>current</b>, <b>2-week</b>, and <b>4-week</b> risk values plus contributing factors.)</p>
+      <pre id="results" class="results">No results yet.</pre>
+    </section>
+  </main>
+
   <script>
-    // Header menu toggle (copied from Index)
-    const menuBtn = document.getElementById('menuBtn');
-    const menu = document.getElementById('menu');
-
-    // Toggle open/close on button
-    document.addEventListener('click', (e) => {
-      if (menuBtn && menuBtn.contains(e.target)) {
-        menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
-      } else if (menu && !menu.contains(e.target)) {
-        menu.style.display = 'none';
-      }
+    // Simple mobile menu toggle
+    document.getElementById('menuBtn')?.addEventListener('click', () => {
+      const m = document.getElementById('menu');
+      m.style.display = (m.style.display === 'flex') ? 'none' : 'flex';
     });
 
-    // Close menu when a link is clicked
-    if (menu) {
-      menu.querySelectorAll('a').forEach(a => {
-        a.addEventListener('click', () => {
-          menu.style.display = 'none';
-        });
-      });
-    }
+    const API = 'https://predictwell-backend-ai.onrender.com';
+    const STORAGE_KEY = 'eldercare_doctor_intake_v1';
 
-    // Close on Escape
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && menu) menu.style.display = 'none';
-    });
-
-    // Email picker behavior (copied from Index)
-    (function () {
-      const emailLink = document.getElementById('emailLink');
-      const emailMenu = document.getElementById('emailMenu');
-      if (!emailLink || !emailMenu) return;
-
-      emailLink.addEventListener('click', function (e) {
-        e.preventDefault();
-        emailMenu.style.display = (emailMenu.style.display === 'block') ? 'none' : 'block';
-      });
-
-      document.addEventListener('click', function (e) {
-        if (!emailMenu.contains(e.target) && e.target !== emailLink) {
-          emailMenu.style.display = 'none';
+    // Serialize form to JSON
+    function formToJSON(form){
+      const data = {};
+      new FormData(form).forEach((v,k)=>{
+        if (data[k] !== undefined){
+          if (!Array.isArray(data[k])) data[k] = [data[k]];
+          data[k].push(v);
+        } else {
+          data[k] = v;
         }
       });
-
-      document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape') emailMenu.style.display = 'none';
-      });
-    })();
-
-    // ===== Doctor portal logic =====
-    const BASE_API = 'https://predictwell-backend-ai.onrender.com';
-    const resultBox = document.getElementById('resultBox');
-    const backendStatus = document.getElementById('backendStatus');
-
-    function readNumber(id) {
-      const el = document.getElementById(id);
-      const n = Number(el && el.value);
-      return Number.isFinite(n) ? n : 0;
+      return data;
     }
 
-    async function pingBackend() {
-      try {
-        const r = await fetch(`${BASE_API}/healthz`);
-        const j = await r.json();
-        backendStatus.textContent = 'Backend: ok';
-        backendStatus.style.background = '#e5f8ec';
-        backendStatus.style.color = '#065f46';
-        resultBox.textContent = JSON.stringify(j, null, 2);
-      } catch (e) {
-        backendStatus.textContent = 'Backend: down';
-        backendStatus.style.background = '#fee2e2';
-        backendStatus.style.color = '#991b1b';
-        resultBox.textContent = JSON.stringify({ error: 'Backend unreachable' }, null, 2);
+    // Local save/restore
+    const saveBtn = document.getElementById('saveLocal');
+    const restoreBtn = document.getElementById('restoreLocal');
+    const saveMsg = document.getElementById('saveMsg');
+
+    saveBtn.addEventListener('click', ()=>{
+      const data = formToJSON(document.getElementById('intakeForm'));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+      saveMsg.textContent = 'Saved locally.';
+      setTimeout(()=> saveMsg.textContent = '', 1500);
+    });
+
+    restoreBtn.addEventListener('click', ()=>{
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if(!raw){ saveMsg.textContent = 'Nothing saved.'; setTimeout(()=> saveMsg.textContent = '', 1500); return; }
+      const data = JSON.parse(raw);
+      for (const [k,v] of Object.entries(data)){
+        const el = document.querySelector(`[name="${k}"]`);
+        if(!el) continue;
+        if (el.tagName === 'SELECT' || el.tagName === 'INPUT' || el.tagName === 'TEXTAREA'){
+          el.value = v;
+        }
       }
-    }
+      saveMsg.textContent = 'Restored.';
+      setTimeout(()=> saveMsg.textContent = '', 1500);
+    });
 
-    async function computeRisk() {
-      const payload = {
-        name: (document.getElementById('pitcherName')||{}).value || '',
-        age: readNumber('age'),
-        pitch_count_7d: readNumber('pitchCount7d'),
-        innings_7d: readNumber('innings7d'),
-        rest_days: readNumber('restDays'),
-        avg_velo: readNumber('avgVelo'),
-        pain_today: readNumber('painToday'),
-        throws_today: readNumber('throwsToday'),
-        prior_injury: !!(document.getElementById('priorInjury')||{}).checked,
-        mechanics_flags: (document.getElementById('mechanicsFlags')||{}).value || ''
-      };
+    // Submit → /eldercare/checkin
+    document.getElementById('intakeForm').addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      const body = formToJSON(e.currentTarget);
+      const results = document.getElementById('results');
+      results.textContent = 'Running analysis…';
 
-      resultBox.textContent = 'Scoring...';
-      try {
-        const res = await fetch(`${BASE_API}/risk`, {
+      try{
+        const res = await fetch(`${API}/eldercare/checkin`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
+          headers: {'Content-Type':'application/json'},
+          body: JSON.stringify(body)
         });
-        const json = await res.json();
-        resultBox.textContent = JSON.stringify(json, null, 2);
-      } catch (e) {
-        resultBox.textContent = JSON.stringify({ error: 'Request failed' }, null, 2);
+        const j = await res.json();
+        results.textContent = JSON.stringify(j, null, 2);
+      }catch(err){
+        results.textContent = 'Error: ' + (err?.message || 'request failed');
       }
-    }
-
-    document.getElementById('pingBtn').addEventListener('click', pingBackend);
-    document.getElementById('computeBtn').addEventListener('click', computeRisk);
-    pingBackend();
+    });
   </script>
 </body>
 </html>
