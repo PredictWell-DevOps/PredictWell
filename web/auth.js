@@ -23,24 +23,24 @@
     logout(){ localStorage.removeItem(this.keyUser); localStorage.removeItem(this.keyToken); },
 
     navHTML(){
-      if(this.isAuthed()){
-        const email = this.user?.email || 'Account';
-        return `
-          <nav class="pw-nav" id="pw-nav">
-            <a href="index.html">Home</a>
-            <a href="eldercare-patient.html">Patient Portal</a>
-            <a href="javascript:void(0)" id="pw-account">${email}</a>
-            <a href="javascript:void(0)" id="pw-logout">Logout</a>
-          </nav>`;
-      } else {
-        return `
-          <nav class="pw-nav" id="pw-nav">
-            <a href="index.html">Home</a>
-            <a href="eldercare-patient.html">Patient Portal</a>
-            <a href="login.html">Login</a>
-            <a href="register.html">Register</a>
-          </nav>`;
-      }
+  if(this.isAuthed()){
+    const email = this.user?.email || 'Account';
+    return `
+      <nav class="pw-nav" id="pw-nav">
+        <a href="index.html">Home</a>
+        <a href="/portal/patient/login.html">Patient Portal</a>
+        <a href="/portal/doctor/login.html">Doctor Portal</a>
+        <a href="javascript:void(0)" id="pw-account">${email}</a>
+        <a href="javascript:void(0)" id="pw-logout">Logout</a>
+      </nav>`;
+  } else {
+    return `
+      <nav class="pw-nav" id="pw-nav">
+        <a href="index.html">Home</a>
+        <a href="/portal/patient/login.html">Patient Portal</a>
+        <a href="/portal/doctor/login.html">Doctor Portal</a>
+      </nav>`;
+  }
     },
 
     mountNav(){
