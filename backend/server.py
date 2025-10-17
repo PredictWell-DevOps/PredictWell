@@ -1,62 +1,19 @@
-# backend/server.py — resilient load (eldercare + optional sleep/auth)
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-import importlib
-import logging
+"""
+backend/server.py wrapper
 
-log = logging.getLogger("predictwell")
-logging.basicConfig(level=logging.INFO)
+This file makes the repository root importable and re-exports the top-level
+ASGI `app` defined in `server.py`. It allows running `gunicorn server:app`
+from the `backend/` directory (Render Root Directory = backend/).
+"""
 
-app = FastAPI(
-    title="PredictWell API",
-    version="1.0.0",
-    description="Backend API for PredictWell Health.ai — Eldercare, Sleep, Auth (optional).",
-)
+import os
+import sys
 
-# CORS (open for now; restrict to https://predictwellhealth.ai later)
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+# Add repository root (parent of this file) to sys.path
+ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+if ROOT not in sys.path:
+    sys.path.insert(0, ROOT)
 
-@app.get("/")
-def root():
-    return {"message": "PredictWell API running. See /docs for details."}
+from server import app  # re-export the ASGI app from top-level server.py
 
-@app.get("/healthz")
-def healthz():
-    return {"status": "ok"}
-
-def _load_router(module_candidates, attr_name="router"):
-    """
-    Try importing a router from several module paths.
-    Returns the router or None if not importable.
-    """
-    for mod in module_candidates:
-        try:
-            m = importlib.import_module(mod)
-            r = getattr(m, attr_name)
-            log.info(f"Loaded router from {mod}.{attr_name}")
-            return r
-        except Exception as e:
-            log.warning(f"Router not found at {mod}.{attr_name}: {e}")
-    return None
-
-# Always present (your working endpoint)
-eldercare_router = _load_router(["backend.eldercare", "eldercare"])
-if eldercare_router:
-    app.include_router(eldercare_router)
-else:
-    log.error("Eldercare router missing; /eldercare/checkin will not be available.")
-
-# Optional routers — will load if the modules exist; otherwise skipped gracefully
-sleep_router = _load_router(["backend.sleep", "sleep"])
-if sleep_router:
-    app.include_router(sleep_router)
-
-auth_router = _load_router(["backend.auth", "auth"])
-if auth_router:
-    app.include_router(auth_router)
+__all__ = ["app"]
