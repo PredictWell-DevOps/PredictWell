@@ -51,7 +51,6 @@
     .status { font-size: 14px; margin-top: 8px; }
     .ok { color: #16a34a; }
     .err { color: #dc2626; }
-    pre { background:#0f172a; color:#e5edff; padding:14px; border-radius:12px; overflow:auto; border:1px solid rgba(0,0,0,.14) }
     .pw-footer { margin: 20px auto 40px; padding: 0 18px; }
     .pw-footer-wrap { max-width: 1080px; margin: 0 auto; background: rgba(255,255,255,0.78); border-radius: 18px; box-shadow: 0 10px 30px rgba(0,0,0,0.18); padding: 18px 22px; text-align:center; color:#374151; }
   </style>
@@ -153,7 +152,7 @@
         <div id="status" class="status" role="status" aria-live="polite">Ready.</div>
         <div>
           <h3 style="margin:10px 0 6px">AI Result</h3>
-          <div id="resultBox" style="min-height: 100px; background: rgba(255,255,255,0.5); border-radius: 12px; padding: 20px;">Ready to analyze...</div>
+          <div id="resultBox" style="min-height: 100px; background: rgba(255,255,255,0.5); border-radius: 12px; padding: 20px; color: #374151;">Ready to analyze...</div>
         </div>
       </form>
     </div>
@@ -184,7 +183,6 @@
     const POST_URL = BASE_API + '/athletics/risk';
     const STORE_KEY = 'athletics_pitcher_intake';
 
-    // Exact field names matching backend
     const selectFields = [
       'shoulder_soreness','inner_elbow_pain','forearm_tightness','triceps_fatigue','biceps_pain','shoulder_clicking',
       'velocity_drop','arm_slot_change','command_loss','effort_level','follow_through_pain',
@@ -270,16 +268,57 @@
           headers:{'Content-Type':'application/json'},
           body: JSON.stringify(payload)
         });
-        const text = await res.text();
-        try{
-          const json = JSON.parse(text);
-          document.getElementById('resultBox').textContent = JSON.stringify(json, null, 2);
-        }catch{
-          document.getElementById('resultBox').textContent = text;
+        const json = await res.json();
+        
+        if(res.ok && json.status === 'ok'){
+          const resultBox = document.getElementById('resultBox');
+          
+          // Split feedback into sections
+          const sections = json.feedback.split('\n\n');
+          let htmlOutput = '';
+          
+          // Risk Score Header (always first)
+          const riskColor = json.risk_score >= 7 ? '#dc2626' : json.risk_score >= 5 ? '#f97316' : '#16a34a';
+          htmlOutput += `
+            <div style="background: linear-gradient(135deg, ${riskColor}, ${riskColor}dd); color: white; padding: 24px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.25);">
+              <h2 style="margin: 0 0 8px 0; font-size: 28px; font-weight: 800;">Risk Score: ${json.risk_score}/10</h2>
+              <p style="margin: 0; opacity: 0.95; font-size: 15px;">Your personalized pitcher health assessment</p>
+            </div>
+          `;
+          
+          // Process each section
+          sections.forEach(section => {
+            const lines = section.trim().split('\n');
+            const title = lines[0];
+            const content = lines.slice(1).join(' ');
+            
+            // Check if it's a RED FLAG section
+            if(title.includes('🚨') || title.includes('CRITICAL')) {
+              htmlOutput += `
+                <div style="background: linear-gradient(135deg, #fee, #fdd); border-left: 4px solid #dc2626; padding: 20px; border-radius: 12px; margin-bottom: 16px; box-shadow: 0 4px 12px rgba(220,38,38,0.15);">
+                  <h3 style="margin: 0 0 10px 0; color: #dc2626; font-size: 18px; font-weight: 800;">${title}</h3>
+                  <p style="margin: 0; color: #991b1b; line-height: 1.7; font-weight: 500;">${content}</p>
+                </div>
+              `;
+            } else {
+              // Normal section
+              htmlOutput += `
+                <div style="background: white; padding: 20px; border-radius: 12px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
+                  <h3 style="margin: 0 0 10px 0; color: #1e3a8a; font-size: 16px; font-weight: 700;">${title}</h3>
+                  <p style="margin: 0; color: #374151; line-height: 1.7;">${content}</p>
+                </div>
+              `;
+            }
+          });
+          
+          resultBox.innerHTML = htmlOutput;
+          setStatus('Analysis complete.');
+        } else {
+          document.getElementById('resultBox').innerHTML = `<pre style="background:#fee; color:#c00; padding:14px; border-radius:12px; overflow:auto;">${JSON.stringify(json, null, 2)}</pre>`;
+          setStatus('Server returned an error.');
         }
-        setStatus(res.ok ? 'Analysis complete.' : 'Server returned an error.');
       }catch(err){
-        document.getElementById('resultBox').textContent = String(err);
+        document.getElementById('resultBox').innerHTML = `<pre style="background:#fee; color:#c00; padding:14px; border-radius:12px;">${String(err)}</pre>`;
         setStatus('Network error.');
       }
     }

@@ -113,44 +113,58 @@ def weighted_score(data: PitcherIntake) -> dict:
         "total_risk": round(total_risk, 2)
     }
 
-# ======== Text Generation ========
-def generate_feedback(scores: dict) -> str:
-    """Creates trainer-style feedback based on calculated scores."""
+# ======== Text Generation with RED FLAGS ========
+def generate_feedback(scores: dict, data: PitcherIntake) -> str:
+    """Creates trainer-style feedback with RED FLAGS for critical pain."""
     lines = []
-
+    
+    # CRITICAL RED FLAGS - Check for severe pain in injury-prone areas
+    red_flags = []
+    if data.inner_elbow_pain >= 4:
+        red_flags.append("⚠️ URGENT: Inner elbow pain at level {}/5 is DANGEROUS. This is a primary Tommy John surgery indicator. STOP THROWING immediately and consult a sports medicine doctor within 24-48 hours.".format(data.inner_elbow_pain))
+    if data.shoulder_soreness >= 5:
+        red_flags.append("⚠️ WARNING: Shoulder soreness is maxed out at 5/5. Risk of rotator cuff injury is HIGH. Complete rest required - no throwing for at least 3-5 days.")
+    if data.biceps_pain >= 4:
+        red_flags.append("⚠️ WARNING: Biceps pain at {}/5 can indicate labrum issues. Medical evaluation strongly recommended.".format(data.biceps_pain))
+    if data.shoulder_clicking >= 4:
+        red_flags.append("⚠️ CAUTION: Shoulder clicking at {}/5 may indicate structural issues. Get evaluated before next throwing session.".format(data.shoulder_clicking))
+    
+    if red_flags:
+        lines.append("🚨 CRITICAL ALERTS\n" + "\n".join(red_flags))
+    
     # Section 1: Muscles Under Stress
     if scores["arm_load"] > 6:
-        lines.append("Muscles Under Stress:\nYour arm is feeling heavy today, especially around the shoulder and elbow. Limit high-intensity throws and focus on stretching and recovery work.")
+        lines.append("Muscles Under Stress\nYour arm is feeling heavy today, especially around the shoulder and elbow. Limit high-intensity throws and focus on stretching and recovery work.")
     elif scores["arm_load"] > 4:
-        lines.append("Muscles Under Stress:\nYou’re showing moderate arm fatigue. Pay attention to forearm and shoulder stabilizers — light band work will help.")
+        lines.append("Muscles Under Stress\nYou're showing moderate arm fatigue. Pay attention to forearm and shoulder stabilizers — light band work will help.")
     else:
-        lines.append("Muscles Under Stress:\nArm load looks manageable today. Stay consistent with mobility and band maintenance.")
+        lines.append("Muscles Under Stress\nArm load looks manageable today. Stay consistent with mobility and band maintenance.")
 
     # Section 2: Recovery Advice
     if scores["recovery"] > 6:
-        lines.append("Recovery Advice:\nYou might be under-recovering — get extra hydration and sleep tonight. Keep nutrition steady and avoid throwing two days in a row.")
+        lines.append("Recovery Advice\nYou might be under-recovering — get extra hydration and sleep tonight. Keep nutrition steady and avoid throwing two days in a row.")
     elif scores["recovery"] > 4:
-        lines.append("Recovery Advice:\nYour recovery is fair but can improve. Try a mobility session and hydration boost before next outing.")
+        lines.append("Recovery Advice\nYour recovery is fair but can improve. Try a mobility session and hydration boost before next outing.")
     else:
-        lines.append("Recovery Advice:\nRecovery looks strong. Maintain your current routine and prioritize sleep on travel or game days.")
+        lines.append("Recovery Advice\nRecovery looks strong. Maintain your current routine and prioritize sleep on travel or game days.")
 
     # Section 3: Training Tip
     if scores["lower_body"] > 6:
-        lines.append("Training Tip:\nLower-body fatigue is limiting your drive off the mound. Focus on glute activation and hip mobility work before your next session.")
+        lines.append("Training Tip\nLower-body fatigue is limiting your drive off the mound. Focus on glute activation and hip mobility work before your next session.")
     elif scores["lower_body"] > 4:
-        lines.append("Training Tip:\nSome leg and hip tightness is showing — add light dynamic stretches to pre-throw warmup.")
+        lines.append("Training Tip\nSome leg and hip tightness is showing — add light dynamic stretches to pre-throw warmup.")
     else:
-        lines.append("Training Tip:\nLower-body stability is solid. Keep your current strength and movement prep going.")
+        lines.append("Training Tip\nLower-body stability is solid. Keep your current strength and movement prep going.")
 
     # Add summary
-    lines.append(f"\nOverall Read: Total risk score = {scores['total_risk']} (0–10 scale).")
+    lines.append(f"Overall Read\nTotal risk score = {scores['total_risk']} (0–10 scale).")
     return "\n\n".join(lines)
 
 # ======== API Route ========
 @router.post("/risk")
 async def compute_pitcher_risk(intake: PitcherIntake):
     scores = weighted_score(intake)
-    feedback = generate_feedback(scores)
+    feedback = generate_feedback(scores, intake)
     return {
         "status": "ok",
         "risk_score": scores["total_risk"],
