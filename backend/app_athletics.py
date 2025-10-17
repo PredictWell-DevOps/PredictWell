@@ -11,7 +11,7 @@ router = APIRouter(prefix="/athletics", tags=["Athletics"])
 class PitcherIntake(BaseModel):
     # Section 1: Arm & Shoulder Condition
     shoulder_soreness: int
-    elbow_soreness: int
+    inner_elbow_pain: int
     forearm_tightness: int
     triceps_fatigue: int
     biceps_pain: int
@@ -57,7 +57,7 @@ def weighted_score(data: PitcherIntake) -> dict:
     """Computes weighted fatigue and overuse indicators by body region."""
     # Arm load = shoulder + elbow + forearm + triceps + biceps
     arm_load = (
-        data.shoulder_soreness + data.elbow_soreness + data.forearm_tightness +
+        data.shoulder_soreness + data.inner_elbow_pain + data.forearm_tightness +
         data.triceps_fatigue + data.biceps_pain + data.shoulder_clicking
     ) / 6
 
