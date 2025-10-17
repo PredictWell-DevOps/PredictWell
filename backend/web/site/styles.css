@@ -1,0 +1,22 @@
+:root{--accent:#2b6cb0;--accent2:#0ea5e9;--bg:#0b1220;--card:#111827;--text:#e5e7eb;}
+*{box-sizing:border-box}html,body{margin:0;padding:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif;background:#0b1220;color:var(--text)}
+a{color:inherit;text-decoration:none}
+.container{max-width:1100px;margin:0 auto;padding:24px}
+.nav{position:sticky;top:0;backdrop-filter:blur(10px);background:rgba(11,18,32,.7);border-bottom:1px solid #1f2937;z-index:20}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 24px}
+.nav .brand{font-weight:700;letter-spacing:.2px}
+.nav ul{display:flex;gap:18px;list-style:none;padding:0;margin:0}
+.btn{display:inline-block;padding:12px 18px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;font-weight:600}
+.btn.outline{background:transparent;border:1px solid #334155}
+.hero{min-height:78vh;display:grid;place-items:center;position:relative;text-align:center;padding:48px}
+.hero::before{content:"";position:absolute;inset:0;background:url("./assets/hero.jpg") center/cover no-repeat;opacity:.25;filter:grayscale(30%)}
+.hero .card{position:relative;max-width:880px;margin:auto;background:rgba(17,24,39,.6);border:1px solid #1f2937;border-radius:18px;padding:28px;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+.grid{display:grid;gap:18px}
+@media(min-width:900px){.grid.cols-3{grid-template-columns:repeat(3,1fr)}}
+.kicker{color:#93c5fd;font-weight:600;text-transform:uppercase;letter-spacing:.12em;font-size:.85rem}
+.h1{font-size:clamp(28px,4vw,44px);margin:10px 0 6px}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;color:#94a3b8}
+.card{background:#0f172a;border:1px solid #1f2937;border-radius:16px;padding:18px}
+.footer{border-top:1px solid #1f2937;padding:28px 0;color:#94a3b8}
+input,textarea{width:100%;padding:12px 14px;border-radius:10px;border:1px solid #334155;background:#0b1220;color:#e5e7eb}
+label{display:block;font-size:.9rem;margin:8px 0 6px;color:#9ca3af}

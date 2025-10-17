@@ -1,0 +1,375 @@
+<!-- ====== athletics.html (Doctor Portal — IDENTICAL header, upgraded 33-field intake) ====== -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PredictWell Health.ai — Athletics Doctor Portal</title>
+  <meta name="description" content="Doctor-facing pitcher intake (33 fields), flags, and AI recommendations." />
+  <link rel="icon" href="data:,">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    html { scroll-behavior: smooth; }
+
+    :root{ --pw-navy:#1e3a8a; }
+
+    body {
+      margin: 0;
+      font-family: system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+      color: #111827;
+      background-image:url("/static/images/predictwell_background.png");
+      background-size:cover; background-position:center; background-repeat:no-repeat; background-attachment:fixed;
+    }
+
+    /* ===== HEADER — COPIED IDENTICALLY FROM INDEX ===== */
+    .header{position:sticky;top:0;z-index:50;backdrop-filter:saturate(1.2) blur(6px);
+      background:linear-gradient(90deg,rgba(255,255,255,.62),rgba(255,255,255,.42));
+      border-bottom:1px solid rgba(0,0,0,.18)}
+    .header-inner{max-width:1080px;margin:0 auto;padding:14px 18px;display:flex;align-items:center;gap:14px}
+    .brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:#0b1020}
+    .brand-logo{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#2563eb,#60a5fa);box-shadow:0 10px 30px rgba(0,0,0,.18)}
+    .brand-title{font-size:22px;line-height:1}
+    .brand-title b{font-weight:800}      /* PredictWell bold */
+    .brand-title .thin{font-weight:600}  /* Health.ai semi-bold */
+    .brand-tagline{font-size:12px;color:#374151;opacity:.95}
+    .spacer{flex:1}
+    .hamburger{border:none;background:#fff;border-radius:999px;width:36px;height:36px;display:grid;place-items:center;box-shadow:0 10px 30px rgba(0,0,0,.18);cursor:pointer}
+    .hamburger:after{content:"≡";font-size:20px;color:#111827;position:relative;top:-1px}
+    .menu{position:absolute;right:18px;top:58px;background:rgba(255,255,255,.78);backdrop-filter:blur(10px);border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.18);padding:8px;display:none}
+    .menu a{display:block;padding:10px 12px;border-radius:10px;text-decoration:none;color:#111827;min-width:220px}
+    .menu a:hover{background:rgba(17,24,39,.06)}
+
+    /* Email picker — IDENTICAL TO INDEX */
+    .email-wrap { position: relative; display: inline-block; }
+    .header-email { font-size: 14px; color: #111827; text-decoration: none; margin-right: 12px; font-weight: 600; cursor: pointer; }
+    .header-email:hover { text-decoration: underline; }
+    .email-menu {
+      position: absolute; right: 0; top: 120%;
+      background: rgba(255,255,255,0.96);
+      border: 1px solid rgba(17,24,39,0.08);
+      border-radius: 10px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.18);
+      padding: 6px; min-width: 230px; display: none; z-index: 60;
+    }
+    .email-menu a { display: block; padding: 8px 10px; border-radius: 8px; text-decoration: none; color: #111827; font-size: 14px; }
+    .email-menu a:hover { background: rgba(17,24,39,0.06); }
+
+    /* ===== Page content styles ===== */
+    .hero-wrap { max-width: 1080px; margin: 28px auto 0; padding: 0 18px 24px; }
+    .hero { background: rgba(255,255,255,0.78); border-radius: 18px; box-shadow: 0 10px 30px rgba(0,0,0,0.18); padding: 22px 24px; }
+    .hero h1 { margin: 0 0 8px 0; font-size: 26px; letter-spacing: 0.2px; }
+    .hero p { margin: 0; color: #374151; line-height: 1.55; }
+
+    .card-row { display: grid; grid-template-columns: 1.08fr 0.92fr; gap: 18px; margin-top: 18px; }
+    .card { background: rgba(255,255,255,0.78); border-radius: 18px; box-shadow: 0 10px 30px rgba(0,0,0,0.18); padding: 18px; }
+    .card h2 { margin: 0 0 14px 0; font-size: 18px; letter-spacing: 0.2px; }
+
+    .grid-2 { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap:12px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap:12px; }
+    @media (max-width: 960px){ .grid-3 { grid-template-columns: repeat(2,minmax(0,1fr)); } }
+    @media (max-width: 780px){ .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+
+    .field { display: flex; flex-direction: column; gap: 6px; }
+    label { font-size: 12px; color: #374151; }
+    select, input[type="text"], input[type="date"], textarea {
+      width: 100%; padding: 10px 12px;
+      border: 1px solid rgba(17,24,39,0.1);
+      border-radius: 12px; background: #ffffff;
+      outline: none; font-size: 14px;
+    }
+    textarea { min-height: 90px; resize: vertical; }
+
+    .actions { display: flex; align-items: center; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
+    .btn { appearance: none; border: none; padding: 10px 16px; border-radius: 999px; color: #fff; font-weight: 700; cursor: pointer; box-shadow: 0 10px 30px rgba(0,0,0,0.18); }
+    .btn-orange { background: linear-gradient(135deg,#f97316,#fb923c); }
+    .btn-gray { background: linear-gradient(135deg, #6b7280, #9ca3af); color: #0b1020; }
+
+    .badge { padding: 7px 10px; border-radius: 999px; background: #e5f8ec; color: #065f46; font-weight: 700; font-size: 12px; }
+
+    pre {
+      margin: 0; padding: 14px; background: #0b1020; color: #c7d2fe;
+      border-radius: 14px; min-height: 220px; overflow: auto; white-space: pre-wrap; word-break: break-word;
+    }
+
+    .footer { max-width: 1080px; margin: 20px auto 40px; padding: 0 18px; color:#374151; font-size:12px; text-align:center; text-shadow:0 1px 0 rgba(255,255,255,.75); }
+
+    @media (max-width: 900px) { .card-row { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <!-- ===== IDENTICAL HEADER ===== -->
+  <header class="header">
+    <div class="header-inner">
+      <a class="brand" href="/">
+        <div class="brand-logo"></div>
+        <div>
+          <div class="brand-title"><b>PredictWell</b><span class="thin">Health.ai</span></div>
+          <div class="brand-tagline">AI health intelligence for longer, stronger living.</div>
+        </div>
+      </a>
+      <div class="spacer"></div>
+
+      <!-- Email picker -->
+      <div class="email-wrap">
+        <a href="mailto:info@predictwellhealth.ai" class="header-email" id="emailLink">info@predictwellhealth.ai</a>
+        <div class="email-menu" id="emailMenu" role="menu" aria-label="Email options">
+          <a role="menuitem" target="_blank" rel="noopener" href="https://mail.google.com/mail/?view=cm&fs=1&to=info@predictwellhealth.ai">Open in Gmail</a>
+          <a role="menuitem" target="_blank" rel="noopener" href="https://outlook.live.com/mail/0/deeplink/compose?to=info@predictwellhealth.ai">Open in Outlook.com</a>
+          <a role="menuitem" target="_blank" rel="noopener" href="https://compose.mail.yahoo.com/?to=info@predictwellhealth.ai">Open in Yahoo Mail</a>
+          <a role="menuitem" href="mailto:info@predictwellhealth.ai">Use default mail app</a>
+        </div>
+      </div>
+
+      <button class="hamburger" id="menuBtn"></button>
+      <nav class="menu" id="menu">
+        <a href="/eldercare.html">Eldercare — Doctors</a>
+        <a href="/athletics.html"><strong>Athletics — Doctors</strong></a>
+        <a href="/contact.html">Contact</a>
+      </nav>
+    </div>
+  </header>
+  <!-- ===== /HEADER ===== -->
+
+  <!-- ===== Hero ===== -->
+  <div class="hero-wrap">
+    <section class="hero">
+      <h1>Doctor Portal — Pitcher Intake (33 fields)</h1>
+      <p>Use the standardized 1–5 scale (1 = best/lowest concern, 5 = worst/highest concern). Save locally or submit for AI analysis.</p>
+    </section>
+
+    <div class="card-row">
+      <!-- LEFT: DOCTOR INTAKE 33 -->
+      <section class="card">
+        <h2>Pitcher Inputs</h2>
+
+        <!-- Optional identifiers -->
+        <div class="grid-2" style="margin-bottom:10px">
+          <div class="field">
+            <label for="athlete_name">Athlete name</label>
+            <input id="athlete_name" type="text" placeholder="First Last" />
+          </div>
+          <div class="field">
+            <label for="session_date">Session date</label>
+            <input id="session_date" type="date" />
+          </div>
+        </div>
+
+        <!-- 1) Arm & Shoulder (6) -->
+        <h3>1) Arm &amp; Shoulder Condition (6)</h3>
+        <div class="grid-3">
+          <div class="field"><label for="d_shoulder_soreness">Shoulder soreness</label><select id="d_shoulder_soreness"></select></div>
+          <div class="field"><label for="d_bicep_tightness">Bicep tightness</label><select id="d_bicep_tightness"></select></div>
+          <div class="field"><label for="d_tricep_soreness">Tricep soreness</label><select id="d_tricep_soreness"></select></div>
+          <div class="field"><label for="d_inner_elbow_pain">Inner elbow pain</label><select id="d_inner_elbow_pain"></select></div>
+          <div class="field"><label for="d_outer_elbow_pain">Outer elbow pain</label><select id="d_outer_elbow_pain"></select></div>
+          <div class="field"><label for="d_forearm_tightness">Forearm tightness</label><select id="d_forearm_tightness"></select></div>
+        </div>
+
+        <!-- 2) Workload & Mechanics (7) -->
+        <h3>2) Throwing Workload &amp; Mechanics (7)</h3>
+        <div class="grid-3">
+          <div class="field"><label for="d_pitches_thrown_today">Pitches thrown today</label><select id="d_pitches_thrown_today"></select></div>
+          <div class="field"><label for="d_pitches_thrown_week">Pitches this week</label><select id="d_pitches_thrown_week"></select></div>
+          <div class="field"><label for="d_long_toss_distance">Long toss workload</label><select id="d_long_toss_distance"></select></div>
+          <div class="field"><label for="d_bullpen_intensity">Bullpen intensity</label><select id="d_bullpen_intensity"></select></div>
+          <div class="field"><label for="d_velocity_drop">Velocity drop</label><select id="d_velocity_drop"></select></div>
+          <div class="field"><label for="d_release_point_consistency">Release point consistency</label><select id="d_release_point_consistency"></select></div>
+          <div class="field"><label for="d_mechanics_rating">Overall mechanics rating</label><select id="d_mechanics_rating"></select></div>
+        </div>
+
+        <!-- 3) Recovery & Readiness (6) -->
+        <h3>3) Recovery &amp; Readiness (6)</h3>
+        <div class="grid-3">
+          <div class="field"><label for="d_sleep_quality">Sleep quality</label><select id="d_sleep_quality"></select></div>
+          <div class="field"><label for="d_hydration_level">Hydration level</label><select id="d_hydration_level"></select></div>
+          <div class="field"><label for="d_arm_freshness">Arm freshness</label><select id="d_arm_freshness"></select></div>
+          <div class="field"><label for="d_muscle_tightness">General muscle tightness</label><select id="d_muscle_tightness"></select></div>
+          <div class="field"><label for="d_recovery_activities_completed">Recovery activities done</label><select id="d_recovery_activities_completed"></select></div>
+          <div class="field"><label for="d_soreness_next_day">Next-day soreness (expected)</label><select id="d_soreness_next_day"></select></div>
+        </div>
+
+        <!-- 4) Focus & Stress (4) -->
+        <h3>4) Focus &amp; Stress Indicators (4)</h3>
+        <div class="grid-2">
+          <div class="field"><label for="d_focus_level">Focus level</label><select id="d_focus_level"></select></div>
+          <div class="field"><label for="d_stress_level">Stress level</label><select id="d_stress_level"></select></div>
+          <div class="field"><label for="d_motivation_level">Motivation level</label><select id="d_motivation_level"></select></div>
+          <div class="field"><label for="d_confidence_on_mound">Confidence on mound</label><select id="d_confidence_on_mound"></select></div>
+        </div>
+
+        <!-- 5) Lower-Body (10) -->
+        <h3>5) Lower-Body Health (10)</h3>
+        <div class="grid-3">
+          <div class="field"><label for="d_quad_soreness">Quad soreness</label><select id="d_quad_soreness"></select></div>
+          <div class="field"><label for="d_hamstring_tightness">Hamstring tightness</label><select id="d_hamstring_tightness"></select></div>
+          <div class="field"><label for="d_glute_strength">Glute strength (self-rating)</label><select id="d_glute_strength"></select></div>
+          <div class="field"><label for="d_hip_flexor_tightness">Hip flexor tightness</label><select id="d_hip_flexor_tightness"></select></div>
+          <div class="field"><label for="d_groin_strain_level">Groin strain level</label><select id="d_groin_strain_level"></select></div>
+          <div class="field"><label for="d_knee_stability">Knee stability</label><select id="d_knee_stability"></select></div>
+          <div class="field"><label for="d_calf_soreness">Calf soreness</label><select id="d_calf_soreness"></select></div>
+          <div class="field"><label for="d_ankle_stiffness">Ankle stiffness</label><select id="d_ankle_stiffness"></select></div>
+          <div class="field"><label for="d_balance_stability">Balance &amp; stability</label><select id="d_balance_stability"></select></div>
+          <div class="field"><label for="d_pushoff_foot_cramps">Push-off foot cramps</label><select id="d_pushoff_foot_cramps"></select></div>
+        </div>
+
+        <!-- Notes + Actions -->
+        <div class="field" style="margin-top:8px;">
+          <label for="d_notes">Clinician notes</label>
+          <textarea id="d_notes" placeholder="Observations, cues, plan…"></textarea>
+        </div>
+
+        <div class="actions">
+          <button id="d_saveBtn" class="btn btn-orange" type="button">Save</button>
+          <button id="d_submitBtn" class="btn btn-orange" type="button">Run Analysis</button>
+          <button id="pingBtn" class="btn btn-gray" type="button">Ping Backend</button>
+          <span id="backendStatus" class="badge" title="Backend health status">Backend: ok</span>
+        </div>
+      </section>
+
+      <!-- RIGHT: RESULT -->
+      <section class="card">
+        <h2>AI Result</h2>
+        <pre id="resultBox">{}</pre>
+      </section>
+    </div>
+  </div>
+
+  <div class="footer">© <span id="yr"></span> PredictWell Health.ai — Athletics</div>
+
+  <!-- ===== JS: header behavior + doctor intake logic ===== -->
+  <script>
+    // Year stamp
+    document.getElementById('yr').textContent = new Date().getFullYear();
+
+    // Header menu toggle (identical to Index)
+    const menuBtn = document.getElementById('menuBtn');
+    const menu = document.getElementById('menu');
+    document.addEventListener('click', (e) => {
+      if (menuBtn && menuBtn.contains(e.target)) {
+        menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+      } else if (menu && !menu.contains(e.target)) {
+        menu.style.display = 'none';
+      }
+    });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && menu) menu.style.display = 'none'; });
+
+    // Email picker (identical to Index)
+    (function () {
+      const emailLink = document.getElementById('emailLink');
+      const emailMenu = document.getElementById('emailMenu');
+      if (!emailLink || !emailMenu) return;
+
+      emailLink.addEventListener('click', function (e) {
+        e.preventDefault();
+        emailMenu.style.display = (emailMenu.style.display === 'block') ? 'none' : 'block';
+      });
+      document.addEventListener('click', function (e) {
+        if (!emailMenu.contains(e.target) && e.target !== emailLink) emailMenu.style.display = 'none';
+      });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') emailMenu.style.display = 'none';
+      });
+    })();
+
+    // ===== Doctor intake logic (33 fields) =====
+    const BASE_API = 'https://predictwell-backend-ai.onrender.com';
+    const POST_URL = BASE_API + '/risk';
+    const STORE_KEY = 'athletics_doctor_pitcher33';
+
+    const dFields = [
+      // 1) Arm & Shoulder (6)
+      'd_shoulder_soreness','d_bicep_tightness','d_tricep_soreness','d_inner_elbow_pain','d_outer_elbow_pain','d_forearm_tightness',
+      // 2) Workload & Mechanics (7)
+      'd_pitches_thrown_today','d_pitches_thrown_week','d_long_toss_distance','d_bullpen_intensity','d_velocity_drop','d_release_point_consistency','d_mechanics_rating',
+      // 3) Recovery & Readiness (6)
+      'd_sleep_quality','d_hydration_level','d_arm_freshness','d_muscle_tightness','d_recovery_activities_completed','d_soreness_next_day',
+      // 4) Focus & Stress (4)
+      'd_focus_level','d_stress_level','d_motivation_level','d_confidence_on_mound',
+      // 5) Lower-Body (10)
+      'd_quad_soreness','d_hamstring_tightness','d_glute_strength','d_hip_flexor_tightness','d_groin_strain_level','d_knee_stability','d_calf_soreness','d_ankle_stiffness','d_balance_stability','d_pushoff_foot_cramps'
+    ];
+
+    function fillScale(sel){
+      const opts = [
+        {v:1,t:'1 (Best/Low)'},{v:2,t:'2'},{v:3,t:'3'},{v:4,t:'4'},{v:5,t:'5 (Worst/High)'}
+      ];
+      opts.forEach(o => { const op = document.createElement('option'); op.value=o.v; op.textContent=o.t; sel.appendChild(op); });
+    }
+
+    // Build selects + restore
+    (function init(){
+      dFields.forEach(id => { const el = document.getElementById(id); if(el) fillScale(el); });
+      try{
+        const saved = localStorage.getItem(STORE_KEY);
+        if(saved){
+          const data = JSON.parse(saved);
+          for(const [k,v] of Object.entries(data)){
+            const el = document.getElementById(k);
+            if(el) el.value = String(v);
+          }
+        }
+      }catch{}
+      document.getElementById('d_saveBtn').addEventListener('click', saveLocally);
+      document.getElementById('d_submitBtn').addEventListener('click', submitForm);
+      document.getElementById('pingBtn').addEventListener('click', pingBackend);
+      pingBackend();
+    })();
+
+    function collectData(){
+      const out = {};
+      dFields.forEach(id => {
+        const el = document.getElementById(id);
+        out[id.replace(/^d_/, '')] = el ? Number(el.value || 1) : 1; // strip "d_"
+      });
+      out.athlete_name = (document.getElementById('athlete_name')?.value || '').trim() || null;
+      out.session_date = (document.getElementById('session_date')?.value || '').trim() || null;
+      out.notes = (document.getElementById('d_notes')?.value || '').trim() || null;
+      return out;
+    }
+
+    function saveLocally(){
+      const tmp = {};
+      dFields.forEach(id => { const el = document.getElementById(id); tmp[id] = el ? Number(el.value || 1) : 1; });
+      localStorage.setItem(STORE_KEY, JSON.stringify(tmp));
+      setBackendStatus('Saved locally.', true);
+    }
+
+    async function submitForm(){
+      setBackendStatus('Submitting…', false);
+      const payload = collectData();
+      try{
+        const res = await fetch(POST_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload) });
+        const text = await res.text();
+        try{ document.getElementById('resultBox').textContent = JSON.stringify(JSON.parse(text), null, 2); }
+        catch{ document.getElementById('resultBox').textContent = text; }
+        setBackendStatus(res.ok ? 'Analysis complete.' : 'Server returned an error.', res.ok);
+      }catch(err){
+        document.getElementById('resultBox').textContent = String(err);
+        setBackendStatus('Network error.', false, true);
+      }
+    }
+
+    const backendStatus = document.getElementById('backendStatus');
+    function setBackendStatus(msg, ok=false, err=false){
+      if(!backendStatus) return;
+      backendStatus.textContent = msg;
+      if(err){ backendStatus.style.background = '#fee2e2'; backendStatus.style.color = '#991b1b'; return; }
+      backendStatus.style.background = ok ? '#e5f8ec' : '#fef9c3';
+      backendStatus.style.color = ok ? '#065f46' : '#92400e';
+    }
+
+    async function pingBackend(){
+      try{
+        const r = await fetch(`${BASE_API}/healthz`);
+        const j = await r.json();
+        document.getElementById('resultBox').textContent = JSON.stringify(j, null, 2);
+        setBackendStatus('Backend: ok', true);
+      }catch{
+        document.getElementById('resultBox').textContent = JSON.stringify({ error:'Backend unreachable' }, null, 2);
+        setBackendStatus('Backend: down', false, true);
+      }
+    }
+  </script>
+</body>
+</html>
