@@ -1,78 +1,37 @@
-# backend/ai_module.py — Risk math utilities (pure functions)
+from pydantic import BaseModel
+from math import exp
+from datetime import datetime
 
-from __future__ import annotations
-from typing import List, Tuple
-import numpy as np
+class RiskInput(BaseModel):
+    workload: float          # e.g., training load / activity intensity
+    sleep_hours: float       # nightly sleep
+    stress_level: float      # 1-10 subjective
+    wellness_score: float    # 0-100 general wellbeing
 
-# Model weights and risk bands
-WEIGHTS = {
-    "recent_fall":        0.25,
-    "dizziness":          0.12,
-    "orthostatic_drop":   0.12,
-    "steps_delta":        0.16,  # down vs personal baseline
-    "sleep_frag":         0.10,
-    "gait_flag":          0.10,
-    "med_change":         0.10,
-    "hydration_low":      0.05,
-}
+class RiskOutput(BaseModel):
+    risk_score: float
+    category: str
+    timestamp: datetime
 
-BANDS: List[Tuple[float, float, str]] = [
-    (0.00, 0.29, "Low"),
-    (0.30, 0.59, "Moderate"),
-    (0.60, 1.00, "High"),
-]
+def compute_risk(data: RiskInput) -> RiskOutput:
+    """Lightweight logistic-style risk computation (placeholder for AI model)."""
+    # Normalize and weight factors
+    x = (
+        0.4 * (data.workload / 10)
+        + 0.3 * (data.stress_level / 10)
+        - 0.2 * (data.sleep_hours / 8)
+        - 0.1 * (data.wellness_score / 100)
+    )
 
-def band_for(score: float) -> str:
-    for lo, hi, name in BANDS:
-        if lo <= score <= hi:
-            return name
-    return "Unknown"
+    risk = 1 / (1 + exp(-8 * (x - 0.5)))  # logistic curve
+    category = (
+        "Low" if risk < 0.33 else
+        "Moderate" if risk < 0.66 else
+        "High"
+    )
 
-def ema(series: List[float], alpha: float = 0.4):
-    """Exponential moving average (None if empty)."""
-    if not series:
-        return None
-    v = series[0]
-    for x in series[1:]:
-        v = alpha * x + (1 - alpha) * v
-    return v
-
-def ols_forecast(y: List[float], steps_ahead: int = 4):
-    """
-    Linear trend forecast with simple ~90% bands from residual RMSE.
-    All values are clipped to [0,1] since score is normalized.
-    """
-    n = len(y)
-    if n < 3:
-        pred = [y[-1]] * steps_ahead
-        low  = [max(0, y[-1] - 0.10)] * steps_ahead
-        high = [min(1, y[-1] + 0.10)] * steps_ahead
-        return pred, low, high
-
-    x = np.arange(n)
-    A = np.vstack([x, np.ones(n)]).T
-    m, b = np.linalg.lstsq(A, y, rcond=None)[0]
-    residuals = y - (m * x + b)
-    rmse = float(np.sqrt(np.mean(residuals ** 2))) if n > 2 else 0.10
-
-    preds, lows, highs = [], [], []
-    for k in range(1, steps_ahead + 1):
-        t = (n - 1) + k
-        p = float(m * t + b)
-        p = max(0.0, min(1.0, p))
-        preds.append(p)
-        lows.append(max(0.0, min(1.0, p - 1.64 * rmse)))
-        highs.append(max(0.0, min(1.0, p + 1.64 * rmse)))
-    return preds, lows, highs
-
-def cusum(values: List[float], k: float = 0.03, h: float = 0.12) -> bool:
-    """Detect small persistent upward drift; returns True if drift detected."""
-    if len(values) < 4:
-        return False
-    s_pos = 0.0
-    for i in range(1, len(values)):
-        diff = values[i] - values[i - 1]
-        s_pos = max(0.0, s_pos + (diff - k))
-        if s_pos > h:
-            return True
-    return False
+    return RiskOutput(
+        risk_score=round(risk, 3),
+        category=category,
+        timestamp=datetime.utcnow()
+    )
