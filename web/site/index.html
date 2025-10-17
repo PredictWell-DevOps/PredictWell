@@ -205,11 +205,11 @@
   <!-- ===== Portals ===== -->
   <section class="section" id="choose" aria-label="Choose your portal">
     <div class="portals">
-      <!-- Eldercare - Video RIGHT -->
-      <article class="portal" id="eldercare">
-        <h2>Eldercare</h2>
-        <div class="portal-content">
-          <!-- Info LEFT -->
+      <!-- Eldercare Row: Text Card LEFT, Video Card RIGHT -->
+      <div class="portal-content" style="max-width:var(--max); margin:0 auto">
+        <!-- Left: Text Card -->
+        <article class="portal" id="eldercare">
+          <h2>Eldercare</h2>
           <div class="portal-info">
             <div class="sec">
               <h3>Doctors</h3>
@@ -226,24 +226,30 @@
               </div>
             </div>
           </div>
-          <!-- Video RIGHT -->
-          <div class="video-placeholder">
+        </article>
+
+        <!-- Right: Video Only Card -->
+        <article class="portal" style="display:flex; align-items:center; justify-content:center; padding:0; background:transparent; box-shadow:none">
+          <div class="video-placeholder" style="width:100%; height:100%">
             <!-- Replace with: <video autoplay muted loop playsinline><source src="/static/videos/elderly-care.mp4" type="video/mp4"></video> -->
             Video: Eldercare Scene
           </div>
-        </div>
-      </article>
+        </article>
+      </div>
 
-      <!-- Athletics - Video LEFT -->
-      <article class="portal" id="athletics">
-        <h2>Athletics</h2>
-        <div class="portal-content">
-          <!-- Video LEFT -->
-          <div class="video-placeholder">
+      <!-- Athletics Row: Video Card LEFT, Text Card RIGHT -->
+      <div class="portal-content" style="max-width:var(--max); margin:0 auto">
+        <!-- Left: Video Only Card -->
+        <article class="portal" style="display:flex; align-items:center; justify-content:center; padding:0; background:transparent; box-shadow:none">
+          <div class="video-placeholder" style="width:100%; height:100%">
             <!-- Replace with: <video autoplay muted loop playsinline><source src="/static/videos/athletics-training.mp4" type="video/mp4"></video> -->
             Video: Athletics Scene
           </div>
-          <!-- Info RIGHT -->
+        </article>
+
+        <!-- Right: Text Card -->
+        <article class="portal" id="athletics">
+          <h2>Athletics</h2>
           <div class="portal-info">
             <div class="sec">
               <h3>Coaches</h3>
@@ -260,8 +266,8 @@
               </div>
             </div>
           </div>
-        </div>
-      </article>
+        </article>
+      </div>
     </div>
   </section>
 
