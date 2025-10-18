@@ -227,6 +227,188 @@ def generate_feedback(scores: dict, data: PitcherIntake) -> str:
     
     lines.extend(recovery_advice)
     
+# Add this section to your generate_feedback() function
+# Insert after the RECOVERY PROTOCOL section and before ARM HEALTH EDUCATION
+
+    # ===== MUSCLE SORENESS EDUCATION (Personalized Based on Intake) =====
+    muscle_education = []
+    
+    # ROTATOR CUFF SORENESS
+    if data.shoulder_soreness >= 3:
+        muscle_education.append(
+            "💪 SHOULDER SORENESS - What's Happening & How to Recover\n\n"
+            "Your Rotator Cuff Muscles (Most Likely Sore):\n"
+            "• Infraspinatus & Teres Minor: These external rotators work ECCENTRICALLY during deceleration, "
+            "experiencing extreme stress as they rapidly slow your arm down after ball release\n"
+            "• Supraspinatus: Initiates arm elevation and gets compressed under your shoulder blade during cocking\n"
+            "• Subscapularis: Works hard during internal rotation in the acceleration phase\n\n"
+            
+            "Why They're Sore:\n"
+            "Your rotator cuff experiences supraphysiologic loads (forces beyond normal capacity) during throwing. "
+            "The deceleration phase is particularly brutal - these small muscles must absorb massive forces to stop your arm. "
+            "When you increase throwing volume too quickly or throw fatigued, you get microtrauma and inflammation at the tendon attachment points.\n\n"
+            
+            "RECOVERY PROTOCOL:\n"
+            "✓ DO NOT ICE - Ice restricts blood flow and delays healing. Your inflammation is actually helping you rebuild stronger.\n"
+            "✓ USE HEAT: 20-30 minutes before throwing to increase blood flow\n"
+            "✓ Cross-Body Stretch: Proven most effective for restoring internal rotation. Hold 30 seconds x 3 reps\n"
+            "✓ Sleeper Stretch: Lie on your side with arm at 90°, gently press forearm down. More scapular stabilization than traditional sleeper stretch\n"
+            "✓ Side-Lying External Rotation: With towel between ribs and arm (increases effectiveness 20-25% per EMG studies)\n"
+            "✓ Light Dynamic Movement: Immediately after throwing - arm circles, band work to promote blood flow\n"
+            "✓ Recovery Time: Minor soreness 2-3 days, significant inflammation 4-6 weeks with proper rest"
+        )
+    
+    # SCAPULAR STABILIZERS
+    if data.shoulder_soreness >= 3 or data.shoulder_clicking >= 3:
+        muscle_education.append(
+            "💪 SCAPULAR (Shoulder Blade) MUSCLES - The Hidden Problem\n\n"
+            "Your Scapular Stabilizers (Often Weak in Pitchers):\n"
+            "• Serratus Anterior: Pulls shoulder blade around your ribcage\n"
+            "• Lower & Middle Trapezius: Control upward rotation when you raise your arm\n"
+            "• Rhomboids: Keep shoulder blade positioned properly\n\n"
+            
+            "Why They Matter:\n"
+            "Research shows pitchers have LESS scapular upward rotation than position players. This compromises your "
+            "shoulder joint and increases injury risk. These muscles position your shoulder blade so your arm can move safely. "
+            "When they're weak, you get clicking, instability, and compensatory rotator cuff stress.\n\n"
+            
+            "RECOVERY & STRENGTHENING:\n"
+            "✓ Prone Y's, T's, W's: Lie face down, move arms through these letters. Targets lower/middle traps. 3 sets x 15 reps\n"
+            "✓ Scapular Wall Slides: Forearms against wall, slide up while keeping shoulder blades down and together\n"
+            "✓ Serratus Push-Ups: At top of push-up, push shoulder blades apart (protraction) to activate serratus\n"
+            "✓ Band Pull-Aparts: Focus on squeezing shoulder blades together\n"
+            "✓ Foam Roll Thoracic Spine: Rounded upper back prevents good scapular movement"
+        )
+    
+    # FOREARM/ELBOW SORENESS
+    if data.forearm_tightness >= 3 or data.inner_elbow_pain >= 2:
+        muscle_education.append(
+            "💪 FOREARM FLEXOR-PRONATOR SORENESS - Tommy John Prevention Zone\n\n"
+            "Your Forearm Muscles (Working Overtime):\n"
+            "• Flexor Carpi Radialis & Ulnaris: Flex your wrist\n"
+            "• Pronator Teres: Turns your palm down\n"
+            "These attach on the inner elbow where you're feeling tightness/pain\n\n"
+            
+            "Why They're Sore:\n"
+            "These muscles provide DYNAMIC SUPPORT to protect your UCL (ulnar collateral ligament - the Tommy John ligament). "
+            "They experience extreme eccentric contractions as your wrist rapidly decelerates during ball release. "
+            "When they're fatigued or strained, your UCL takes MORE stress, increasing Tommy John risk.\n\n"
+            
+            "CRITICAL RECOVERY:\n"
+            "⚠️ Even MILD forearm strains need 7-10 days complete rest from throwing\n"
+            "✓ Gradual Return-to-Throw: Another 7-10 days progressive throwing before full intensity\n"
+            "✓ Total Recovery Time: 2-6+ weeks depending on severity\n"
+            "✓ Wrist Flexion Stretches: Extend arm, pull fingers back gently with other hand\n"
+            "✓ Heat Therapy: Increases blood flow to tendons (NOT ice)\n"
+            "✓ Massage/Foam Rolling: Forearm muscles from elbow to wrist\n"
+            "✓ DO NOT pitch through this pain - that's how UCL tears happen"
+        )
+    
+    # LOWER BODY SORENESS
+    if data.quad_soreness >= 3 or data.glute_activation >= 3 or data.hip_flexor_tightness >= 3:
+        lower_body_muscles = []
+        
+        if data.quad_soreness >= 3:
+            lower_body_muscles.append(
+                "QUADRICEPS (Front of Thigh) - Your Deceleration Absorbers:\n"
+                "Your lead leg quads experience MASSIVE eccentric loading as they decelerate your entire body at foot strike. "
+                "This is like doing a single-leg squat while catching a falling weight - intense muscle damage causes DOMS.\n\n"
+                "Recovery:\n"
+                "✓ Light Static Stretching: Hold 30+ seconds when muscles are warm\n"
+                "✓ Foam Rolling: Slow rolls on quads, IT band\n"
+                "✓ Active Recovery: Light cycling or walking day after pitching\n"
+                "✓ Dynamic Stretching: Leg swings, walking lunges before throwing\n"
+                "✓ Recovery Time: 24-48 hours for normal DOMS"
+            )
+        
+        if data.glute_activation >= 3:
+            lower_body_muscles.append(
+                "GLUTES (Butt Muscles) - Your Power Generators:\n"
+                "Gluteus maximus and medius are what POWER your throw and directly increase velocity through the kinetic chain. "
+                "They generate ground force that transfers up through your body to your arm.\n\n"
+                "Recovery & Activation:\n"
+                "✓ Glute Bridges: Before throwing to 'wake up' glutes\n"
+                "✓ Hip Flow Circuits: Restore mobility lost from repetitive pitching motion\n"
+                "✓ Pigeon Pose: Yoga stretch for glutes and hip rotators\n"
+                "✓ Foam Rolling: Glutes and piriformis\n"
+                "✓ High-Intensity Lower Body Training: DAY AFTER pitching (promotes blood flow)"
+            )
+        
+        if data.hip_flexor_tightness >= 3:
+            lower_body_muscles.append(
+                "HIP FLEXORS (Front of Hip) - Your Leg Lifters:\n"
+                "Iliopsoas and rectus femoris lift your stride leg during wind-up. Repetitive motion causes tightness and DOMS.\n\n"
+                "Recovery:\n"
+                "✓ Kneeling Hip Flexor Stretch: Back knee on ground, push hips forward\n"
+                "✓ Standing Quad Stretch: Also stretches rectus femoris (crosses both hip and knee)\n"
+                "✓ Avoid Prolonged Sitting: Shortens hip flexors further\n"
+                "✓ Dynamic Warm-Up: Leg swings, walking lunges before pitching"
+            )
+        
+        if lower_body_muscles:
+            muscle_education.append(
+                "💪 LOWER BODY SORENESS - The Foundation of Pitching Power\n\n"
+                "Why Lower Body Soreness Matters:\n"
+                "Your legs and hips POWER the throw. Weak or sore lower body forces you to compensate by 'arming' pitches, "
+                "which dramatically increases shoulder/elbow injury risk. Research shows lower body strength directly correlates with velocity.\n\n"
+                + "\n\n".join(lower_body_muscles)
+            )
+    
+    # TRICEPS/BICEPS SORENESS
+    if data.triceps_fatigue >= 3 or data.biceps_pain >= 3:
+        muscle_education.append(
+            "💪 ARM MUSCLE SORENESS (Triceps/Biceps)\n\n"
+            "TRICEPS - Your Elbow Extender:\n"
+            "Works eccentrically to control elbow flexion during late cocking, then concentrically to extend elbow during acceleration. "
+            "Fatigue here can indicate you're overthrowing or have poor mechanics.\n\n"
+            
+            "BICEPS - Warning Sign for Labrum Issues:\n"
+            "The long head of your biceps attaches to the top of your shoulder socket at the labrum (SLAP tear location). "
+            "Biceps pain, especially deep in the shoulder, can indicate labral stress.\n\n"
+            
+            "Recovery:\n"
+            "✓ Light Eccentric Training: Slowly lower weights to strengthen muscle lengthening\n"
+            "✓ Heat Before Throwing: Prepare muscles for work\n"
+            "✓ Avoid Heavy Bicep Curls: During season - can fatigue biceps and affect throwing\n"
+            "✓ If Biceps Pain Persists: Get evaluated for labrum issues"
+        )
+    
+    # ===== UNIVERSAL RECOVERY SCIENCE =====
+    muscle_education.append(
+        "🔬 THE SCIENCE OF MUSCLE RECOVERY (Evidence-Based)\n\n"
+        "Why Soreness Happens (DOMS - Delayed Onset Muscle Soreness):\n"
+        "• Eccentric contractions (muscle lengthening under load) cause micro-tears in muscle fibers\n"
+        "• Inflammation increases growth factors that trigger satellite cells\n"
+        "• This process makes you STRONGER - it's not something to fight with ice or NSAIDs\n\n"
+        
+        "The 4 Keys to Recovery:\n"
+        "1. BLOOD FLOW: Brings nutrients in, removes waste out (why active recovery beats ice)\n"
+        "2. PROTEIN SYNTHESIS: Need 20-30g protein post-pitching for muscle repair\n"
+        "3. MYOKINES: Hormones released during muscle activation that drive tissue regeneration\n"
+        "4. TISSUE REMODELING: Requires mechanical stress (light movement, not bed rest)\n\n"
+        
+        "ONLY active recovery accomplishes all 4 goals. Ice shuts down blood flow and delays healing.\n\n"
+        
+        "Recovery Timeline:\n"
+        "• 24 Hours: Medial elbow tissue recovers to baseline - can resume light throwing\n"
+        "• 48 Hours: Most DOMS peaks then begins improving\n"
+        "• 3-4 Days: Needed between high-intensity outings for full recovery\n"
+        "• 4-6 Weeks: Significant tendon inflammation requires this much rest\n\n"
+        
+        "Critical Recovery Pillars:\n"
+        "💧 HYDRATION: Divide bodyweight in half = ounces needed daily (180 lbs = 90 oz water)\n"
+        "🍗 NUTRITION: Protein + carbs within 2 hours post-pitching\n"
+        "😴 SLEEP: 7-9 hours - when muscles actually repair and rebuild\n"
+        "🔄 ACTIVE RECOVERY: Light movement next day (NOT rest)\n"
+        "🚫 AVOID: Ice (delays healing), NSAIDs/Ibuprofen (blocks beneficial inflammation), Long-distance running (zaps power)"
+    )
+    
+    # Only include muscle education if there's actual soreness
+    if muscle_education:
+        lines.append("=" * 60)
+        lines.append("MUSCLE SORENESS EDUCATION - What's Sore & How to Recover")
+        lines.append("=" * 60)
+        lines.extend(muscle_education)
     # ===== ARM HEALTH EDUCATION =====
     arm_health = []
     

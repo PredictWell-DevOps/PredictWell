@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -20,6 +21,21 @@
       --radius:18px;
       --max:1080px;
     }
+
+img, a img { outline: none !important; border: none !important; }
+a:focus img, img:focus { outline: none !important; border: none !important; }
+
+/* Remove borders from sections and video containers */
+.section, .wrap, .portal, .card,
+iframe, video, embed, object {
+    border: none !important;
+    outline: none !important;
+}
+
+/* Remove video placeholder borders */
+.video-placeholder {
+    border: none !important;
+}
 
     html,body{height:100%}
     html{scroll-behavior:smooth}
@@ -411,3 +427,4 @@
 <!-- deploy v: merge3 -->
 </body>
 </html>
+"<!-- cache bust -->" 

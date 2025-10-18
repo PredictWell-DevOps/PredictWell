@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PredictWell — Patient Portal Login</title>
+  <link rel="icon" href="data:," />
+  <script src="/auth.js"></script>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      background: linear-gradient(to bottom right, #0a3d35, #0f6f62);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .card {
+      background: rgba(255,255,255,0.15);
+      border-radius: 16px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+      padding: 40px;
+      width: 320px;
+      text-align: center;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      border-radius: 6px;
+      border: none;
+      margin-bottom: 15px;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 6px;
+      background: #f4b000;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    button:hover { background: #d99a00; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>Patient Portal Login</h2>
+    <input type="email" id="email" placeholder="Enter your email" required />
+    <button id="loginBtn">Login</button>
+  </div>
+
+  <script>
+    const emailField = document.getElementById('email');
+    const btn = document.getElementById('loginBtn');
+
+    // If already logged in → redirect to patient portal
+    if (PW_AUTH.isAuthed()) {
+      window.location.href = "/portal/patient/athletics.html";
+    }
+
+    btn.addEventListener('click', () => {
+      const email = emailField.value.trim();
+      if(!email) return alert("Enter a valid email.");
+      PW_AUTH.login({ email });
+      window.location.href = "/portal/patient/athletics.html";
+    });
+  </script>
+</body>
+</html>
