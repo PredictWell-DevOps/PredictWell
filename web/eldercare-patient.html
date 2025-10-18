@@ -1,34 +1,23 @@
-<!-- ====== eldercare-patient.html (Patient Portal — 12-input + client-side score + AI result tiles) ====== -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>PredictWell Health.ai — Eldercare Patient Portal</title>
-  <meta name="description" content="Simple 12-question checkup for seniors and caregivers. Instant score + AI insights." />
-  <link rel="icon" href="data:,">
+  <title>PredictWell — Athletics Patient Portal</title>
+  <meta name="description" content="Athletics Patient Portal — Pitcher Intake with backend AI risk scoring." />
+  <link rel="icon" href="data:," />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+
   <style>
-    :root{
-      --glass-bg: rgba(255,255,255,0.78);
-      --radius: 18px;
-      --shadow: 0 10px 30px rgba(0,0,0,0.18);
-      --blu:#2563eb; --ink:#0b1020; --muted:#374151; --line: rgba(17,24,39,0.08);
-      --ok:#10b981; --warn:#f59e0b; --risk:#ef4444;
+    html { scroll-behavior: smooth; }
+    :root{ --pw-navy: #1e3a8a; }
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      color:#111827;
+      background-image:url("/static/images/predictwell_background.png");
+      background-size:cover; background-position:center; background-repeat:no-repeat; background-attachment:fixed;
     }
-
-    /* Match index background (no dark overlay) */
-    html, body { height:100%; margin:0; font-family: system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial; color:#0b1020; }
-    body {
-      min-height:100vh;
-      background-image: url("/static/images/predictwell_background.png");
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      background-attachment: fixed;
-      display:flex; flex-direction:column;
-    }
-
-    /* === PW HEADER (identical to index) === */
     .header{position:sticky;top:0;z-index:50;backdrop-filter:saturate(1.2) blur(6px);
       background:linear-gradient(90deg,rgba(255,255,255,.62),rgba(255,255,255,.42));
       border-bottom:1px solid rgba(0,0,0,.18)}
@@ -40,397 +29,307 @@
     .brand-title .thin{font-weight:600}
     .brand-tagline{font-size:12px;color:#374151;opacity:.95}
     .spacer{flex:1}
-    /* (Optional, not used here, but included for parity) */
     .hamburger{border:none;background:#fff;border-radius:999px;width:36px;height:36px;display:grid;place-items:center;box-shadow:0 10px 30px rgba(0,0,0,.18);cursor:pointer}
     .hamburger:after{content:"≡";font-size:20px;color:#111827;position:relative;top:-1px}
     .menu{position:absolute;right:18px;top:58px;background:rgba(255,255,255,.78);backdrop-filter:blur(10px);border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.18);padding:8px;display:none}
     .menu a{display:block;padding:10px 12px;border-radius:10px;text-decoration:none;color:#111827;min-width:220px}
     .menu a:hover{background:rgba(17,24,39,.06)}
-
-    /* Page content */
-    .main { flex:1; display:flex; align-items:flex-start; justify-content:center; padding: 28px 16px 60px; }
-    .card {
-      width:100%; max-width:980px; background:var(--glass-bg); backdrop-filter: blur(6px);
-      box-shadow: var(--shadow); border-radius: var(--radius); border:1px solid var(--line);
-      padding:18px;
-    }
-    h1 { margin: 8px 0 2px; font-size: 22px; }
-    p.sub { margin-top:0; color:var(--muted); font-size: 14px; }
-    form { display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:12px; margin-top: 10px; }
-    label { font-size:13px; color:#111827; }
-    input[type="number"], select {
-      width:100%; height:42px; border-radius:12px; border:1px solid var(--line); padding:0 12px; background:#fff;
-    }
-    .row-span-2 { grid-column: 1 / -1; }
-    .btn {
-      display:inline-flex; align-items:center; justify-content:center; gap:8px;
-      height:46px; border-radius:14px; padding:0 16px; cursor:pointer; border:0;
-      background: linear-gradient(90deg, #1d4ed8, #60a5fa); color:white; font-weight:700;
-      box-shadow: 0 8px 24px rgba(37,99,235,.25);
-    }
-    .btn:active { transform: translateY(1px); }
-    .grid-tiles { display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:12px; margin-top:14px; }
-    .tile { background:#fff; border:1px solid var(--line); border-radius:14px; padding:14px; }
-    .tile h3 { margin:0 0 6px; font-size:16px; }
-    .metric { font-size:28px; font-weight:800; margin: 4px 0 2px; }
-    .ok { color: var(--ok); } .warn{ color: var(--warn);} .risk{ color: var(--risk); }
-    .badge { display:inline-block; padding:4px 10px; border-radius:999px; font-size:12px; font-weight:700; background:#111827; color:#fff; }
-    .results {
-      background:#fff; border:1px dashed var(--line); border-radius:14px; padding:14px; margin-top:12px; white-space:pre-wrap; font-family: ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace; font-size:13px;
-    }
-    footer { text-align:center; color:#9ca3af; font-size:12px; padding:20px 0 34px; }
-    @media (max-width:520px){
-      h1 { font-size:20px; }
-      .metric { font-size:24px; }
-    }
+    .pw-mobile-section { margin: 26px auto 40px; padding: 0 18px; }
+    .pw-mobile-wrap { max-width: 1080px; margin: 0 auto; background: rgba(255,255,255,0.78); border-radius: 18px; box-shadow: 0 10px 30px rgba(0,0,0,0.18); padding: 26px 28px; backdrop-filter: blur(6px) saturate(1.1); }
+    .pw-mobile-header { text-align:center; margin: 0 0 8px 0; font-size: clamp(24px, 2.2vw, 34px); letter-spacing: .2px; color: var(--pw-navy); font-family:'Poppins',system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; }
+    .pw-mobile-sub { text-align:center; margin: 8px auto 18px; max-width: 880px; color: #374151; line-height: 1.55; font-size: 15px; }
+    .pw-form { display: grid; gap: 14px; }
+    .pw-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .pw-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+    @media (max-width: 960px){ .pw-row-3 { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 780px){ .pw-row-2, .pw-row-3 { grid-template-columns: 1fr; } }
+    .pw-field { display: grid; gap: 6px; }
+    .pw-label { font-size: 12px; color: #374151; }
+    .pw-select, .pw-input { width: 100%; border: 1px solid rgba(17,24,39,0.08); border-radius: 12px; background: #fff; padding: 10px 12px; font-size: 14px; outline:none; }
+    .pw-help { font-size: 12.5px; color:#6b7280; }
+    .pw-btn { background: linear-gradient(135deg,#f97316,#fb923c); color:#fff; border:0; border-radius:999px; padding:10px 18px; font-weight:800; cursor:pointer; box-shadow:0 10px 24px rgba(249,115,22,0.22); }
+    .status { font-size: 14px; margin-top: 8px; }
+    .ok { color: #16a34a; }
+    .err { color: #dc2626; }
+    .pw-footer { margin: 20px auto 40px; padding: 0 18px; }
+    .pw-footer-wrap { max-width: 1080px; margin: 0 auto; background: rgba(255,255,255,0.78); border-radius: 18px; box-shadow: 0 10px 30px rgba(0,0,0,0.18); padding: 18px 22px; text-align:center; color:#374151; }
   </style>
-<script src="auth.js"></script>
 </head>
 <body>
-  <!-- Header (identical to index) -->
   <header class="header">
     <div class="header-inner">
-      <a class="brand" href="/">
-        <div class="brand-logo"></div>
+      <a class="brand" href="/index.html" aria-label="Back to PredictWell Health.ai home">
+        <div class="brand-logo" aria-hidden="true"></div>
         <div>
           <div class="brand-title"><b>PredictWell</b><span class="thin">Health.ai</span></div>
           <div class="brand-tagline">AI health intelligence for longer, stronger living.</div>
         </div>
       </a>
       <div class="spacer"></div>
-      <!-- Keep the health badge on the right for utility; it won’t affect the visual match -->
-      <span class="badge" id="healthz">checking…</span>
+      <button class="hamburger" id="menuBtn" aria-label="Open menu"></button>
+      <nav class="menu" id="menu">
+        <a href="/eldercare.html">Eldercare — Doctors</a>
+        <a href="/eldercare-patient.html">Eldercare — Patients</a>
+        <a href="/athletics.html">Athletics — Doctors</a>
+        <a href="/athletics-patient.html"><strong>Athletics — Patients</strong></a>
+      </nav>
     </div>
   </header>
 
-  <main class="main">
-    <section class="card">
-      <h1>Patient Checkup — 12 Quick Questions</h1>
-      <p class="sub">Answer these to get your PredictWell Score and AI risk outlook. Your doctor can review these results.</p>
+  <section class="pw-mobile-section" id="hero">
+    <div class="pw-mobile-wrap">
+      <h1 class="pw-mobile-header">Athletics Patient Portal — Pitcher Intake</h1>
+      <p class="pw-mobile-sub">
+        Complete your daily check-in. Scale for all items: <b>1</b> = best/lowest concern, <b>5</b> = worst/highest concern.
+        Your submission is sent to the PredictWell backend for AI scoring.
+      </p>
+    </div>
+  </section>
 
-      <!-- 12-input form (IDs preserved for compatibility) -->
-      <form id="pwForm">
-        <div>
-          <label>Age</label>
-          <input id="age" type="number" min="0" max="120" required />
-        </div>
-        <div>
-          <label>Living Situation</label>
-          <select id="living">
-            <option value="alone">Alone</option>
-            <option value="with_family">With family</option>
-            <option value="assisted">Assisted living</option>
-          </select>
-        </div>
-        <div>
-          <label>Falls in last 12 months?</label>
-          <select id="falls_12m">
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5+">5+</option>
-          </select>
-        </div>
-        <div>
-          <label>Feel unsteady when walking?</label>
-          <select id="unsteady">
-            <option value="1">1 (Least unsteady)</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5 (Most unsteady)</option>
-          </select>
-        </div>
-        <div>
-          <label>Fear of falling?</label>
-          <select id="fear_fall">
-            <option value="1">1 (Low Fear)</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5 (High Fear)</option>
-          </select>
-        </div>
-        <div>
-          <label>Chair rise difficulty?</label>
-          <select id="chair_rise">
-            <option value="1">1 (Least difficult)</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5 (Most difficult)</option>
-          </select>
-        </div>
-        <div>
-          <label>Dizziness?</label>
-          <select id="dizzy">
-            <option value="1">1 (Least dizzy)</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5 (Most dizzy)</option>
-          </select>
-        </div>
-        <div>
-          <label>Medication count</label>
-          <select id="med_count">
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5+">5+</option>
-          </select>
-        </div>
-        <div>
-          <label>Memory concerns?</label>
-          <select id="memory">
-            <option value="1">1 (Low concern)</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5 (High concern)</option>
-          </select>
-        </div>
-        <div>
-          <label>Mood concerns?</label>
-          <select id="mood">
-            <option value="1">1 (Good mood)</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5 (Bad mood)</option>
-          </select>
-        </div>
-        <div>
-          <label>Weekly activity level</label>
-          <select id="activity">
-            <option value="1">1 (High activity)</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5 (Low activity)</option>
-          </select>
-        </div>
-        <div>
-          <label>Home hazards present?</label>
-          <select id="home_haz"><option>No</option><option>Yes</option></select>
+  <section class="pw-mobile-section" id="form">
+    <div class="pw-mobile-wrap">
+      <form id="pitchingForm" class="pw-form" autocomplete="on" novalidate>
+        
+        <h3>1) Arm &amp; Shoulder Condition (6)</h3>
+        <div class="pw-row-3">
+          <div class="pw-field"><label class="pw-label" for="shoulder_soreness">Shoulder soreness</label><select class="pw-select" id="shoulder_soreness"></select></div>
+          <div class="pw-field"><label class="pw-label" for="inner_elbow_pain">Inner Elbow Pain</label><select class="pw-select" id="inner_elbow_pain"></select></div>
+          <div class="pw-field"><label class="pw-label" for="forearm_tightness">Forearm tightness</label><select class="pw-select" id="forearm_tightness"></select></div>
+          <div class="pw-field"><label class="pw-label" for="triceps_fatigue">Triceps fatigue</label><select class="pw-select" id="triceps_fatigue"></select></div>
+          <div class="pw-field"><label class="pw-label" for="biceps_pain">Biceps pain</label><select class="pw-select" id="biceps_pain"></select></div>
+          <div class="pw-field"><label class="pw-label" for="shoulder_clicking">Shoulder clicking</label><select class="pw-select" id="shoulder_clicking"></select></div>
         </div>
 
-        <div class="row-span-2" style="display:flex; gap:10px; margin-top:4px;">
-          <button type="button" class="btn" id="getResultsBtn">Get Results</button>
-          <button type="button" class="btn" style="background:linear-gradient(90deg,#6b7280,#9ca3af)" id="clearBtn" title="Clear and reset">Clear</button>
+        <h3>2) Throwing Workload &amp; Mechanics (7)</h3>
+        <div class="pw-row-3">
+          <div class="pw-field"><label class="pw-label" for="pitches_today">Pitches today</label><input type="number" class="pw-input" id="pitches_today" min="0" max="200" value="0"></div>
+          <div class="pw-field"><label class="pw-label" for="pitches_7d">Pitches last 7 days</label><input type="number" class="pw-input" id="pitches_7d" min="0" max="500" value="0"></div>
+          <div class="pw-field"><label class="pw-label" for="velocity_drop">Velocity drop</label><select class="pw-select" id="velocity_drop"></select></div>
+          <div class="pw-field"><label class="pw-label" for="arm_slot_change">Arm slot change</label><select class="pw-select" id="arm_slot_change"></select></div>
+          <div class="pw-field"><label class="pw-label" for="command_loss">Command loss</label><select class="pw-select" id="command_loss"></select></div>
+          <div class="pw-field"><label class="pw-label" for="effort_level">Effort level</label><select class="pw-select" id="effort_level"></select></div>
+          <div class="pw-field"><label class="pw-label" for="follow_through_pain">Follow through pain</label><select class="pw-select" id="follow_through_pain"></select></div>
+        </div>
+
+        <h3>3) Recovery &amp; Readiness (6)</h3>
+        <div class="pw-row-3">
+          <div class="pw-field"><label class="pw-label" for="sleep_hours">Sleep hours</label><input type="number" class="pw-input" id="sleep_hours" min="0" max="12" step="0.5" value="7"></div>
+          <div class="pw-field"><label class="pw-label" for="recovery_quality">Recovery quality</label><select class="pw-select" id="recovery_quality"></select></div>
+          <div class="pw-field"><label class="pw-label" for="hydration_level">Hydration level</label><select class="pw-select" id="hydration_level"></select></div>
+          <div class="pw-field"><label class="pw-label" for="nutrition_quality">Nutrition quality</label><select class="pw-select" id="nutrition_quality"></select></div>
+          <div class="pw-field"><label class="pw-label" for="soreness_recovery">Soreness recovery</label><select class="pw-select" id="soreness_recovery"></select></div>
+          <div class="pw-field"><label class="pw-label" for="rest_days">Rest days</label><input type="number" class="pw-input" id="rest_days" min="0" max="7" value="1"></div>
+        </div>
+
+        <h3>4) Focus &amp; Stress Indicators (4)</h3>
+        <div class="pw-row-2">
+          <div class="pw-field"><label class="pw-label" for="stress_level">Stress level</label><select class="pw-select" id="stress_level"></select></div>
+          <div class="pw-field"><label class="pw-label" for="motivation_level">Motivation level</label><select class="pw-select" id="motivation_level"></select></div>
+          <div class="pw-field"><label class="pw-label" for="concentration_score">Concentration score</label><select class="pw-select" id="concentration_score"></select></div>
+          <div class="pw-field"><label class="pw-label" for="mood_level">Mood level</label><select class="pw-select" id="mood_level"></select></div>
+        </div>
+
+        <h3>5) Lower-Body Health (10)</h3>
+        <div class="pw-row-3">
+          <div class="pw-field"><label class="pw-label" for="hip_flexor_tightness">Hip flexor tightness</label><select class="pw-select" id="hip_flexor_tightness"></select></div>
+          <div class="pw-field"><label class="pw-label" for="quad_soreness">Quad soreness</label><select class="pw-select" id="quad_soreness"></select></div>
+          <div class="pw-field"><label class="pw-label" for="hamstring_tightness">Hamstring tightness</label><select class="pw-select" id="hamstring_tightness"></select></div>
+          <div class="pw-field"><label class="pw-label" for="glute_activation">Glute activation</label><select class="pw-select" id="glute_activation"></select></div>
+          <div class="pw-field"><label class="pw-label" for="calf_soreness">Calf soreness</label><select class="pw-select" id="calf_soreness"></select></div>
+          <div class="pw-field"><label class="pw-label" for="ankle_stability">Ankle stability</label><select class="pw-select" id="ankle_stability"></select></div>
+          <div class="pw-field"><label class="pw-label" for="knee_pain">Knee pain</label><select class="pw-select" id="knee_pain"></select></div>
+          <div class="pw-field"><label class="pw-label" for="groin_tightness">Groin tightness</label><select class="pw-select" id="groin_tightness"></select></div>
+          <div class="pw-field"><label class="pw-label" for="push_off_cramps">Push-off cramps</label><select class="pw-select" id="push_off_cramps"></select></div>
+          <div class="pw-field"><label class="pw-label" for="balance_stability">Balance stability</label><select class="pw-select" id="balance_stability"></select></div>
+        </div>
+
+        <div class="pw-field" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+          <button type="button" class="pw-btn" id="saveBtn">Save</button>
+          <button type="button" class="pw-btn" id="submitBtn">Run Analysis</button>
+          <span class="pw-help">Saves locally and submits to the PredictWell backend.</span>
+        </div>
+
+        <div id="status" class="status" role="status" aria-live="polite">Ready.</div>
+        <div>
+          <h3 style="margin:10px 0 6px">AI Result</h3>
+          <div id="resultBox" style="min-height: 100px; background: rgba(255,255,255,0.5); border-radius: 12px; padding: 20px; color: #374151;">Ready to analyze...</div>
         </div>
       </form>
+    </div>
+  </section>
 
-      <!-- Score badge + AI tiles -->
-      <div class="grid-tiles" style="margin-top:10px;">
-        <div class="tile">
-          <h3>Your PredictWell Score</h3>
-          <div id="scoreNum" class="metric">—</div>
-          <div id="scoreTag" class="badge">pending</div>
-        </div>
-
-        <div class="tile">
-          <h3>AI Risk — Current</h3>
-          <div id="aiNow" class="metric">—</div>
-          <div id="aiNowNote" class="sub" style="margin:4px 0 0;">&nbsp;</div>
-        </div>
-
-        <div class="tile">
-          <h3>AI Risk — In 2 Weeks</h3>
-          <div id="ai2w" class="metric">—</div>
-          <div id="ai2wNote" class="sub" style="margin:4px 0 0;">&nbsp;</div>
-        </div>
-
-        <div class="tile">
-          <h3>AI Risk — In 4 Weeks</h3>
-          <div id="ai4w" class="metric">—</div>
-          <div id="ai4wNote" class="sub" style="margin:4px 0 0;">&nbsp;</div>
-        </div>
-      </div>
-
-      <!-- Raw server reply (for transparency / debugging) -->
-      <div id="serverOut" class="results" hidden></div>
-    </section>
-  </main>
-
-  <footer>© PredictWell Health.ai</footer>
+  <footer class="pw-footer">
+    <div class="pw-footer-wrap">
+      © <span id="yr"></span> PredictWell Health.ai — Athletics
+    </div>
+  </footer>
 
   <script>
-    // ===== Config =====
+    document.getElementById('yr').textContent = new Date().getFullYear();
+
+    const menuBtn = document.getElementById('menuBtn');
+    const menu = document.getElementById('menu');
+    document.addEventListener('click', (e) => {
+      if (menuBtn.contains(e.target)) {
+        menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+      } else if (!menu.contains(e.target)) {
+        menu.style.display = 'none';
+      }
+    });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') menu.style.display = 'none'; });
+    menu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => { menu.style.display = 'none'; }));
+
     const BASE_API = 'https://predictwell-backend-ai.onrender.com';
+    const POST_URL = BASE_API + '/athletics/risk';
+    const STORE_KEY = 'athletics_pitcher_intake';
 
-    // ===== Health check badge =====
-    (async () => {
-      try {
-        const r = await fetch(BASE_API + '/healthz', { cache: 'no-store' });
-        const j = await r.json();
-        document.getElementById('healthz').textContent = j.status === 'ok' ? 'backend: ok' : 'backend: ?';
-      } catch(e) {
-        document.getElementById('healthz').textContent = 'backend: offline';
-      }
-    })();
+    const selectFields = [
+      'shoulder_soreness','inner_elbow_pain','forearm_tightness','triceps_fatigue','biceps_pain','shoulder_clicking',
+      'velocity_drop','arm_slot_change','command_loss','effort_level','follow_through_pain',
+      'recovery_quality','hydration_level','nutrition_quality','soreness_recovery',
+      'stress_level','motivation_level','concentration_score','mood_level',
+      'hip_flexor_tightness','quad_soreness','hamstring_tightness','glute_activation','calf_soreness','ankle_stability','knee_pain','groin_tightness','push_off_cramps','balance_stability'
+    ];
 
-    // ===== Local storage load/save (keep IDs as-is) =====
-    const LS_KEY = 'eldercare_patient12';
-    function loadSaved(){
-      try {
-        const x = JSON.parse(localStorage.getItem(LS_KEY) || '{}');
-        for (const k of ['age','living','falls_12m','unsteady','fear_fall','chair_rise','dizzy','med_count','memory','mood','activity','home_haz']){
-          if (x[k] !== undefined) document.getElementById(k).value = x[k];
-        }
-      } catch(_) {}
-    }
-    function saveCurrent(){
-      const data = {};
-      for (const k of ['age','living','falls_12m','unsteady','fear_fall','chair_rise','dizzy','med_count','memory','mood','activity','home_haz']){
-        data[k] = document.getElementById(k).value;
-      }
-      localStorage.setItem(LS_KEY, JSON.stringify(data));
-      return data;
-    }
-    loadSaved();
+    const numericFields = ['pitches_today','pitches_7d','sleep_hours','rest_days'];
 
-    // ===== Simple client-side score (unchanged spirit) =====
-    function computeLocalScore(data){
-      let score = 100;
-      const yes = v => String(v).toLowerCase() === 'yes';
-
-      const medsStr = String(data.med_count || '0');
-      const medsNum = medsStr.endsWith('+') ? 5 : Number(medsStr) || 0;
-      score -= Math.min(30, medsNum * 6);
-
-      const fallsStr = String(data.falls_12m || '0').trim();
-      const fallsNum = fallsStr.endsWith('+') ? 5 : Number(fallsStr) || 0;
-      score -= Math.min(25, Math.max(0, fallsNum * 5));
-
-      const unsteadyNum = Number(data.unsteady || 0);
-      if (unsteadyNum > 0) score -= Math.min(15, unsteadyNum * 3);
-
-      const fearNum = Number(data.fear_fall || 0);
-      if (fearNum > 0) score -= Math.min(10, fearNum * 2);
-
-      const chairNum = Number(data.chair_rise || 0);
-      if (chairNum > 0) score -= Math.min(10, chairNum * 2);
-
-      const dizzyNum = Number(data.dizzy || 0);
-      if (dizzyNum > 0) score -= Math.min(10, dizzyNum * 2);
-
-      const memNum = Number(data.memory || 0) || 0;
-      if (memNum > 0) score -= Math.min(10, memNum * 2);
-
-      const moodNum = Number(data.mood || 0) || 0;
-      if (moodNum > 0) score -= Math.min(8, moodNum * 2);
-
-      const actNum = Number(data.activity || 0) || 0;
-      if (actNum > 0) score -= Math.min(6, (actNum - 1) * 2);
-
-      if (yes(data.home_haz)) score -= 6;
-
-      return Math.max(0, Math.min(100, score));
+    function fillScale(selectEl){
+      const opts = [
+        {v:1, t:'1 (Best/Low)'},
+        {v:2, t:'2'},
+        {v:3, t:'3'},
+        {v:4, t:'4'},
+        {v:5, t:'5 (Worst/High)'}
+      ];
+      opts.forEach(o => {
+        const op = document.createElement('option');
+        op.value = o.v; op.textContent = o.t;
+        selectEl.appendChild(op);
+      });
     }
 
-    function setScoreBadge(score){
-      const num = document.getElementById('scoreNum');
-      const tag = document.getElementById('scoreTag');
-      num.textContent = String(score);
-      let cls = 'ok', label = 'LOW';
-      if (score < 35){ cls='risk'; label='HIGH'; }
-      else if (score < 70){ cls='warn'; label='MODERATE'; }
-      tag.className = 'badge ' + cls;
-      tag.textContent = label;
-      num.className = 'metric ' + cls;
-    }
-
-    // ===== AI results rendering (flexible) =====
-    function pick(obj, pathArr){
-      for (const p of pathArr){
-        const val = p.split('.').reduce((o,k)=> (o && k in o) ? o[k] : undefined, obj ?? {});
-        if (val !== undefined && val !== null) return val;
-      }
-      return undefined;
-    }
-
-    function renderAiResults(resp){
-      const cur = pick(resp, ['risk.current','current','now','risk_now','forecast.0.score']);
-      const two = pick(resp, ['risk.two_weeks','two_weeks','risk_2w','in2w','forecast.1.score']);
-      const four = pick(resp, ['risk.four_weeks','four_weeks','risk_4w','in4w','forecast.2.score']);
-
-      const curNote = pick(resp, ['risk.notes.current','notes.current','forecast.0.note','note_now']);
-      const twoNote = pick(resp, ['risk.notes.two_weeks','notes.two_weeks','forecast.1.note','note_2w']);
-      const fourNote = pick(resp, ['risk.notes.four_weeks','notes.four_weeks','forecast.2.note','note_4w']);
-
-      setTile('aiNow','aiNowNote', cur, curNote);
-      setTile('ai2w','ai2wNote', two, twoNote);
-      setTile('ai4w','ai4wNote', four, fourNote);
-    }
-
-    function setTile(scoreId, noteId, val, note){
-      const el = document.getElementById(scoreId);
-      const nt = document.getElementById(noteId);
-      if (val === undefined || val === null || val === ''){
-        el.textContent = '—';
-        el.className = 'metric';
-        nt.textContent = '';
-        return;
-      }
-      const num = Number(val);
-      if (Number.isFinite(num)){
-        el.textContent = String(num);
-        let cls = 'ok';
-        if (num < 35) cls = 'risk';
-        else if (num < 70) cls = 'warn';
-        el.className = 'metric ' + cls;
-      } else {
-        el.textContent = String(val);
-        el.className = 'metric';
-      }
-      nt.textContent = note ? String(note) : '';
-    }
-
-    // ===== Submit handler =====
-    async function handleSubmit(){
-      const data = saveCurrent();
-      const localScore = computeLocalScore(data);
-      setScoreBadge(localScore);
+    window.addEventListener('DOMContentLoaded', () => {
+      selectFields.forEach(id => { 
+        const el = document.getElementById(id); 
+        if(el && el.tagName === 'SELECT') fillScale(el); 
+      });
 
       try{
-        const r = await fetch(BASE_API + '/eldercare/checkin', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ source:'patient_portal', inputs:data, client_score: localScore })
+        const saved = localStorage.getItem(STORE_KEY);
+        if(saved){
+          const data = JSON.parse(saved);
+          for(const [k,v] of Object.entries(data)){
+            const el = document.getElementById(k);
+            if(el) el.value = String(v);
+          }
+          setStatus('Restored saved values.');
+        } else {
+          setStatus('Ready.');
+        }
+      }catch{ setStatus('Ready.'); }
+
+      document.getElementById('saveBtn').addEventListener('click', saveLocally);
+      document.getElementById('submitBtn').addEventListener('click', submitForm);
+    });
+
+    function collectData(){
+      const out = {};
+      
+      selectFields.forEach(id => {
+        const el = document.getElementById(id);
+        out[id] = el ? Number(el.value || 1) : 1;
+      });
+
+      numericFields.forEach(id => {
+        const el = document.getElementById(id);
+        if(id === 'sleep_hours') {
+          out[id] = el ? parseFloat(el.value || 7) : 7;
+        } else {
+          out[id] = el ? parseInt(el.value || 0) : 0;
+        }
+      });
+
+      return out;
+    }
+
+    function saveLocally(){
+      try{
+        localStorage.setItem(STORE_KEY, JSON.stringify(collectData()));
+        setStatus('Saved locally.');
+      }catch{ setStatus('Save failed.'); }
+    }
+
+    async function submitForm(){
+      const payload = collectData();
+      setStatus('Submitting…');
+      try{
+        const res = await fetch(POST_URL, {
+          method:'POST', 
+          headers:{'Content-Type':'application/json'},
+          body: JSON.stringify(payload)
         });
-        const j = await r.json();
-
-        const out = document.getElementById('serverOut');
-        out.hidden = false;
-        out.textContent = JSON.stringify(j, null, 2);
-
-        renderAiResults(j);
-      }catch(e){
-        const out = document.getElementById('serverOut');
-        out.hidden = false;
-        out.textContent = 'Server error. Please try again shortly.';
+        const json = await res.json();
+        
+        if(res.ok && json.status === 'ok'){
+          const resultBox = document.getElementById('resultBox');
+          
+          // Split feedback into sections
+          const sections = json.feedback.split('\n\n');
+          let htmlOutput = '';
+          
+          // Risk Score Header (always first)
+          const riskColor = json.risk_score >= 7 ? '#dc2626' : json.risk_score >= 5 ? '#f97316' : '#16a34a';
+          htmlOutput += `
+            <div style="background: linear-gradient(135deg, ${riskColor}, ${riskColor}dd); color: white; padding: 24px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.25);">
+              <h2 style="margin: 0 0 8px 0; font-size: 28px; font-weight: 800;">Risk Score: ${json.risk_score}/10</h2>
+              <p style="margin: 0; opacity: 0.95; font-size: 15px;">Your personalized pitcher health assessment</p>
+            </div>
+          `;
+          
+          // Process each section
+          sections.forEach(section => {
+            const lines = section.trim().split('\n');
+            const title = lines[0];
+            const content = lines.slice(1).join(' ');
+            
+            // Check if it's a RED FLAG section
+            if(title.includes('🚨') || title.includes('CRITICAL')) {
+              htmlOutput += `
+                <div style="background: linear-gradient(135deg, #fee, #fdd); border-left: 4px solid #dc2626; padding: 20px; border-radius: 12px; margin-bottom: 16px; box-shadow: 0 4px 12px rgba(220,38,38,0.15);">
+                  <h3 style="margin: 0 0 10px 0; color: #dc2626; font-size: 18px; font-weight: 800;">${title}</h3>
+                  <p style="margin: 0; color: #991b1b; line-height: 1.7; font-weight: 500;">${content}</p>
+                </div>
+              `;
+            } else {
+              // Normal section
+              htmlOutput += `
+                <div style="background: white; padding: 20px; border-radius: 12px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
+                  <h3 style="margin: 0 0 10px 0; color: #1e3a8a; font-size: 16px; font-weight: 700;">${title}</h3>
+                  <p style="margin: 0; color: #374151; line-height: 1.7;">${content}</p>
+                </div>
+              `;
+            }
+          });
+          
+          resultBox.innerHTML = htmlOutput;
+          setStatus('Analysis complete.');
+        } else {
+          document.getElementById('resultBox').innerHTML = `<pre style="background:#fee; color:#c00; padding:14px; border-radius:12px; overflow:auto;">${JSON.stringify(json, null, 2)}</pre>`;
+          setStatus('Server returned an error.');
+        }
+      }catch(err){
+        document.getElementById('resultBox').innerHTML = `<pre style="background:#fee; color:#c00; padding:14px; border-radius:12px;">${String(err)}</pre>`;
+        setStatus('Network error.');
       }
     }
 
-    // ===== Wire buttons =====
-    document.getElementById('getResultsBtn').addEventListener('click', handleSubmit);
-    document.getElementById('clearBtn').addEventListener('click', () => {
-      localStorage.removeItem(LS_KEY);
-      for (const k of ['age','living','falls_12m','unsteady','fear_fall','chair_rise','dizzy','med_count','memory','mood','activity','home_haz']){
-        const el = document.getElementById(k);
-        if (el.tagName === 'INPUT') el.value = '';
-        else el.selectedIndex = 0;
-      }
-      document.getElementById('scoreNum').textContent='—';
-      document.getElementById('scoreTag').textContent='pending';
-      for (const id of ['aiNow','ai2w','ai4w']){ document.getElementById(id).textContent='—'; document.getElementById(id).className='metric'; }
-      for (const id of ['aiNowNote','ai2wNote','ai4wNote']){ document.getElementById(id).textContent=''; }
-      const out = document.getElementById('serverOut'); out.hidden = true; out.textContent = '';
-    });
+    function setStatus(msg){
+      const el = document.getElementById('status');
+      if(!el) return;
+      el.textContent = msg;
+      el.className = 'status' + (msg.toLowerCase().includes('error') || msg.toLowerCase().includes('network') ? ' err' :
+                                 msg.toLowerCase().includes('complete') || msg.toLowerCase().includes('saved') ? ' ok' : '');
+    }
   </script>
 </body>
 </html>
-
