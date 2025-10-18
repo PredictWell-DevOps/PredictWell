@@ -4,18 +4,13 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>PredictWell — Athletics Patient Portal</title>
-  <meta name="description" content="Athletics Patient Portal — Pitcher Intake (33 fields), 1–5 scale with backend AI risk scoring." />
+  <meta name="description" content="Athletics Patient Portal — Pitcher Intake with backend AI risk scoring." />
   <link rel="icon" href="data:," />
-  <!-- Poppins to match INDEX -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
 
   <style>
     html { scroll-behavior: smooth; }
-
-    :root{
-      --pw-navy: #1e3a8a;
-    }
-
+    :root{ --pw-navy: #1e3a8a; }
     body{
       margin:0;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
@@ -23,8 +18,6 @@
       background-image:url("/static/images/predictwell_background.png");
       background-size:cover; background-position:center; background-repeat:no-repeat; background-attachment:fixed;
     }
-
-    /* ===== Standard Header (identical to INDEX) ===== */
     .header{position:sticky;top:0;z-index:50;backdrop-filter:saturate(1.2) blur(6px);
       background:linear-gradient(90deg,rgba(255,255,255,.62),rgba(255,255,255,.42));
       border-bottom:1px solid rgba(0,0,0,.18)}
@@ -41,51 +34,28 @@
     .menu{position:absolute;right:18px;top:58px;background:rgba(255,255,255,.78);backdrop-filter:blur(10px);border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.18);padding:8px;display:none}
     .menu a{display:block;padding:10px 12px;border-radius:10px;text-decoration:none;color:#111827;min-width:220px}
     .menu a:hover{background:rgba(17,24,39,.06)}
-    /* ===== /Header ===== */
-
-    /* ===== Shared “bubble” containers (match INDEX) ===== */
     .pw-mobile-section { margin: 26px auto 40px; padding: 0 18px; }
     .pw-mobile-wrap { max-width: 1080px; margin: 0 auto; background: rgba(255,255,255,0.78); border-radius: 18px; box-shadow: 0 10px 30px rgba(0,0,0,0.18); padding: 26px 28px; backdrop-filter: blur(6px) saturate(1.1); }
     .pw-mobile-header { text-align:center; margin: 0 0 8px 0; font-size: clamp(24px, 2.2vw, 34px); letter-spacing: .2px; color: var(--pw-navy); font-family:'Poppins',system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; }
     .pw-mobile-sub { text-align:center; margin: 8px auto 18px; max-width: 880px; color: #374151; line-height: 1.55; font-size: 15px; }
-
-    /* ===== Form styles aligned to site ===== */
     .pw-form { display: grid; gap: 14px; }
     .pw-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
     .pw-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
     @media (max-width: 960px){ .pw-row-3 { grid-template-columns: 1fr 1fr; } }
     @media (max-width: 780px){ .pw-row-2, .pw-row-3 { grid-template-columns: 1fr; } }
-
     .pw-field { display: grid; gap: 6px; }
     .pw-label { font-size: 12px; color: #374151; }
-    .pw-select, .pw-textarea {
-      width: 100%; border: 1px solid rgba(17,24,39,0.08); border-radius: 12px; background: #fff; padding: 10px 12px; font-size: 14px; outline:none;
-    }
-    .pw-textarea { min-height: 120px; resize: vertical; }
+    .pw-select, .pw-input { width: 100%; border: 1px solid rgba(17,24,39,0.08); border-radius: 12px; background: #fff; padding: 10px 12px; font-size: 14px; outline:none; }
     .pw-help { font-size: 12.5px; color:#6b7280; }
-
-    .pw-btn {
-      background: linear-gradient(135deg,#f97316,#fb923c);
-      color:#fff; border:0; border-radius:999px; padding:10px 18px; font-weight:800; cursor:pointer;
-      box-shadow:0 10px 24px rgba(249,115,22,0.22);
-    }
-
+    .pw-btn { background: linear-gradient(135deg,#f97316,#fb923c); color:#fff; border:0; border-radius:999px; padding:10px 18px; font-weight:800; cursor:pointer; box-shadow:0 10px 24px rgba(249,115,22,0.22); }
     .status { font-size: 14px; margin-top: 8px; }
     .ok { color: #16a34a; }
     .err { color: #dc2626; }
-
-    pre {
-      background:#0f172a; color:#e5edff; padding:14px; border-radius:12px; overflow:auto;
-      border:1px solid rgba(0,0,0,.14)
-    }
-
-    /* Simple footer */
     .pw-footer { margin: 20px auto 40px; padding: 0 18px; }
     .pw-footer-wrap { max-width: 1080px; margin: 0 auto; background: rgba(255,255,255,0.78); border-radius: 18px; box-shadow: 0 10px 30px rgba(0,0,0,0.18); padding: 18px 22px; text-align:center; color:#374151; }
   </style>
 </head>
 <body>
-  <!-- ===== HEADER (unchanged across site) ===== -->
   <header class="header">
     <div class="header-inner">
       <a class="brand" href="/index.html" aria-label="Back to PredictWell Health.ai home">
@@ -105,99 +75,89 @@
       </nav>
     </div>
   </header>
-  <!-- ===== /HEADER ===== -->
 
-  <!-- ===== PAGE HERO ===== -->
   <section class="pw-mobile-section" id="hero">
     <div class="pw-mobile-wrap">
       <h1 class="pw-mobile-header">Athletics Patient Portal — Pitcher Intake</h1>
       <p class="pw-mobile-sub">
-        Complete your daily **33-field** check-in. Scale for all items: <b>1</b> = best/lowest concern, <b>5</b> = worst/highest concern.
-        Your submission is saved locally and sent to the PredictWell backend for AI scoring.
+        Complete your daily check-in. Scale for all items: <b>1</b> = best/lowest concern, <b>5</b> = worst/highest concern.
+        Your submission is sent to the PredictWell backend for AI scoring.
       </p>
     </div>
   </section>
 
-  <!-- ===== FORM CARD (33 fields) ===== -->
   <section class="pw-mobile-section" id="form">
     <div class="pw-mobile-wrap">
       <form id="pitchingForm" class="pw-form" autocomplete="on" novalidate>
-        <!-- Section 1 — Arm & Shoulder Condition (6) -->
+        
         <h3>1) Arm &amp; Shoulder Condition (6)</h3>
         <div class="pw-row-3">
           <div class="pw-field"><label class="pw-label" for="shoulder_soreness">Shoulder soreness</label><select class="pw-select" id="shoulder_soreness"></select></div>
-          <div class="pw-field"><label class="pw-label" for="bicep_tightness">Bicep tightness</label><select class="pw-select" id="bicep_tightness"></select></div>
-          <div class="pw-field"><label class="pw-label" for="tricep_soreness">Tricep soreness</label><select class="pw-select" id="tricep_soreness"></select></div>
-          <div class="pw-field"><label class="pw-label" for="inner_elbow_pain">Inner elbow pain</label><select class="pw-select" id="inner_elbow_pain"></select></div>
-          <div class="pw-field"><label class="pw-label" for="outer_elbow_pain">Outer elbow pain</label><select class="pw-select" id="outer_elbow_pain"></select></div>
+          <div class="pw-field"><label class="pw-label" for="inner_elbow_pain">Inner Elbow Pain</label><select class="pw-select" id="inner_elbow_pain"></select></div>
           <div class="pw-field"><label class="pw-label" for="forearm_tightness">Forearm tightness</label><select class="pw-select" id="forearm_tightness"></select></div>
+          <div class="pw-field"><label class="pw-label" for="triceps_fatigue">Triceps fatigue</label><select class="pw-select" id="triceps_fatigue"></select></div>
+          <div class="pw-field"><label class="pw-label" for="biceps_pain">Biceps pain</label><select class="pw-select" id="biceps_pain"></select></div>
+          <div class="pw-field"><label class="pw-label" for="shoulder_clicking">Shoulder clicking</label><select class="pw-select" id="shoulder_clicking"></select></div>
         </div>
 
-        <!-- Section 2 — Throwing Workload & Mechanics (7) -->
         <h3>2) Throwing Workload &amp; Mechanics (7)</h3>
         <div class="pw-row-3">
-          <div class="pw-field"><label class="pw-label" for="pitches_thrown_today">Pitches thrown today</label><select class="pw-select" id="pitches_thrown_today"></select><div class="pw-help">1 = none/light • 5 = very high</div></div>
-          <div class="pw-field"><label class="pw-label" for="pitches_thrown_week">Pitches this week</label><select class="pw-select" id="pitches_thrown_week"></select></div>
-          <div class="pw-field"><label class="pw-label" for="long_toss_distance">Long toss workload</label><select class="pw-select" id="long_toss_distance"></select></div>
-          <div class="pw-field"><label class="pw-label" for="bullpen_intensity">Bullpen intensity</label><select class="pw-select" id="bullpen_intensity"></select></div>
-          <div class="pw-field"><label class="pw-label" for="velocity_drop">Velocity drop (self-perceived)</label><select class="pw-select" id="velocity_drop"></select><div class="pw-help">1 = none • 5 = significant</div></div>
-          <div class="pw-field"><label class="pw-label" for="release_point_consistency">Release point consistency</label><select class="pw-select" id="release_point_consistency"></select></div>
-          <div class="pw-field"><label class="pw-label" for="mechanics_rating">Overall mechanics rating</label><select class="pw-select" id="mechanics_rating"></select></div>
+          <div class="pw-field"><label class="pw-label" for="pitches_today">Pitches today</label><input type="number" class="pw-input" id="pitches_today" min="0" max="200" value="0"></div>
+          <div class="pw-field"><label class="pw-label" for="pitches_7d">Pitches last 7 days</label><input type="number" class="pw-input" id="pitches_7d" min="0" max="500" value="0"></div>
+          <div class="pw-field"><label class="pw-label" for="velocity_drop">Velocity drop</label><select class="pw-select" id="velocity_drop"></select></div>
+          <div class="pw-field"><label class="pw-label" for="arm_slot_change">Arm slot change</label><select class="pw-select" id="arm_slot_change"></select></div>
+          <div class="pw-field"><label class="pw-label" for="command_loss">Command loss</label><select class="pw-select" id="command_loss"></select></div>
+          <div class="pw-field"><label class="pw-label" for="effort_level">Effort level</label><select class="pw-select" id="effort_level"></select></div>
+          <div class="pw-field"><label class="pw-label" for="follow_through_pain">Follow through pain</label><select class="pw-select" id="follow_through_pain"></select></div>
         </div>
 
-        <!-- Section 3 — Recovery & Readiness (6) -->
         <h3>3) Recovery &amp; Readiness (6)</h3>
         <div class="pw-row-3">
-          <div class="pw-field"><label class="pw-label" for="sleep_quality">Sleep quality</label><select class="pw-select" id="sleep_quality"></select></div>
+          <div class="pw-field"><label class="pw-label" for="sleep_hours">Sleep hours</label><input type="number" class="pw-input" id="sleep_hours" min="0" max="12" step="0.5" value="7"></div>
+          <div class="pw-field"><label class="pw-label" for="recovery_quality">Recovery quality</label><select class="pw-select" id="recovery_quality"></select></div>
           <div class="pw-field"><label class="pw-label" for="hydration_level">Hydration level</label><select class="pw-select" id="hydration_level"></select></div>
-          <div class="pw-field"><label class="pw-label" for="arm_freshness">Arm freshness</label><select class="pw-select" id="arm_freshness"></select></div>
-          <div class="pw-field"><label class="pw-label" for="muscle_tightness">General muscle tightness</label><select class="pw-select" id="muscle_tightness"></select></div>
-          <div class="pw-field"><label class="pw-label" for="recovery_activities_completed">Recovery activities done</label><select class="pw-select" id="recovery_activities_completed"></select></div>
-          <div class="pw-field"><label class="pw-label" for="soreness_next_day">Next-day soreness (expected)</label><select class="pw-select" id="soreness_next_day"></select></div>
+          <div class="pw-field"><label class="pw-label" for="nutrition_quality">Nutrition quality</label><select class="pw-select" id="nutrition_quality"></select></div>
+          <div class="pw-field"><label class="pw-label" for="soreness_recovery">Soreness recovery</label><select class="pw-select" id="soreness_recovery"></select></div>
+          <div class="pw-field"><label class="pw-label" for="rest_days">Rest days</label><input type="number" class="pw-input" id="rest_days" min="0" max="7" value="1"></div>
         </div>
 
-        <!-- Section 4 — Focus & Stress Indicators (4) -->
         <h3>4) Focus &amp; Stress Indicators (4)</h3>
         <div class="pw-row-2">
-          <div class="pw-field"><label class="pw-label" for="focus_level">Focus level</label><select class="pw-select" id="focus_level"></select></div>
           <div class="pw-field"><label class="pw-label" for="stress_level">Stress level</label><select class="pw-select" id="stress_level"></select></div>
           <div class="pw-field"><label class="pw-label" for="motivation_level">Motivation level</label><select class="pw-select" id="motivation_level"></select></div>
-          <div class="pw-field"><label class="pw-label" for="confidence_on_mound">Confidence on mound</label><select class="pw-select" id="confidence_on_mound"></select></div>
+          <div class="pw-field"><label class="pw-label" for="concentration_score">Concentration score</label><select class="pw-select" id="concentration_score"></select></div>
+          <div class="pw-field"><label class="pw-label" for="mood_level">Mood level</label><select class="pw-select" id="mood_level"></select></div>
         </div>
 
-        <!-- Section 5 — Lower-Body Health (10) -->
         <h3>5) Lower-Body Health (10)</h3>
         <div class="pw-row-3">
+          <div class="pw-field"><label class="pw-label" for="hip_flexor_tightness">Hip flexor tightness</label><select class="pw-select" id="hip_flexor_tightness"></select></div>
           <div class="pw-field"><label class="pw-label" for="quad_soreness">Quad soreness</label><select class="pw-select" id="quad_soreness"></select></div>
           <div class="pw-field"><label class="pw-label" for="hamstring_tightness">Hamstring tightness</label><select class="pw-select" id="hamstring_tightness"></select></div>
-          <div class="pw-field"><label class="pw-label" for="glute_strength">Glute strength (self-rating)</label><select class="pw-select" id="glute_strength"></select></div>
-          <div class="pw-field"><label class="pw-label" for="hip_flexor_tightness">Hip flexor tightness</label><select class="pw-select" id="hip_flexor_tightness"></select></div>
-          <div class="pw-field"><label class="pw-label" for="groin_strain_level">Groin strain level</label><select class="pw-select" id="groin_strain_level"></select></div>
-          <div class="pw-field"><label class="pw-label" for="knee_stability">Knee stability</label><select class="pw-select" id="knee_stability"></select></div>
+          <div class="pw-field"><label class="pw-label" for="glute_activation">Glute activation</label><select class="pw-select" id="glute_activation"></select></div>
           <div class="pw-field"><label class="pw-label" for="calf_soreness">Calf soreness</label><select class="pw-select" id="calf_soreness"></select></div>
-          <div class="pw-field"><label class="pw-label" for="ankle_stiffness">Ankle stiffness</label><select class="pw-select" id="ankle_stiffness"></select></div>
-          <div class="pw-field"><label class="pw-label" for="balance_stability">Balance &amp; stability</label><select class="pw-select" id="balance_stability"></select></div>
-          <div class="pw-field"><label class="pw-label" for="pushoff_foot_cramps">Push-off foot cramps</label><select class="pw-select" id="pushoff_foot_cramps"></select></div>
+          <div class="pw-field"><label class="pw-label" for="ankle_stability">Ankle stability</label><select class="pw-select" id="ankle_stability"></select></div>
+          <div class="pw-field"><label class="pw-label" for="knee_pain">Knee pain</label><select class="pw-select" id="knee_pain"></select></div>
+          <div class="pw-field"><label class="pw-label" for="groin_tightness">Groin tightness</label><select class="pw-select" id="groin_tightness"></select></div>
+          <div class="pw-field"><label class="pw-label" for="push_off_cramps">Push-off cramps</label><select class="pw-select" id="push_off_cramps"></select></div>
+          <div class="pw-field"><label class="pw-label" for="balance_stability">Balance stability</label><select class="pw-select" id="balance_stability"></select></div>
         </div>
 
-        <!-- Actions -->
         <div class="pw-field" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
           <button type="button" class="pw-btn" id="saveBtn">Save</button>
           <button type="button" class="pw-btn" id="submitBtn">Run Analysis</button>
           <span class="pw-help">Saves locally and submits to the PredictWell backend.</span>
         </div>
 
-        <!-- Status + Results -->
         <div id="status" class="status" role="status" aria-live="polite">Ready.</div>
         <div>
           <h3 style="margin:10px 0 6px">AI Result</h3>
-          <pre id="resultBox">{}</pre>
+          <div id="resultBox" style="min-height: 100px; background: rgba(255,255,255,0.5); border-radius: 12px; padding: 20px; color: #374151;">Ready to analyze...</div>
         </div>
       </form>
     </div>
   </section>
 
-  <!-- ===== FOOTER ===== -->
   <footer class="pw-footer">
     <div class="pw-footer-wrap">
       © <span id="yr"></span> PredictWell Health.ai — Athletics
@@ -205,10 +165,8 @@
   </footer>
 
   <script>
-    // Year stamp
     document.getElementById('yr').textContent = new Date().getFullYear();
 
-    // Header menu behavior (same as INDEX)
     const menuBtn = document.getElementById('menuBtn');
     const menu = document.getElementById('menu');
     document.addEventListener('click', (e) => {
@@ -221,26 +179,20 @@
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape') menu.style.display = 'none'; });
     menu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => { menu.style.display = 'none'; }));
 
-    // ===== Pitcher Intake (33) logic =====
     const BASE_API = 'https://predictwell-backend-ai.onrender.com';
-    const POST_URL = BASE_API + '/risk';
-    const STORE_KEY = 'athletics_pitcher33';
+    const POST_URL = BASE_API + '/athletics/risk';
+    const STORE_KEY = 'athletics_pitcher_intake';
 
-    // 33 field ids
-    const fields = [
-      // 1) Arm & Shoulder (6)
-      'shoulder_soreness','bicep_tightness','tricep_soreness','inner_elbow_pain','outer_elbow_pain','forearm_tightness',
-      // 2) Workload & Mechanics (7)
-      'pitches_thrown_today','pitches_thrown_week','long_toss_distance','bullpen_intensity','velocity_drop','release_point_consistency','mechanics_rating',
-      // 3) Recovery & Readiness (6)
-      'sleep_quality','hydration_level','arm_freshness','muscle_tightness','recovery_activities_completed','soreness_next_day',
-      // 4) Focus & Stress (4)
-      'focus_level','stress_level','motivation_level','confidence_on_mound',
-      // 5) Lower-Body (10)
-      'quad_soreness','hamstring_tightness','glute_strength','hip_flexor_tightness','groin_strain_level','knee_stability','calf_soreness','ankle_stiffness','balance_stability','pushoff_foot_cramps'
+    const selectFields = [
+      'shoulder_soreness','inner_elbow_pain','forearm_tightness','triceps_fatigue','biceps_pain','shoulder_clicking',
+      'velocity_drop','arm_slot_change','command_loss','effort_level','follow_through_pain',
+      'recovery_quality','hydration_level','nutrition_quality','soreness_recovery',
+      'stress_level','motivation_level','concentration_score','mood_level',
+      'hip_flexor_tightness','quad_soreness','hamstring_tightness','glute_activation','calf_soreness','ankle_stability','knee_pain','groin_tightness','push_off_cramps','balance_stability'
     ];
 
-    // Build 1–5 options
+    const numericFields = ['pitches_today','pitches_7d','sleep_hours','rest_days'];
+
     function fillScale(selectEl){
       const opts = [
         {v:1, t:'1 (Best/Low)'},
@@ -256,9 +208,11 @@
       });
     }
 
-    // Populate selects + restore saved values
     window.addEventListener('DOMContentLoaded', () => {
-      fields.forEach(id => { const el = document.getElementById(id); if(el) fillScale(el); });
+      selectFields.forEach(id => { 
+        const el = document.getElementById(id); 
+        if(el && el.tagName === 'SELECT') fillScale(el); 
+      });
 
       try{
         const saved = localStorage.getItem(STORE_KEY);
@@ -272,7 +226,7 @@
         } else {
           setStatus('Ready.');
         }
-      }catch{ setStatus('Ready. (restore failed)'); }
+      }catch{ setStatus('Ready.'); }
 
       document.getElementById('saveBtn').addEventListener('click', saveLocally);
       document.getElementById('submitBtn').addEventListener('click', submitForm);
@@ -280,10 +234,21 @@
 
     function collectData(){
       const out = {};
-      fields.forEach(id => {
+      
+      selectFields.forEach(id => {
         const el = document.getElementById(id);
         out[id] = el ? Number(el.value || 1) : 1;
       });
+
+      numericFields.forEach(id => {
+        const el = document.getElementById(id);
+        if(id === 'sleep_hours') {
+          out[id] = el ? parseFloat(el.value || 7) : 7;
+        } else {
+          out[id] = el ? parseInt(el.value || 0) : 0;
+        }
+      });
+
       return out;
     }
 
@@ -299,19 +264,61 @@
       setStatus('Submitting…');
       try{
         const res = await fetch(POST_URL, {
-          method:'POST', headers:{'Content-Type':'application/json'},
+          method:'POST', 
+          headers:{'Content-Type':'application/json'},
           body: JSON.stringify(payload)
         });
-        const text = await res.text();
-        try{
-          const json = JSON.parse(text);
-          document.getElementById('resultBox').textContent = JSON.stringify(json, null, 2);
-        }catch{
-          document.getElementById('resultBox').textContent = text;
+        const json = await res.json();
+        
+        if(res.ok && json.status === 'ok'){
+          const resultBox = document.getElementById('resultBox');
+          
+          // Split feedback into sections
+          const sections = json.feedback.split('\n\n');
+          let htmlOutput = '';
+          
+          // Risk Score Header (always first)
+          const riskColor = json.risk_score >= 7 ? '#dc2626' : json.risk_score >= 5 ? '#f97316' : '#16a34a';
+          htmlOutput += `
+            <div style="background: linear-gradient(135deg, ${riskColor}, ${riskColor}dd); color: white; padding: 24px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.25);">
+              <h2 style="margin: 0 0 8px 0; font-size: 28px; font-weight: 800;">Risk Score: ${json.risk_score}/10</h2>
+              <p style="margin: 0; opacity: 0.95; font-size: 15px;">Your personalized pitcher health assessment</p>
+            </div>
+          `;
+          
+          // Process each section
+          sections.forEach(section => {
+            const lines = section.trim().split('\n');
+            const title = lines[0];
+            const content = lines.slice(1).join(' ');
+            
+            // Check if it's a RED FLAG section
+            if(title.includes('🚨') || title.includes('CRITICAL')) {
+              htmlOutput += `
+                <div style="background: linear-gradient(135deg, #fee, #fdd); border-left: 4px solid #dc2626; padding: 20px; border-radius: 12px; margin-bottom: 16px; box-shadow: 0 4px 12px rgba(220,38,38,0.15);">
+                  <h3 style="margin: 0 0 10px 0; color: #dc2626; font-size: 18px; font-weight: 800;">${title}</h3>
+                  <p style="margin: 0; color: #991b1b; line-height: 1.7; font-weight: 500;">${content}</p>
+                </div>
+              `;
+            } else {
+              // Normal section
+              htmlOutput += `
+                <div style="background: white; padding: 20px; border-radius: 12px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
+                  <h3 style="margin: 0 0 10px 0; color: #1e3a8a; font-size: 16px; font-weight: 700;">${title}</h3>
+                  <p style="margin: 0; color: #374151; line-height: 1.7;">${content}</p>
+                </div>
+              `;
+            }
+          });
+          
+          resultBox.innerHTML = htmlOutput;
+          setStatus('Analysis complete.');
+        } else {
+          document.getElementById('resultBox').innerHTML = `<pre style="background:#fee; color:#c00; padding:14px; border-radius:12px; overflow:auto;">${JSON.stringify(json, null, 2)}</pre>`;
+          setStatus('Server returned an error.');
         }
-        setStatus(res.ok ? 'Analysis complete.' : 'Server returned an error.');
       }catch(err){
-        document.getElementById('resultBox').textContent = String(err);
+        document.getElementById('resultBox').innerHTML = `<pre style="background:#fee; color:#c00; padding:14px; border-radius:12px;">${String(err)}</pre>`;
         setStatus('Network error.');
       }
     }

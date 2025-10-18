@@ -1,19 +1,20 @@
-# backend/server.py — resilient load (eldercare + optional sleep/auth)
+# server.py - PredictWell Health.ai unified backend
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-import importlib
 import logging
 
-log = logging.getLogger("predictwell")
+# Setup logging
 logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger("predictwell")
 
+# Create FastAPI app
 app = FastAPI(
     title="PredictWell API",
     version="1.0.0",
-    description="Backend API for PredictWell Health.ai — Eldercare, Sleep, Auth (optional).",
+    description="Backend API for PredictWell Health.ai"
 )
 
-# CORS (open for now; restrict to https://predictwellhealth.ai later)
+# CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -23,40 +24,38 @@ app.add_middleware(
 )
 
 @app.get("/")
-def root():
-    return {"message": "PredictWell API running. See /docs for details."}
+async def root():
+    return {"message": "PredictWell API running"}
 
 @app.get("/healthz")
-def healthz():
+async def healthz():
     return {"status": "ok"}
 
-def _load_router(module_candidates, attr_name="router"):
-    """
-    Try importing a router from several module paths.
-    Returns the router or None if not importable.
-    """
-    for mod in module_candidates:
-        try:
-            m = importlib.import_module(mod)
-            r = getattr(m, attr_name)
-            log.info(f"Loaded router from {mod}.{attr_name}")
-            return r
-        except Exception as e:
-            log.warning(f"Router not found at {mod}.{attr_name}: {e}")
-    return None
-
-# Always present (your working endpoint)
-eldercare_router = _load_router(["backend.eldercare", "eldercare"])
-if eldercare_router:
+# Import routers
+try:
+    from eldercare import router as eldercare_router
     app.include_router(eldercare_router)
-else:
-    log.error("Eldercare router missing; /eldercare/checkin will not be available.")
+    logger.info("Loaded eldercare router")
+except Exception as e:
+    logger.error(f"Failed to load eldercare: {e}")
 
-# Optional routers — will load if the modules exist; otherwise skipped gracefully
-sleep_router = _load_router(["backend.sleep", "sleep"])
-if sleep_router:
+try:
+    from app_athletics import router as athletics_router
+    app.include_router(athletics_router)
+    logger.info("Loaded athletics router")
+except Exception as e:
+    logger.error(f"Failed to load athletics: {e}")
+
+try:
+    from sleep import router as sleep_router
     app.include_router(sleep_router)
+    logger.info("Loaded sleep router")
+except Exception as e:
+    logger.error(f"Failed to load sleep: {e}")
 
-auth_router = _load_router(["backend.auth", "auth"])
-if auth_router:
+try:
+    from auth import router as auth_router
     app.include_router(auth_router)
+    logger.info("Loaded auth router")
+except Exception as e:
+    logger.error(f"Failed to load auth: {e}")
