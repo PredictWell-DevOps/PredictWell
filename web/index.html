@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -20,6 +21,21 @@
       --radius:18px;
       --max:1080px;
     }
+
+img, a img { outline: none !important; border: none !important; }
+a:focus img, img:focus { outline: none !important; border: none !important; }
+
+/* Remove borders from sections and video containers */
+.section, .wrap, .portal, .card,
+iframe, video, embed, object {
+    border: none !important;
+    outline: none !important;
+}
+
+/* Remove video placeholder borders */
+.video-placeholder {
+    border: none !important;
+}
 
     html,body{height:100%}
     html{scroll-behavior:smooth}
@@ -84,7 +100,7 @@
     .grid-3{display:grid; gap:24px; grid-template-columns:repeat(3,minmax(0,1fr))}
     @media (max-width:900px){ .grid-3{grid-template-columns:1fr} }
     .card{display:grid; grid-template-columns:56px 1fr; gap:12px; background:rgba(255,255,255,.92); border:1px solid var(--border); border-radius:16px; padding:16px}
-    .ico{width:48px; height:48px; border-radius:12px; display:grid; place-items:center; background:linear-gradient(135deg,#2563eb,#60a5fa); color:#fff; font-size:22px; box-shadow:0 8px 16px rgba(37,99,235,.2)}
+    .ico{width:48px; height:48px; display:grid; place-items:center; background:linear-gradient(135deg,#2563eb,#60a5fa); color:#fff; font-size:22px; box-shadow:0 8px 16px rgba(37,99,235,.2)}
     .card h3{margin:2px 0 6px 0; font-size:20px; color:#0b1020}
     .card p{margin:0; color:#374151; line-height:1.55; font-size:15px}
 
@@ -95,7 +111,7 @@
     .field{display:grid; gap:6px}
     label{font-size:12px; color:#374151}
     .input, .select, .textarea{
-      width:100%; border:1px solid var(--border); border-radius:12px; background:#fff; padding:10px 12px; font-size:14px; outline:none
+      width:100%; border:1px solid var(--border); background:#fff; padding:10px 12px; font-size:14px; outline:none
     }
     .checks{display:flex; align-items:center; gap:12px; flex-wrap:wrap}
     .submit{background:linear-gradient(135deg,#2563eb,#60a5fa); color:#fff; border:0; border-radius:999px; padding:10px 18px; font-weight:800; cursor:pointer; box-shadow:0 10px 24px rgba(37,99,235,.22)}
@@ -411,3 +427,4 @@
 <!-- deploy v: merge3 -->
 </body>
 </html>
+"<!-- cache bust -->" 
