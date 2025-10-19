@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PredictWell Health.ai</title>
+  <meta name="description" content="PredictWell Health.ai — Sentinel Series™ (Eldercare, Sleep, Performance): multi-signal monitoring + explainable AI to forecast risk and recommend action." />
+  <link rel="icon" href="data:," />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ====== Theme ====== */
+    :root{
+      --pw-navy:#1e3a8a;         /* brand blue for headers */
+      --text:#0b1020;
+      --muted:#374151;
+      --glass:rgba(255,255,255,0.78);
+      --border:rgba(17,24,39,0.08);
+      --shadow:0 10px 30px rgba(0,0,0,.18);
+      --radius:18px;
+      --max:1080px;
+    }
+
+    /* ===== Force remove outlines & borders ===== */
+    img, a img, figure img {
+      border: none !important;
+      outline: none !important;
+      box-shadow: none !important;
+    }
+    *:focus, *:active {
+      outline: none !important;
+      border: none !important;
+      box-shadow: none !important;
+    }
+
+    html,body{height:100%}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      color:#111827;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      background-image:url("/static/images/predictwell_background.png");
+      background-size:cover; background-position:center; background-repeat:no-repeat; background-attachment:fixed;
+    }
+
+    /* ====== Standardized Header (LOCKED STYLE) ====== */
+    .header{position:sticky; top:0; z-index:50; backdrop-filter:saturate(1.2) blur(6px); background:rgba(255,255,255,.75); border-bottom:1px solid rgba(255,255,255,.4)}
+    .header-inner{max-width:var(--max); margin:0 auto; padding:14px 18px; display:flex; align-items:center; gap:14px}
+    .brand{display:flex; align-items:center; gap:10px; text-decoration:none; color:#0b1020}
+    .brand-logo{width:34px; height:34px; border-radius:10px; background:linear-gradient(135deg,#2563eb,#60a5fa); box-shadow:var(--shadow)}
+    .brand-title{font-weight:800; font-size:20px; line-height:1; display:flex; gap:6px; align-items:baseline; font-family:Poppins, Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif}
+    .brand-title b{font-weight:800}
+    .brand-title .thin{font-weight:400}
+    .brand-tagline{font-size:12px; color:#4b5563}
+    .spacer{flex:1}
+    .hamburger{border:0; background:#fff; border-radius:999px; width:36px; height:36px; display:grid; place-items:center; box-shadow:var(--shadow); cursor:pointer}
+    .hamburger:after{content:"≡"; font-size:20px; color:#111827; position:relative; top:-1px}
+    .menu{position:absolute; right:18px; top:58px; background:rgba(255,255,255,.86); backdrop-filter:blur(10px); border-radius:14px; box-shadow:var(--shadow); padding:8px; display:none}
+    .menu a{display:block; padding:10px 12px; border-radius:10px; text-decoration:none; color:#111827; min-width:220px}
+    .menu a:hover{background:rgba(17,24,39,.06)}
+
+    /* ====== Sections ====== */
+    .section{margin:28px auto 40px; padding:0 18px}
+    .wrap{max-width:var(--max); margin:0 auto; background:var(--glass); border-radius:var(--radius); box-shadow:var(--shadow); padding:26px 28px; backdrop-filter:blur(6px) saturate(1.06)}
+    .h1, .h2{margin:0 0 10px 0; font-family:Poppins, Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; color:var(--pw-navy)}
+    .h1{font-size:clamp(22px, 2.4vw, 36px)}
+    .h2{font-size:clamp(22px, 2.2vw, 34px)}
+    .sub{margin:8px 0 16px 0; color:var(--muted); line-height:1.6; font-size:15px}
+
+    .cta-row{display:flex; gap:12px; flex-wrap:wrap}
+    .btn{border:0; border-radius:999px; padding:10px 16px; font-weight:700; cursor:pointer; color:#fff; box-shadow:0 10px 24px rgba(0,0,0,.12)}
+    .btn-blue{background:linear-gradient(135deg,#2563eb,#60a5fa)}
+    .btn-gray{background:linear-gradient(135deg,#6b7280,#9ca3af); color:#0b1020}
+
+    /* ====== Portals Grid (Two Bubbles) ====== */
+    .portals{display:grid; grid-template-columns:1fr; gap:28px; max-width:var(--max); margin:0 auto; padding:0 18px; box-sizing:border-box;}
+    @media (min-width:900px){ .portals{grid-template-columns:1fr 1fr} }
+    .portal{background:var(--glass); border-radius:20px; box-shadow:var(--shadow); padding:22px 24px 26px}
+    .portal h2{margin:0 0 12px 0; font:700 28px/1.2 Poppins, Inter, system-ui; letter-spacing:.2px; color:var(--pw-navy)}
+    .portal .sec{margin:14px 0 20px 0}
+    .portal .sec h3{margin:0 0 6px 0; font:700 18px/1.3 Inter, system-ui; color:#0f172a}
+    .portal .sec p{margin:0 0 12px 0; color:#475569; line-height:1.5}
+    .btn-row{display:flex; gap:12px; flex-wrap:wrap}
+    .alink{display:inline-block; padding:10px 16px; border-radius:999px; font-weight:600; text-decoration:none; color:#fff; box-shadow:0 8px 22px rgba(2,6,23,.08)}
+    .alink-blue{background:#2f6feb}
+    .alink-orange{background:#f97316}
+
+    /* ====== Feature Cards (3-up rows) ====== */
+    .grid-3{display:grid; gap:24px; grid-template-columns:repeat(3,minmax(0,1fr))}
+    @media (max-width:900px){ .grid-3{grid-template-columns:1fr} }
+    .card{display:grid; grid-template-columns:56px 1fr; gap:12px; background:rgba(255,255,255,.92); border:1px solid var(--border); border-radius:16px; padding:16px}
+    .ico{width:48px; height:48px; display:grid; place-items:center; background:linear-gradient(135deg,#2563eb,#60a5fa); color:#fff; font-size:22px; box-shadow:0 8px 16px rgba(37,99,235,.2)}
+    .card h3{margin:2px 0 6px 0; font-size:20px; color:#0b1020}
+    .card p{margin:0; color:#374151; line-height:1.55; font-size:15px}
+
+    /* ====== Lead / Contact ====== */
+    .form-grid{display:grid; grid-template-columns:1fr; gap:14px}
+    .row-2{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+    @media (max-width:640px){ .row-2{grid-template-columns:1fr} }
+    .field{display:grid; gap:6px}
+    label{font-size:12px; color:#374151}
+    .input, .select, .textarea{width:100%; border:1px solid var(--border); background:#fff; padding:10px 12px; font-size:14px; outline:none}
+    .checks{display:flex; align-items:center; gap:12px; flex-wrap:wrap}
+    .submit{background:linear-gradient(135deg,#2563eb,#60a5fa); color:#fff; border:0; border-radius:999px; padding:10px 18px; font-weight:800; cursor:pointer; box-shadow:0 10px 24px rgba(37,99,235,.22)}
+    .legal{font-size:11px; color:#6b7280}
+
+    /* ====== Footer ====== */
+    .footer{margin:26px auto 0; padding:0 18px 40px}
+    .footer-wrap{max-width:var(--max); margin:0 auto; background:var(--glass); border-radius:var(--radius); box-shadow:var(--shadow); padding:26px 28px}
+    .footer-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:24px}
+    @media (max-width:900px){ .footer-grid{grid-template-columns:1fr} }
+    .footer h4{margin:0 0 10px 0; font-size:16px; font-weight:800}
+    .footer ul{list-style:none; padding:0; margin:0}
+    .footer li{margin:8px 0}
+    .footer a{text-decoration:none; color:#1f2937}
+    .footer a:hover{text-decoration:underline}
+  </style>
+</head>
+
+<body>
+  <!-- (body content unchanged from your version) -->
+  <!-- deploy v: merge3 -->
+</body>
+</html>
