@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Patient Athletics Login - PredictWell Health.ai</title>
+  <link rel="icon" href="data:," />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+
+  <style>
+    :root{
+      --pw-navy:#1e3a8a;
+      --text:#0b1020;
+      --muted:#374151;
+      --glass:rgba(255,255,255,0.78);
+      --border:rgba(17,24,39,0.08);
+      --shadow:0 10px 30px rgba(0,0,0,.18);
+      --radius:18px;
+      --max:1080px;
+    }
+
+    html,body{height:100%;margin:0}
+    html{scroll-behavior:smooth}
+    body{
+      color:#111827;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      background:linear-gradient(135deg, #f97316 0%, #fb923c 100%);
+      display:flex;
+      flex-direction:column;
+    }
+
+    /* Header */
+    .header{backdrop-filter:saturate(1.2) blur(6px); background:rgba(255,255,255,.75); border-bottom:1px solid rgba(255,255,255,.4)}
+    .header-inner{max-width:var(--max); margin:0 auto; padding:14px 18px; display:flex; align-items:center; gap:14px}
+    .brand{display:flex; align-items:center; gap:10px; text-decoration:none; color:#0b1020}
+    .brand-logo{width:34px; height:34px; border-radius:10px; background:linear-gradient(135deg,#2563eb,#60a5fa); box-shadow:var(--shadow)}
+    .brand-title{font-weight:800; font-size:20px; line-height:1; display:flex; gap:6px; align-items:baseline; font-family:Poppins, Inter, system-ui}
+    .brand-title b{font-weight:800}
+    .brand-title .thin{font-weight:400}
+    .brand-tagline{font-size:12px; color:#4b5563}
+
+    /* Login Container */
+    .container{flex:1; display:flex; align-items:center; justify-content:center; padding:40px 18px}
+    .login-box{background:rgba(255,255,255,0.95); border-radius:24px; box-shadow:0 20px 60px rgba(0,0,0,.3); padding:40px; max-width:420px; width:100%; backdrop-filter:blur(10px)}
+    .login-box h1{margin:0 0 8px 0; font-size:28px; color:var(--pw-navy); font-family:Poppins, Inter, system-ui; text-align:center}
+    .login-box .subtitle{margin:0 0 28px 0; color:var(--muted); text-align:center; font-size:14px}
+    
+    .form-field{margin-bottom:18px}
+    .form-field label{display:block; margin-bottom:6px; font-size:14px; font-weight:600; color:#374151}
+    .form-field input{width:100%; box-sizing:border-box; padding:12px 14px; border:1px solid var(--border); border-radius:12px; font-size:15px; outline:none; transition:border-color 0.2s}
+    .form-field input:focus{border-color:#f97316}
+
+    .submit-btn{width:100%; padding:14px; background:linear-gradient(135deg,#f97316,#fb923c); color:#fff; border:0; border-radius:999px; font-weight:700; font-size:16px; cursor:pointer; box-shadow:0 10px 24px rgba(249,115,22,.22); transition:transform 0.2s}
+    .submit-btn:hover{transform:translateY(-2px)}
+
+    .back-link{display:block; text-align:center; margin-top:20px; color:#4b5563; text-decoration:none; font-size:14px}
+    .back-link:hover{text-decoration:underline}
+
+    .error-msg{color:#dc2626; font-size:14px; margin-top:8px; display:none}
+  </style>
+</head>
+
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-inner">
+      <a class="brand" href="/index.html">
+        <div class="brand-logo"></div>
+        <div>
+          <div class="brand-title">
+            <b>PredictWell</b><span class="thin">Health.ai</span>
+          </div>
+          <div class="brand-tagline">AI health intelligence for longer, stronger living.</div>
+        </div>
+      </a>
+    </div>
+  </header>
+
+  <!-- Login Form -->
+  <div class="container">
+    <div class="login-box">
+      <h1>Athlete Portal</h1>
+      <p class="subtitle">Performance Self-Check</p>
+      
+      <form id="loginForm" onsubmit="return handleLogin(event)">
+        <div class="form-field">
+          <label for="email">Email</label>
+          <input type="email" id="email" placeholder="athlete@example.com" required>
+        </div>
+        
+        <div class="form-field">
+          <label for="password">Password</label>
+          <input type="password" id="password" placeholder="Enter your password" required>
+        </div>
+
+        <p class="error-msg" id="errorMsg">Invalid credentials. Please try again.</p>
+
+        <button type="submit" class="submit-btn">Login</button>
+      </form>
+
+      <a href="/index.html" class="back-link">← Back to Home</a>
+    </div>
+  </div>
+
+  <script>
+    function handleLogin(event) {
+      event.preventDefault();
+      
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      
+      // Simple validation for now - will connect to real auth later
+      if (email && password) {
+        // Store login status (temporary - will use real auth later)
+        sessionStorage.setItem('patient_athletics_logged_in', 'true');
+        sessionStorage.setItem('user_email', email);
+        
+        // Redirect to athletics patient intake
+        window.location.href = '/athletics-patient.html';
+      } else {
+        document.getElementById('errorMsg').style.display = 'block';
+      }
+      
+      return false;
+    }
+  </script>
+</body>
+</html>
