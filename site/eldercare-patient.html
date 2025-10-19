@@ -1,0 +1,436 @@
+<!-- ====== eldercare-patient.html (Patient Portal — 12-input + client-side score + AI result tiles) ====== -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PredictWell Health.ai — Eldercare Patient Portal</title>
+  <meta name="description" content="Simple 12-question checkup for seniors and caregivers. Instant score + AI insights." />
+  <link rel="icon" href="data:,">
+  <style>
+    :root{
+      --glass-bg: rgba(255,255,255,0.78);
+      --radius: 18px;
+      --shadow: 0 10px 30px rgba(0,0,0,0.18);
+      --blu:#2563eb; --ink:#0b1020; --muted:#374151; --line: rgba(17,24,39,0.08);
+      --ok:#10b981; --warn:#f59e0b; --risk:#ef4444;
+    }
+
+    /* Match index background (no dark overlay) */
+    html, body { height:100%; margin:0; font-family: system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial; color:#0b1020; }
+    body {
+      min-height:100vh;
+      background-image: url("/static/images/predictwell_background.png");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      display:flex; flex-direction:column;
+    }
+
+    /* === PW HEADER (identical to index) === */
+    .header{position:sticky;top:0;z-index:50;backdrop-filter:saturate(1.2) blur(6px);
+      background:linear-gradient(90deg,rgba(255,255,255,.62),rgba(255,255,255,.42));
+      border-bottom:1px solid rgba(0,0,0,.18)}
+    .header-inner{max-width:1080px;margin:0 auto;padding:14px 18px;display:flex;align-items:center;gap:14px}
+    .brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:#0b1020}
+    .brand-logo{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#2563eb,#60a5fa);box-shadow:0 10px 30px rgba(0,0,0,.18)}
+    .brand-title{font-size:22px;line-height:1}
+    .brand-title b{font-weight:800}
+    .brand-title .thin{font-weight:600}
+    .brand-tagline{font-size:12px;color:#374151;opacity:.95}
+    .spacer{flex:1}
+    /* (Optional, not used here, but included for parity) */
+    .hamburger{border:none;background:#fff;border-radius:999px;width:36px;height:36px;display:grid;place-items:center;box-shadow:0 10px 30px rgba(0,0,0,.18);cursor:pointer}
+    .hamburger:after{content:"≡";font-size:20px;color:#111827;position:relative;top:-1px}
+    .menu{position:absolute;right:18px;top:58px;background:rgba(255,255,255,.78);backdrop-filter:blur(10px);border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.18);padding:8px;display:none}
+    .menu a{display:block;padding:10px 12px;border-radius:10px;text-decoration:none;color:#111827;min-width:220px}
+    .menu a:hover{background:rgba(17,24,39,.06)}
+
+    /* Page content */
+    .main { flex:1; display:flex; align-items:flex-start; justify-content:center; padding: 28px 16px 60px; }
+    .card {
+      width:100%; max-width:980px; background:var(--glass-bg); backdrop-filter: blur(6px);
+      box-shadow: var(--shadow); border-radius: var(--radius); border:1px solid var(--line);
+      padding:18px;
+    }
+    h1 { margin: 8px 0 2px; font-size: 22px; }
+    p.sub { margin-top:0; color:var(--muted); font-size: 14px; }
+    form { display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:12px; margin-top: 10px; }
+    label { font-size:13px; color:#111827; }
+    input[type="number"], select {
+      width:100%; height:42px; border-radius:12px; border:1px solid var(--line); padding:0 12px; background:#fff;
+    }
+    .row-span-2 { grid-column: 1 / -1; }
+    .btn {
+      display:inline-flex; align-items:center; justify-content:center; gap:8px;
+      height:46px; border-radius:14px; padding:0 16px; cursor:pointer; border:0;
+      background: linear-gradient(90deg, #1d4ed8, #60a5fa); color:white; font-weight:700;
+      box-shadow: 0 8px 24px rgba(37,99,235,.25);
+    }
+    .btn:active { transform: translateY(1px); }
+    .grid-tiles { display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:12px; margin-top:14px; }
+    .tile { background:#fff; border:1px solid var(--line); border-radius:14px; padding:14px; }
+    .tile h3 { margin:0 0 6px; font-size:16px; }
+    .metric { font-size:28px; font-weight:800; margin: 4px 0 2px; }
+    .ok { color: var(--ok); } .warn{ color: var(--warn);} .risk{ color: var(--risk); }
+    .badge { display:inline-block; padding:4px 10px; border-radius:999px; font-size:12px; font-weight:700; background:#111827; color:#fff; }
+    .results {
+      background:#fff; border:1px dashed var(--line); border-radius:14px; padding:14px; margin-top:12px; white-space:pre-wrap; font-family: ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace; font-size:13px;
+    }
+    footer { text-align:center; color:#9ca3af; font-size:12px; padding:20px 0 34px; }
+    @media (max-width:520px){
+      h1 { font-size:20px; }
+      .metric { font-size:24px; }
+    }
+  </style>
+<script src="auth.js"></script>
+</head>
+<body>
+  <!-- Header (identical to index) -->
+  <header class="header">
+    <div class="header-inner">
+      <a class="brand" href="/">
+        <div class="brand-logo"></div>
+        <div>
+          <div class="brand-title"><b>PredictWell</b><span class="thin">Health.ai</span></div>
+          <div class="brand-tagline">AI health intelligence for longer, stronger living.</div>
+        </div>
+      </a>
+      <div class="spacer"></div>
+      <!-- Keep the health badge on the right for utility; it won’t affect the visual match -->
+      <span class="badge" id="healthz">checking…</span>
+    </div>
+  </header>
+
+  <main class="main">
+    <section class="card">
+      <h1>Patient Checkup — 12 Quick Questions</h1>
+      <p class="sub">Answer these to get your PredictWell Score and AI risk outlook. Your doctor can review these results.</p>
+
+      <!-- 12-input form (IDs preserved for compatibility) -->
+      <form id="pwForm">
+        <div>
+          <label>Age</label>
+          <input id="age" type="number" min="0" max="120" required />
+        </div>
+        <div>
+          <label>Living Situation</label>
+          <select id="living">
+            <option value="alone">Alone</option>
+            <option value="with_family">With family</option>
+            <option value="assisted">Assisted living</option>
+          </select>
+        </div>
+        <div>
+          <label>Falls in last 12 months?</label>
+          <select id="falls_12m">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5+">5+</option>
+          </select>
+        </div>
+        <div>
+          <label>Feel unsteady when walking?</label>
+          <select id="unsteady">
+            <option value="1">1 (Least unsteady)</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5 (Most unsteady)</option>
+          </select>
+        </div>
+        <div>
+          <label>Fear of falling?</label>
+          <select id="fear_fall">
+            <option value="1">1 (Low Fear)</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5 (High Fear)</option>
+          </select>
+        </div>
+        <div>
+          <label>Chair rise difficulty?</label>
+          <select id="chair_rise">
+            <option value="1">1 (Least difficult)</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5 (Most difficult)</option>
+          </select>
+        </div>
+        <div>
+          <label>Dizziness?</label>
+          <select id="dizzy">
+            <option value="1">1 (Least dizzy)</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5 (Most dizzy)</option>
+          </select>
+        </div>
+        <div>
+          <label>Medication count</label>
+          <select id="med_count">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5+">5+</option>
+          </select>
+        </div>
+        <div>
+          <label>Memory concerns?</label>
+          <select id="memory">
+            <option value="1">1 (Low concern)</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5 (High concern)</option>
+          </select>
+        </div>
+        <div>
+          <label>Mood concerns?</label>
+          <select id="mood">
+            <option value="1">1 (Good mood)</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5 (Bad mood)</option>
+          </select>
+        </div>
+        <div>
+          <label>Weekly activity level</label>
+          <select id="activity">
+            <option value="1">1 (High activity)</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5 (Low activity)</option>
+          </select>
+        </div>
+        <div>
+          <label>Home hazards present?</label>
+          <select id="home_haz"><option>No</option><option>Yes</option></select>
+        </div>
+
+        <div class="row-span-2" style="display:flex; gap:10px; margin-top:4px;">
+          <button type="button" class="btn" id="getResultsBtn">Get Results</button>
+          <button type="button" class="btn" style="background:linear-gradient(90deg,#6b7280,#9ca3af)" id="clearBtn" title="Clear and reset">Clear</button>
+        </div>
+      </form>
+
+      <!-- Score badge + AI tiles -->
+      <div class="grid-tiles" style="margin-top:10px;">
+        <div class="tile">
+          <h3>Your PredictWell Score</h3>
+          <div id="scoreNum" class="metric">—</div>
+          <div id="scoreTag" class="badge">pending</div>
+        </div>
+
+        <div class="tile">
+          <h3>AI Risk — Current</h3>
+          <div id="aiNow" class="metric">—</div>
+          <div id="aiNowNote" class="sub" style="margin:4px 0 0;">&nbsp;</div>
+        </div>
+
+        <div class="tile">
+          <h3>AI Risk — In 2 Weeks</h3>
+          <div id="ai2w" class="metric">—</div>
+          <div id="ai2wNote" class="sub" style="margin:4px 0 0;">&nbsp;</div>
+        </div>
+
+        <div class="tile">
+          <h3>AI Risk — In 4 Weeks</h3>
+          <div id="ai4w" class="metric">—</div>
+          <div id="ai4wNote" class="sub" style="margin:4px 0 0;">&nbsp;</div>
+        </div>
+      </div>
+
+      <!-- Raw server reply (for transparency / debugging) -->
+      <div id="serverOut" class="results" hidden></div>
+    </section>
+  </main>
+
+  <footer>© PredictWell Health.ai</footer>
+
+  <script>
+    // ===== Config =====
+    const BASE_API = 'https://predictwell-backend-ai.onrender.com';
+
+    // ===== Health check badge =====
+    (async () => {
+      try {
+        const r = await fetch(BASE_API + '/healthz', { cache: 'no-store' });
+        const j = await r.json();
+        document.getElementById('healthz').textContent = j.status === 'ok' ? 'backend: ok' : 'backend: ?';
+      } catch(e) {
+        document.getElementById('healthz').textContent = 'backend: offline';
+      }
+    })();
+
+    // ===== Local storage load/save (keep IDs as-is) =====
+    const LS_KEY = 'eldercare_patient12';
+    function loadSaved(){
+      try {
+        const x = JSON.parse(localStorage.getItem(LS_KEY) || '{}');
+        for (const k of ['age','living','falls_12m','unsteady','fear_fall','chair_rise','dizzy','med_count','memory','mood','activity','home_haz']){
+          if (x[k] !== undefined) document.getElementById(k).value = x[k];
+        }
+      } catch(_) {}
+    }
+    function saveCurrent(){
+      const data = {};
+      for (const k of ['age','living','falls_12m','unsteady','fear_fall','chair_rise','dizzy','med_count','memory','mood','activity','home_haz']){
+        data[k] = document.getElementById(k).value;
+      }
+      localStorage.setItem(LS_KEY, JSON.stringify(data));
+      return data;
+    }
+    loadSaved();
+
+    // ===== Simple client-side score (unchanged spirit) =====
+    function computeLocalScore(data){
+      let score = 100;
+      const yes = v => String(v).toLowerCase() === 'yes';
+
+      const medsStr = String(data.med_count || '0');
+      const medsNum = medsStr.endsWith('+') ? 5 : Number(medsStr) || 0;
+      score -= Math.min(30, medsNum * 6);
+
+      const fallsStr = String(data.falls_12m || '0').trim();
+      const fallsNum = fallsStr.endsWith('+') ? 5 : Number(fallsStr) || 0;
+      score -= Math.min(25, Math.max(0, fallsNum * 5));
+
+      const unsteadyNum = Number(data.unsteady || 0);
+      if (unsteadyNum > 0) score -= Math.min(15, unsteadyNum * 3);
+
+      const fearNum = Number(data.fear_fall || 0);
+      if (fearNum > 0) score -= Math.min(10, fearNum * 2);
+
+      const chairNum = Number(data.chair_rise || 0);
+      if (chairNum > 0) score -= Math.min(10, chairNum * 2);
+
+      const dizzyNum = Number(data.dizzy || 0);
+      if (dizzyNum > 0) score -= Math.min(10, dizzyNum * 2);
+
+      const memNum = Number(data.memory || 0) || 0;
+      if (memNum > 0) score -= Math.min(10, memNum * 2);
+
+      const moodNum = Number(data.mood || 0) || 0;
+      if (moodNum > 0) score -= Math.min(8, moodNum * 2);
+
+      const actNum = Number(data.activity || 0) || 0;
+      if (actNum > 0) score -= Math.min(6, (actNum - 1) * 2);
+
+      if (yes(data.home_haz)) score -= 6;
+
+      return Math.max(0, Math.min(100, score));
+    }
+
+    function setScoreBadge(score){
+      const num = document.getElementById('scoreNum');
+      const tag = document.getElementById('scoreTag');
+      num.textContent = String(score);
+      let cls = 'ok', label = 'LOW';
+      if (score < 35){ cls='risk'; label='HIGH'; }
+      else if (score < 70){ cls='warn'; label='MODERATE'; }
+      tag.className = 'badge ' + cls;
+      tag.textContent = label;
+      num.className = 'metric ' + cls;
+    }
+
+    // ===== AI results rendering (flexible) =====
+    function pick(obj, pathArr){
+      for (const p of pathArr){
+        const val = p.split('.').reduce((o,k)=> (o && k in o) ? o[k] : undefined, obj ?? {});
+        if (val !== undefined && val !== null) return val;
+      }
+      return undefined;
+    }
+
+    function renderAiResults(resp){
+      const cur = pick(resp, ['risk.current','current','now','risk_now','forecast.0.score']);
+      const two = pick(resp, ['risk.two_weeks','two_weeks','risk_2w','in2w','forecast.1.score']);
+      const four = pick(resp, ['risk.four_weeks','four_weeks','risk_4w','in4w','forecast.2.score']);
+
+      const curNote = pick(resp, ['risk.notes.current','notes.current','forecast.0.note','note_now']);
+      const twoNote = pick(resp, ['risk.notes.two_weeks','notes.two_weeks','forecast.1.note','note_2w']);
+      const fourNote = pick(resp, ['risk.notes.four_weeks','notes.four_weeks','forecast.2.note','note_4w']);
+
+      setTile('aiNow','aiNowNote', cur, curNote);
+      setTile('ai2w','ai2wNote', two, twoNote);
+      setTile('ai4w','ai4wNote', four, fourNote);
+    }
+
+    function setTile(scoreId, noteId, val, note){
+      const el = document.getElementById(scoreId);
+      const nt = document.getElementById(noteId);
+      if (val === undefined || val === null || val === ''){
+        el.textContent = '—';
+        el.className = 'metric';
+        nt.textContent = '';
+        return;
+      }
+      const num = Number(val);
+      if (Number.isFinite(num)){
+        el.textContent = String(num);
+        let cls = 'ok';
+        if (num < 35) cls = 'risk';
+        else if (num < 70) cls = 'warn';
+        el.className = 'metric ' + cls;
+      } else {
+        el.textContent = String(val);
+        el.className = 'metric';
+      }
+      nt.textContent = note ? String(note) : '';
+    }
+
+    // ===== Submit handler =====
+    async function handleSubmit(){
+      const data = saveCurrent();
+      const localScore = computeLocalScore(data);
+      setScoreBadge(localScore);
+
+      try{
+        const r = await fetch(BASE_API + '/eldercare/checkin', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ source:'patient_portal', inputs:data, client_score: localScore })
+        });
+        const j = await r.json();
+
+        const out = document.getElementById('serverOut');
+        out.hidden = false;
+        out.textContent = JSON.stringify(j, null, 2);
+
+        renderAiResults(j);
+      }catch(e){
+        const out = document.getElementById('serverOut');
+        out.hidden = false;
+        out.textContent = 'Server error. Please try again shortly.';
+      }
+    }
+
+    // ===== Wire buttons =====
+    document.getElementById('getResultsBtn').addEventListener('click', handleSubmit);
+    document.getElementById('clearBtn').addEventListener('click', () => {
+      localStorage.removeItem(LS_KEY);
+      for (const k of ['age','living','falls_12m','unsteady','fear_fall','chair_rise','dizzy','med_count','memory','mood','activity','home_haz']){
+        const el = document.getElementById(k);
+        if (el.tagName === 'INPUT') el.value = '';
+        else el.selectedIndex = 0;
+      }
+      document.getElementById('scoreNum').textContent='—';
+      document.getElementById('scoreTag').textContent='pending';
+      for (const id of ['aiNow','ai2w','ai4w']){ document.getElementById(id).textContent='—'; document.getElementById(id).className='metric'; }
+      for (const id of ['aiNowNote','ai2wNote','ai4wNote']){ document.getElementById(id).textContent=''; }
+      const out = document.getElementById('serverOut'); out.hidden = true; out.textContent = '';
+    });
+  </script>
+</body>
+</html>
+

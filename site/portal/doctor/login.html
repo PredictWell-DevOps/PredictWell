@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PredictWell Health.ai — Doctor Portal Login</title>
+  <link rel="icon" href="data:," />
+  <style>
+    body {
+      font-family: "Poppins", system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      background: linear-gradient(to bottom right, #0b1830, #1e3a8a);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .card {
+      background: rgba(255,255,255,0.15);
+      border-radius: 20px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+      padding: 40px;
+      width: 340px;
+      text-align: center;
+      backdrop-filter: blur(8px);
+    }
+    h2 {
+      margin-top: 0;
+      margin-bottom: 20px;
+      font-weight: 700;
+      color: #ffffff;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      margin-bottom: 15px;
+      font-size: 15px;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #2563eb, #60a5fa);
+      font-weight: 700;
+      color: #fff;
+      font-size: 15px;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(0,0,0,.25);
+    }
+    button:hover { background: linear-gradient(135deg, #1d4ed8, #3b82f6); }
+    .back-link {
+      display: inline-block;
+      margin-top: 20px;
+      color: #cbd5e1;
+      text-decoration: none;
+      font-size: 14px;
+    }
+    .back-link:hover { text-decoration: underline; color: #fff; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>Doctor Portal Login</h2>
+    <input type="email" id="email" placeholder="Enter your email" required />
+    <button id="loginBtn">Login</button>
+    <a href="/index.html" class="back-link">← Back to Home</a>
+  </div>
+
+  <script>
+  // Safe shim if /auth.js isn't present
+  if (!window.PW_AUTH) {
+    window.PW_AUTH = { isAuthed: () => false, login: () => {} };
+  }
+
+  const emailField = document.getElementById('email');
+  const btn = document.getElementById('loginBtn');
+
+  // pick destination based on ?dest= query
+  const params = new URLSearchParams(location.search);
+  const dest = params.get('dest');
+  const nextUrl = dest === 'eldercare'
+    ? '/portal/doctor/eldercare.html'
+    : '/portal/doctor/intake.html'; // default
+
+  if (PW_AUTH.isAuthed()) {
+    window.location.href = nextUrl;
+  }
+
+  btn.addEventListener('click', () => {
+    const email = (emailField.value || '').trim();
+    if (!email) { alert('Enter a valid email.'); return; }
+    try { PW_AUTH.login({ email }); } catch (e) {}
+    window.location.href = nextUrl;
+  });
+</script>
+</body>
+</html>
