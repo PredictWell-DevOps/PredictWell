@@ -1,8 +1,13 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
+=======
+<!doctype html>
+>>>>>>> 81bac21388f70e3b6f1d68c7346a1d4468b33996
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+<<<<<<< HEAD
   <title>PredictWell Health.ai</title>
   <meta name="description" content="PredictWell Health.ai — Sentinel Series™ (Eldercare, Sleep, Performance): multi-signal monitoring + explainable AI to forecast risk and recommend action." />
   <link rel="icon" href="data:," />
@@ -120,5 +125,47 @@
 <body>
   <!-- (body content unchanged from your version) -->
   <!-- deploy v: merge3 -->
+=======
+  <title>PredictWell (Local)</title>
+  <link rel="stylesheet" href="./assets/styles.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>PredictWell — Local Pilot</h1>
+
+    <section class="card">
+      <h2>API Health</h2>
+      <button id="btnHealth">Check Health</button>
+      <pre id="healthOut"></pre>
+    </section>
+
+    <section class="card">
+      <h2>Quick Risk Score</h2>
+      <form id="riskForm">
+        <label>Pitch Count <input type="number" name="pitch_count" value="45" required></label>
+        <label>7-Day Workload <input type="number" step="0.1" name="workload_7d" value="120" required></label>
+        <label>Sleep (hours) <input type="number" step="0.1" name="sleep_hours" value="7.0" required></label>
+        <label>
+          Prior Injury
+          <select name="prior_injury">
+            <option value="false" selected>No</option>
+            <option value="true">Yes</option>
+          </select>
+        </label>
+        <button type="submit">Compute</button>
+      </form>
+      <pre id="riskOut"></pre>
+    </section>
+
+    <section class="card">
+      <h2>Upload CSV (Test)</h2>
+      <input type="file" id="csvFile" accept=".csv">
+      <button id="btnUpload">Upload</button>
+      <pre id="uploadOut"></pre>
+    </section>
+  </div>
+
+  <script src="./assets/app.js"></script>
+>>>>>>> 81bac21388f70e3b6f1d68c7346a1d4468b33996
 </body>
 </html>
