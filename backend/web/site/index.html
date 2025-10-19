@@ -9,6 +9,16 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&family=Inter:wght@400;600&display=swap" rel="stylesheet" />
 
   <style>
+/* ===== REMOVE VIDEO BORDER ===== */
+    *, *::before, *::after {
+      outline: none !important;
+      box-shadow: none !important;
+    }
+    video, .video-placeholder, .video-placeholder video {
+      border: none !important;
+      outline: none !important;
+      box-shadow: none !important;
+    }
     /* ====== Theme ====== */
     :root{
       --pw-navy:#1e3a8a;
