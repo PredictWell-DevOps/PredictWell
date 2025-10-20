@@ -1,2 +1,0 @@
-const BASE_API = 'https://predictwell-backend-ai.onrender.com';
-const POST_URL = BASE_API + '/athletics/risk';

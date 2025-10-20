@@ -1,8 +1,0 @@
-# Default owners for everything
-*   @richrubel21-cell @predictwell-devops
-
-# Backend ownership
-backend/**  @predictwell-devops
-
-# Frontend ownership (optional)
-web/**      @richrubel21-cell
