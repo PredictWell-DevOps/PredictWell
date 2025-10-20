@@ -243,8 +243,6 @@
     document.getElementById('yr').textContent = new Date().getFullYear();
 
     // Header menu toggle (identical to Index)
-    const menuBtn = document.getElementById('menuBtn');
-    const menu = document.getElementById('menu');
     document.addEventListener('click', (e) => {
       if (menuBtn && menuBtn.contains(e.target)) {
         menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
@@ -256,8 +254,6 @@
 
     // Email picker (identical to Index)
     (function () {
-      const emailLink = document.getElementById('emailLink');
-      const emailMenu = document.getElementById('emailMenu');
       if (!emailLink || !emailMenu) return;
 
       emailLink.addEventListener('click', function (e) {
@@ -273,11 +269,7 @@
     })();
 
     // ===== Doctor intake logic (33 fields) =====
-    const BASE_API = 'https://predictwell-backend-ai.onrender.com';
-    const POST_URL = BASE_API + '/athletics/risk';
-    const STORE_KEY = 'athletics_doctor_pitcher33';
 
-    const dFields = [
       // 1) Arm & Shoulder (6)
       'd_shoulder_soreness','d_bicep_tightness','d_tricep_soreness','d_inner_elbow_pain','d_outer_elbow_pain','d_forearm_tightness',
       // 2) Workload & Mechanics (7)
@@ -291,21 +283,14 @@
     ];
 
     function fillScale(sel){
-      const opts = [
         {v:1,t:'1 (Best/Low)'},{v:2,t:'2'},{v:3,t:'3'},{v:4,t:'4'},{v:5,t:'5 (Worst/High)'}
       ];
-      opts.forEach(o => { const op = document.createElement('option'); op.value=o.v; op.textContent=o.t; sel.appendChild(op); });
     }
 
     // Build selects + restore
     (function init(){
-      dFields.forEach(id => { const el = document.getElementById(id); if(el) fillScale(el); });
       try{
-        const saved = localStorage.getItem(STORE_KEY);
         if(saved){
-          const data = JSON.parse(saved);
-          for(const [k,v] of Object.entries(data)){
-            const el = document.getElementById(k);
             if(el) el.value = String(v);
           }
         }
@@ -317,9 +302,7 @@
     })();
 
     function collectData(){
-      const out = {};
       dFields.forEach(id => {
-        const el = document.getElementById(id);
         out[id.replace(/^d_/, '')] = el ? Number(el.value || 1) : 1; // strip "d_"
       });
       out.athlete_name = (document.getElementById('athlete_name')?.value || '').trim() || null;
@@ -329,18 +312,13 @@
     }
 
     function saveLocally(){
-      const tmp = {};
-      dFields.forEach(id => { const el = document.getElementById(id); tmp[id] = el ? Number(el.value || 1) : 1; });
       localStorage.setItem(STORE_KEY, JSON.stringify(tmp));
       setBackendStatus('Saved locally.', true);
     }
 
     async function submitForm(){
       setBackendStatus('Submitting…', false);
-      const payload = collectData();
       try{
-        const res = await fetch(POST_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload) });
-        const text = await res.text();
         try{ document.getElementById('resultBox').textContent = JSON.stringify(JSON.parse(text), null, 2); }
         catch{ document.getElementById('resultBox').textContent = text; }
         setBackendStatus(res.ok ? 'Analysis complete.' : 'Server returned an error.', res.ok);
@@ -350,7 +328,6 @@
       }
     }
 
-    const backendStatus = document.getElementById('backendStatus');
     function setBackendStatus(msg, ok=false, err=false){
       if(!backendStatus) return;
       backendStatus.textContent = msg;
@@ -361,8 +338,6 @@
 
     async function pingBackend(){
       try{
-        const r = await fetch(`${BASE_API}/health`);
-        const j = await r.json();
         document.getElementById('resultBox').textContent = JSON.stringify(j, null, 2);
         setBackendStatus('Backend: ok', true);
       }catch{
